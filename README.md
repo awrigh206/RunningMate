@@ -1,16 +1,9 @@
-# application
+# Running Mate
 
-A new Flutter project.
+Flutter application which will  be the mobile application which will perform all front end functionality for this project.
 
-## Getting Started
+This application will contact with a backend in order to provide the full functionality.
 
-This project is a starting point for a Flutter application.
+## Documentation
+To be completed...
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
