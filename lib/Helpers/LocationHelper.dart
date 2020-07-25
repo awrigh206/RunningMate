@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 
@@ -58,7 +56,6 @@ class LocationHelper {
       List<geo.Placemark> p = await geolocator.placemarkFromCoordinates(
           position.latitude, position.longitude);
       geo.Placemark place = p[0];
-      log("This is the country:" + place.country);
       return place;
     } catch (e) {
       print(e);

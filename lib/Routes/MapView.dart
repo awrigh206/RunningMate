@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapView extends StatefulWidget {
-  MapView({Key key}) : super(key: key);
-
+  final Placemark location;
+  MapView({Key key, @required this.location}) : super(key: key);
   @override
   _MapViewState createState() => _MapViewState();
 }
 
 class _MapViewState extends State<MapView> {
   GoogleMapController mapController;
-  final LatLng centre = const LatLng(45.521563, -122.677433);
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
@@ -23,7 +23,8 @@ class _MapViewState extends State<MapView> {
         ),
         body: GoogleMap(
           initialCameraPosition: CameraPosition(
-            target: centre,
+            target: LatLng(this.widget.location.position.latitude,
+                this.widget.location.position.longitude),
             zoom: 12.0,
           ),
           mapType: MapType.normal,

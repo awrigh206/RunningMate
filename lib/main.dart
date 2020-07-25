@@ -40,6 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
     //Future<LocationData> position = locationHelper.getLocationBasic();
     //Future<Position> position = locationHelper.getPosition();
     Future<Placemark> position = locationHelper.getCurrentAddress();
+    Placemark loadedLocation;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -69,6 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Placemark loadedPlace = snapshot.data ?? Placemark;
                   //LocationData loadedPosition = snapshot.data ?? LocationData;
                   if (position != null) {
+                    loadedLocation = loadedPlace;
                     //lat = loadedPosition.latitude;
                     //long = loadedPosition.longitude;
                     return new Text('You are in the: ' +
@@ -92,7 +94,8 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => MapView()),
+            MaterialPageRoute(
+                builder: (context) => MapView(location: loadedLocation)),
           );
         },
         tooltip: "Go to next page",
