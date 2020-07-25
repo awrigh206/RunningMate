@@ -73,7 +73,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (position != null) {
                     //lat = loadedPosition.latitude;
                     //long = loadedPosition.longitude;
-                    return new Text(loadedPlace.toString());
+                    return new Text('You are in the: ' +
+                        loadedPlace.country +
+                        '\n more precisely: ' +
+                        loadedPlace.administrativeArea +
+                        '\n even more precisely: ' +
+                        loadedPlace.subAdministrativeArea +
+                        '\n with the postcode: ' +
+                        loadedPlace.postalCode +
+                        '\n with the streetname: ' +
+                        loadedPlace.thoroughfare);
                   } else {
                     return new Text('Unable to find your location currently');
                   }

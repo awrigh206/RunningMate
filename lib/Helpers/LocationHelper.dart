@@ -1,10 +1,10 @@
+import 'dart:developer';
+
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 
 class LocationHelper {
   Location location = new Location();
-  final geo.Geolocator geolocator = geo.Geolocator()
-    ..forceAndroidLocationManager;
   bool serviceEnabled;
   PermissionStatus permissionGranted;
   LocationData locationData;
@@ -35,32 +35,30 @@ class LocationHelper {
 
   //Use the geolocator plugin to find the location of the device
   Future<geo.Position> getPosition() async {
-    geo.GeolocationStatus geolocationStatus =
-        await geo.Geolocator().checkGeolocationPermissionStatus();
+    final geo.Geolocator geolocator = geo.Geolocator()
+      ..forceAndroidLocationManager;
+    geo.Position futurePosition;
 
-    if (geolocationStatus.value == 0) {
-      return null;
-    }
-
-    Future<geo.Position> position;
-
-    geolocator
+    await geolocator
         .getCurrentPosition(desiredAccuracy: geo.LocationAccuracy.best)
         .then((geo.Position position) {
-      position = position;
+      futurePosition = position;
     }).catchError((e) {
       print(e);
+      return futurePosition;
     });
-    return position;
+    return futurePosition;
   }
 
   Future<geo.Placemark> getCurrentAddress() async {
+    final geo.Geolocator geolocator = geo.Geolocator()
+      ..forceAndroidLocationManager;
     geo.Position position = await getPosition();
     try {
       List<geo.Placemark> p = await geolocator.placemarkFromCoordinates(
           position.latitude, position.longitude);
       geo.Placemark place = p[0];
-      print("This is the country:" + place.country);
+      log("This is the country:" + place.country);
       return place;
     } catch (e) {
       print(e);
