@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 
 import 'Helpers/LocationHelper.dart';
@@ -38,18 +39,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Future<LocationData> position = locationHelper.getLocation();
+    //Future<LocationData> position = locationHelper.getLocationBasic();
+    //Future<Position> position = locationHelper.getPosition();
+    Future<Placemark> position = locationHelper.getCurrentAddress();
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FutureBuilder(
+            FutureBuilder<Placemark>(
                 future: position,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
@@ -63,14 +64,16 @@ class _MyHomePageState extends State<MyHomePage> {
                     return new Text('Do not have location permission');
                   }
 
-                  LocationData loadedPosition = snapshot.data ?? LocationData;
-                  if (loadedPosition != null) {
-                    lat = loadedPosition.latitude;
-                    long = loadedPosition.longitude;
-                    return new Text('lat: ' +
-                        lat.toString() +
-                        '\n long: ' +
-                        long.toString());
+                  if (snapshot.data == null) {
+                    return new Text("The location data is null I'm afraid");
+                  }
+
+                  Placemark loadedPlace = snapshot.data ?? Placemark;
+                  //LocationData loadedPosition = snapshot.data ?? LocationData;
+                  if (position != null) {
+                    //lat = loadedPosition.latitude;
+                    //long = loadedPosition.longitude;
+                    return new Text(loadedPlace.toString());
                   } else {
                     return new Text('Unable to find your location currently');
                   }
