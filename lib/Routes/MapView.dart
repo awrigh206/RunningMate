@@ -11,9 +11,7 @@ class MapView extends StatefulWidget {
 
 class _MapViewState extends State<MapView> {
   GoogleMapController mapController;
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-  }
+  Set<Marker> _markers = Set();
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +23,19 @@ class _MapViewState extends State<MapView> {
           initialCameraPosition: CameraPosition(
             target: LatLng(this.widget.location.position.latitude,
                 this.widget.location.position.longitude),
-            zoom: 12.0,
+            zoom: 15.0,
           ),
           mapType: MapType.normal,
-          onMapCreated: _onMapCreated,
+          markers: _markers,
+          onMapCreated: (GoogleMapController controller) {
+            setState(() {
+              _markers.add(Marker(
+                markerId: MarkerId('<USER_LOCATION>'),
+                position: LatLng(this.widget.location.position.latitude,
+                    this.widget.location.position.longitude),
+              ));
+            });
+          },
         ));
   }
 }
