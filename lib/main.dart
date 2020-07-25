@@ -1,10 +1,7 @@
 import 'dart:async';
-
 import 'package:application/Routes/MapView.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'Helpers/LocationHelper.dart';
 
 void main() {
@@ -48,51 +45,46 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: ListView(
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                FutureBuilder<Placemark>(
-                    future: position,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState != ConnectionState.done) {
-                        return Icon(Icons.gps_not_fixed);
-                      }
-                      if (snapshot.hasError) {
-                        return Icon(Icons.error);
-                      }
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            FutureBuilder<Placemark>(
+                future: position,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return Icon(Icons.gps_not_fixed);
+                  }
+                  if (snapshot.hasError) {
+                    return Icon(Icons.error);
+                  }
 
-                      if (position == null) {
-                        return new Text('Do not have location permission');
-                      }
+                  if (position == null) {
+                    return new Text('Do not have location permission');
+                  }
 
-                      if (snapshot.data == null) {
-                        return new Text("The location data is null I'm afraid");
-                      }
+                  if (snapshot.data == null) {
+                    return new Text("The location data is null I'm afraid");
+                  }
 
-                      Placemark loadedPlace = snapshot.data ?? Placemark;
-                      //LocationData loadedPosition = snapshot.data ?? LocationData;
-                      if (position != null) {
-                        //lat = loadedPosition.latitude;
-                        //long = loadedPosition.longitude;
-                        return new Text('You are in the: ' +
-                            loadedPlace.country +
-                            '\n more precisely: ' +
-                            loadedPlace.administrativeArea +
-                            '\n even more precisely: ' +
-                            loadedPlace.subAdministrativeArea +
-                            '\n with the postcode: ' +
-                            loadedPlace.postalCode +
-                            '\n with the streetname: ' +
-                            loadedPlace.thoroughfare);
-                      } else {
-                        return new Text(
-                            'Unable to find your location currently');
-                      }
-                    }),
-              ],
-            ),
+                  Placemark loadedPlace = snapshot.data ?? Placemark;
+                  //LocationData loadedPosition = snapshot.data ?? LocationData;
+                  if (position != null) {
+                    //lat = loadedPosition.latitude;
+                    //long = loadedPosition.longitude;
+                    return new Text('You are in the: ' +
+                        loadedPlace.country +
+                        '\n more precisely: ' +
+                        loadedPlace.administrativeArea +
+                        '\n even more precisely: ' +
+                        loadedPlace.subAdministrativeArea +
+                        '\n with the postcode: ' +
+                        loadedPlace.postalCode +
+                        '\n with the streetname: ' +
+                        loadedPlace.thoroughfare);
+                  } else {
+                    return new Text('Unable to find your location currently');
+                  }
+                }),
           ],
         ),
       ),
@@ -104,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         },
         tooltip: "Go to next page",
-        child: Icon(Icons.add),
+        child: Icon(Icons.map),
       ),
     );
   }
