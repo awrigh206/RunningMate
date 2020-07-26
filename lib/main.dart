@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Routes/MapView.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -34,6 +35,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final locationHelper = LocationHelper();
+  final TcpHelper tcp = TcpHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +88,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   } else {
                     return new Text('Unable to find your location currently');
                   }
+                }),
+            RaisedButton(
+                child: Text("Send Message"),
+                onPressed: () {
+                  tcp.sendToServer("hello there");
                 }),
           ],
         ),
