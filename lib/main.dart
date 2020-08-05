@@ -92,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
             RaisedButton(
                 child: Text("Send Message"),
                 onPressed: () {
-                  tcp.sendToServer("hello there");
+                  tcp.sendToServer("hi");
                 }),
           ],
         ),
