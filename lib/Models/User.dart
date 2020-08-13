@@ -4,8 +4,8 @@ class User {
   String email;
 
   User(String userName, String password, String email) {
-    this.userName = '"' + userName + "'";
-    this.password = '"' + password + "'";
+    this.userName = '"' + userName + '"';
+    this.password = '"' + password + '"';
     this.email = '"' + email + '"';
   }
 
