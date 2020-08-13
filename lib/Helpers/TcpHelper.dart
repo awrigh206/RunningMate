@@ -13,7 +13,7 @@ class TcpHelper {
     //send message to the socket
     //socket.write(utf8.encode(message));
     Payload payloadMessage = new Payload(message);
-    socket.write(payloadMessage);
+    socket.write(payloadMessage.toJson());
 
     //Establish the onData, and onDone callbacks
     socket.listen((data) {
