@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:application/Models/Payload.dart';
+
 class TcpHelper {
   Future<String> sendToServer(String message) async {
     String answer;
@@ -10,7 +12,8 @@ class TcpHelper {
 
     //send message to the socket
     //socket.write(utf8.encode(message));
-    socket.write(message);
+    Payload payloadMessage = new Payload(message);
+    socket.write(payloadMessage);
 
     //Establish the onData, and onDone callbacks
     socket.listen((data) {
