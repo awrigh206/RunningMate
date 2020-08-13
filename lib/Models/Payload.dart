@@ -4,6 +4,7 @@ class Payload {
 
   Payload(String message) {
     this.message = message;
+    this.testingNumber = 1;
   }
 
   Payload.fromJson(Map<String, dynamic> json)
