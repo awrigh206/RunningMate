@@ -4,6 +4,7 @@ import 'package:application/Routes/MapView.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'Helpers/LocationHelper.dart';
+import 'Models/User.dart';
 
 void main() {
   runApp(MyApp());
@@ -36,6 +37,19 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final locationHelper = LocationHelper();
   final TcpHelper tcp = TcpHelper();
+  final userNameController = TextEditingController();
+  final passwordController = TextEditingController();
+  final emailController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the
+    // widget tree.
+    userNameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,10 +103,38 @@ class _MyHomePageState extends State<MyHomePage> {
                     return new Text('Unable to find your location currently');
                   }
                 }),
+            Form(
+              child: Column(
+                children: [
+                  TextFormField(
+                    autocorrect: false,
+                    controller: userNameController,
+                    decoration: const InputDecoration(
+                      hintText: 'User Name',
+                    ),
+                  ),
+                  TextFormField(
+                    autocorrect: false,
+                    controller: passwordController,
+                    decoration: const InputDecoration(
+                      hintText: 'Password',
+                    ),
+                  ),
+                  TextFormField(
+                    autocorrect: false,
+                    controller: emailController,
+                    decoration: const InputDecoration(
+                      hintText: 'Email',
+                    ),
+                  ),
+                ],
+              ),
+            ),
             RaisedButton(
                 child: Text("Send Message"),
                 onPressed: () {
-                  tcp.sendToServer("hi");
+                  tcp.sendToServer(new User(userNameController.text,
+                      passwordController.text, emailController.text));
                 }),
           ],
         ),
