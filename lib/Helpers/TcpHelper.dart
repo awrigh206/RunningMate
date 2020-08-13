@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
 
 class TcpHelper {
@@ -12,7 +13,7 @@ class TcpHelper {
     //send message to the socket
     //socket.write(utf8.encode(message));
     //Payload payloadMessage = new Payload(message);
-    socket.write(user.toJson());
+    socket.write(new Payload(user.toJson(), "login").toJson());
 
     //Establish the onData, and onDone callbacks
     socket.listen((data) {

@@ -1,18 +1,18 @@
 class Payload {
-  String message;
-  int testingNumber;
+  Map<String, dynamic> jsonMessage;
+  String operation;
 
-  Payload(String message) {
-    this.message = message;
-    this.testingNumber = 1;
+  Payload(Map<String, dynamic> jsonMessage, String operation) {
+    this.jsonMessage = jsonMessage;
+    this.operation = operation;
   }
 
   Payload.fromJson(Map<String, dynamic> json)
-      : message = json['message'],
-        testingNumber = json['testingNumber'];
+      : jsonMessage = json['"jsonMessage"'],
+        operation = json['"operation"'];
 
   Map<String, dynamic> toJson() => {
-        'message': message,
-        'testingNumber': testingNumber,
+        '"operation"': operation,
+        '"jsonMessage"': jsonMessage,
       };
 }
