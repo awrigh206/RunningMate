@@ -144,14 +144,34 @@ class _MyHomePageState extends State<MyHomePage> {
                       hintText: 'Email',
                     ),
                   ),
+                  RaisedButton(
+                    onPressed: () {
+                      tcp.sendToServer(
+                          new User(userNameController.text,
+                              passwordController.text, emailController.text),
+                          "register");
+                    },
+                    child: Text("Register"),
+                  ),
+                  RaisedButton(
+                    onPressed: () {
+                      tcp.sendToServer(
+                          new User(userNameController.text,
+                              passwordController.text, emailController.text),
+                          "login");
+                    },
+                    child: Text("Login"),
+                  ),
                 ],
               ),
             ),
             RaisedButton(
                 child: Text("Send Message"),
                 onPressed: () {
-                  tcp.sendToServer(new User(userNameController.text,
-                      passwordController.text, emailController.text));
+                  tcp.sendToServer(
+                      new User(userNameController.text, passwordController.text,
+                          emailController.text),
+                      "login");
                 }),
           ],
         ),
