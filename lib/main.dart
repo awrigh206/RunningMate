@@ -81,10 +81,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     return new Text('Do not have location permission');
                   }
 
-                  if (snapshot.data == null) {
-                    return new Text("The location data is null I'm afraid");
-                  }
-
                   Placemark loadedPlace = snapshot.data ?? Placemark;
                   //LocationData loadedPosition = snapshot.data ?? LocationData;
                   if (position != null) {
