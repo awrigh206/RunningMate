@@ -3,6 +3,8 @@ import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Routes/MapView.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'Helpers/LocationHelper.dart';
 import 'Models/User.dart';
 
@@ -100,7 +102,26 @@ class _MyHomePageState extends State<MyHomePage> {
                         '\n with the streetname: ' +
                         loadedPlace.thoroughfare);
                   } else {
-                    return new Text('Unable to find your location currently');
+                    Future<LocationData> basicLocation =
+                        locationHelper.getLocationBasic();
+                    return FutureBuilder<LocationData>(
+                        future: basicLocation,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState !=
+                              ConnectionState.done) {
+                            return Icon(Icons.gps_not_fixed);
+                          }
+
+                          if (basicLocation == null) {
+                            return new Text('Do not have location permission');
+                          }
+                          LocationData loadedBasic =
+                              snapshot.data ?? LocationData;
+                          return new Text("Lat: " +
+                              loadedBasic.latitude.toString() +
+                              " Lng: " +
+                              loadedBasic.longitude.toString());
+                        });
                   }
                 }),
             Form(
@@ -144,7 +165,11 @@ class _MyHomePageState extends State<MyHomePage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => MapView(location: loadedLocation)),
+                builder: (context) => MapView(
+                      location: loadedLocation,
+                      coordinates: LatLng(loadedLocation.position.latitude,
+                          loadedLocation.position.longitude),
+                    )),
           );
         },
         tooltip: "Go to next page",

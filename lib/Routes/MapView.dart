@@ -4,7 +4,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapView extends StatefulWidget {
   final Placemark location;
-  MapView({Key key, @required this.location}) : super(key: key);
+  final LatLng coordinates;
+  MapView({Key key, @required this.location, @required this.coordinates})
+      : super(key: key);
   @override
   _MapViewState createState() => _MapViewState();
 }
@@ -21,8 +23,7 @@ class _MapViewState extends State<MapView> {
         ),
         body: GoogleMap(
           initialCameraPosition: CameraPosition(
-            target: LatLng(this.widget.location.position.latitude,
-                this.widget.location.position.longitude),
+            target: this.widget.coordinates,
             zoom: 15.0,
           ),
           mapType: MapType.normal,
