@@ -1,24 +1,23 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:application/Models/Payload.dart';
-import 'package:application/Models/User.dart';
 
 class TcpHelper {
-  Future<String> sendToServer(User user, String operation) async {
-    String answer;
+  Future<dynamic> sendToServer(
+      dynamic user, String operation, bool text) async {
     Socket socket = await Socket.connect('82.23.232.59', 9090);
-    print('connected');
-
-    //send message to the socket
-    //socket.write(utf8.encode(message));
-    //Payload payloadMessage = new Payload(message);
     socket.write(new Payload(user.toJson(), '"' + operation + '"').toJson());
 
     //Establish the onData, and onDone callbacks
     socket.listen((data) {
-      answer = new String.fromCharCodes(data).trim();
-      log(answer);
+      if (text) {
+        return parseText(data);
+      }
+      log("Answer: " + parseBool(data).toString());
+      return parseBool(data);
+      log(data.toString());
+      return data;
     }, onDone: () {
       print("Done");
       socket.destroy();
@@ -26,4 +25,14 @@ class TcpHelper {
 
     socket.close();
   }
+
+  String parseText(Uint8List data) {
+    return new String.fromCharCodes(data).trim();
+  }
+
+  bool parseBool(Uint8List data) {
+    return intToBool(data.elementAt(0));
+  }
+
+  bool intToBool(int number) => number == 0 ? false : true;
 }

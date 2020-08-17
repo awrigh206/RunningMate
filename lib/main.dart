@@ -149,7 +149,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       tcp.sendToServer(
                           new User(userNameController.text,
                               passwordController.text, emailController.text),
-                          "register");
+                          "register",
+                          true);
                     },
                     child: Text("Register"),
                   ),
@@ -158,7 +159,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       tcp.sendToServer(
                           new User(userNameController.text,
                               passwordController.text, emailController.text),
-                          "login");
+                          "login",
+                          false);
                     },
                     child: Text("Login"),
                   ),
@@ -171,7 +173,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   tcp.sendToServer(
                       new User(userNameController.text, passwordController.text,
                           emailController.text),
-                      "login");
+                      "login",
+                      false);
                 }),
           ],
         ),
