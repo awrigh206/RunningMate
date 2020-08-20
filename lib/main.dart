@@ -164,6 +164,24 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     child: Text("Login"),
                   ),
+                  RaisedButton(
+                    onPressed: () {
+                      tcp.sendToServer(
+                          new User.nameOnly(userNameController.text),
+                          "ready",
+                          true);
+                    },
+                    child: Text("Send Ready Message"),
+                  ),
+                  RaisedButton(
+                    onPressed: () {
+                      tcp.sendToServer(
+                          new User.nameOnly(userNameController.text),
+                          "run",
+                          true);
+                    },
+                    child: Text("Send run command"),
+                  )
                 ],
               ),
             ),
