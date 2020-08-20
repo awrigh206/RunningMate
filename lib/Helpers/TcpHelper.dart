@@ -16,8 +16,6 @@ class TcpHelper {
       }
       log("Answer: " + parseBool(data).toString());
       return parseBool(data);
-      log(data.toString());
-      return data;
     }, onDone: () {
       print("Done");
       socket.destroy();
