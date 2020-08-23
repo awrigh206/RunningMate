@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:application/Helpers/TcpHelper.dart';
+import 'package:application/Models/WaitingRoom.dart';
 import 'package:application/Routes/MapView.dart';
+import 'package:application/Routes/WaitingView.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -42,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final userNameController = TextEditingController();
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
+  Future<WaitingRoom> waitingRoom;
 
   @override
   void dispose() {
@@ -160,16 +163,25 @@ class _MyHomePageState extends State<MyHomePage> {
                           new User(userNameController.text,
                               passwordController.text, emailController.text),
                           "login",
-                          false);
+                          true);
                     },
                     child: Text("Login"),
                   ),
                   RaisedButton(
                     onPressed: () {
-                      tcp.sendToServer(
-                          new User.nameOnly(userNameController.text),
-                          "ready",
-                          true);
+                      Future<WaitingRoom> waitingRoom = tcp.getWaitingRoom(
+                          new User(userNameController.text,
+                              passwordController.text, emailController.text));
+                      this.waitingRoom = waitingRoom;
+                      setState(() {});
+
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => WaitingView(
+                      //             waitingRoom: waitingRoom,
+                      //           )),
+                      // );
                     },
                     child: Text("Send Ready Message"),
                   ),
@@ -181,7 +193,32 @@ class _MyHomePageState extends State<MyHomePage> {
                           true);
                     },
                     child: Text("Send run command"),
-                  )
+                  ),
+                  FutureBuilder(
+                    future: this.waitingRoom,
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasData == null) {
+                        print("data is: " + snapshot.data);
+                        return Text("Something went wrong, check the log file");
+                      }
+                      if (snapshot.connectionState != ConnectionState.done) {
+                        return Text("Working on the request");
+                      }
+                      if (snapshot.data == null) {
+                        return Text("The response was null");
+                      } else {
+                        WaitingRoom room = snapshot.data;
+                        return ListView.builder(
+                            itemCount: room.waitingUsers.length,
+                            itemBuilder: (context, index) {
+                              User currentUser = room.waitingUsers[index];
+                              return ListTile(
+                                leading: Text(currentUser.userName),
+                              );
+                            });
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
