@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/WaitingRoom.dart';
 import 'package:application/Routes/MapView.dart';
@@ -44,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final userNameController = TextEditingController();
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
-  Future<WaitingRoom> waitingRoom;
+  Future<WaitingRoom> room;
 
   @override
   void dispose() {
@@ -74,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 future: position,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
-                    return Icon(Icons.gps_not_fixed);
+                    return CircularProgressIndicator();
                   }
                   if (snapshot.hasError) {
                     return Icon(Icons.error);
@@ -169,19 +170,23 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   RaisedButton(
                     onPressed: () {
-                      Future<WaitingRoom> waitingRoom = tcp.getWaitingRoom(
-                          new User(userNameController.text,
-                              passwordController.text, emailController.text));
-                      this.waitingRoom = waitingRoom;
-                      setState(() {});
+                      // Future<WaitingRoom> waitingRoom = tcp.getWaitingRoom(
+                      //     new User(userNameController.text,
+                      //         passwordController.text, emailController.text));
+                      // room = waitingRoom;
 
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) => WaitingView(
-                      //             waitingRoom: waitingRoom,
-                      //           )),
-                      // );
+                      // setState(() {});
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => WaitingView(
+                                  myUser: new User(
+                                      userNameController.text,
+                                      passwordController.text,
+                                      emailController.text),
+                                )),
+                      );
                     },
                     child: Text("Send Ready Message"),
                   ),
@@ -194,29 +199,34 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     child: Text("Send run command"),
                   ),
-                  FutureBuilder(
-                    future: this.waitingRoom,
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if (snapshot.hasData == null) {
-                        print("data is: " + snapshot.data);
-                        return Text("Something went wrong, check the log file");
+                  FutureBuilder<WaitingRoom>(
+                    future: room,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        log(snapshot.data.getWaitingUsers());
+                      } else if (!snapshot.hasData) {
+                        //print("data is: " + snapshot.data.getWaitingUsers());
+                        return Text("The return has no data");
                       }
                       if (snapshot.connectionState != ConnectionState.done) {
-                        return Text("Working on the request");
+                        return CircularProgressIndicator();
                       }
-                      if (snapshot.data == null) {
-                        return Text("The response was null");
-                      } else {
+                      if (snapshot.hasData) {
                         WaitingRoom room = snapshot.data;
-                        return ListView.builder(
-                            itemCount: room.waitingUsers.length,
-                            itemBuilder: (context, index) {
-                              User currentUser = room.waitingUsers[index];
-                              return ListTile(
-                                leading: Text(currentUser.userName),
-                              );
-                            });
+                        setState(() {
+                          return ListView.builder(
+                              itemCount: room.waitingUsers.length,
+                              itemBuilder: (context, index) {
+                                User currentUser =
+                                    room.waitingUsers[index] as User;
+                                log(currentUser.toString());
+                                return ListTile(
+                                  leading: Text(currentUser.userName),
+                                );
+                              });
+                        });
                       }
+                      return Text("Something went wrong with the request");
                     },
                   ),
                 ],

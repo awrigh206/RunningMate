@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:application/Models/Payload.dart';
+import 'package:application/Models/User.dart';
 import 'package:application/Models/WaitingRoom.dart';
 
 class TcpHelper {
@@ -26,26 +28,26 @@ class TcpHelper {
     socket.close();
   }
 
-  Future<WaitingRoom> getWaitingRoom(dynamic user) async {
+  Future<WaitingRoom> getWaitingRoom(User user) async {
     Socket socket = await Socket.connect('82.23.232.59', 9090);
+    Completer<WaitingRoom> completer = new Completer<WaitingRoom>();
     socket.write(new Payload(user.toJson(), '"' + "ready" + '"').toJson());
     String jsonData = "";
     WaitingRoom room;
 
     //Establish the onData, and onDone callbacks
-    socket.listen((data) {
+    socket.listen((data) async {
       jsonData = parseText(data);
-      log(jsonData.substring(2));
-      Map roomMap = jsonDecode(jsonData.substring(2));
+      Map roomMap = await jsonDecode(jsonData.substring(2));
       room = new WaitingRoom.fromJson(roomMap);
-      return room;
+      log("Users waiting: " + room.getWaitingUsers().toString());
+      completer.complete(room);
     }, onDone: () {
       print("Done");
       socket.destroy();
-      return null;
     });
     socket.close();
-    return room;
+    return completer.future;
   }
 
   String parseText(Uint8List data) {
