@@ -58,8 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    //Future<LocationData> position = locationHelper.getLocationBasic();
-    //Future<Position> position = locationHelper.getPosition();
+    bool authentication = false;
     Future<Placemark> position = locationHelper.getCurrentAddress();
     Placemark loadedLocation;
     return Scaffold(
@@ -67,154 +66,162 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            FutureBuilder<Placemark>(
-                future: position,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState != ConnectionState.done) {
-                    return CircularProgressIndicator();
-                  }
-                  if (snapshot.hasError) {
-                    return Icon(Icons.error);
-                  }
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FutureBuilder<Placemark>(
+                  future: position,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return CircularProgressIndicator();
+                    }
+                    if (snapshot.hasError) {
+                      return Icon(Icons.error);
+                    }
 
-                  if (position == null) {
-                    return new Text('Do not have location permission');
-                  }
+                    if (position == null) {
+                      return new Text('Do not have location permission');
+                    }
 
-                  Placemark loadedPlace = snapshot.data ?? Placemark;
-                  if (position != null) {
-                    loadedLocation = loadedPlace;
-                    return new Text('You are in the: ' +
-                        loadedPlace.country +
-                        '\n more precisely: ' +
-                        loadedPlace.administrativeArea +
-                        '\n even more precisely: ' +
-                        loadedPlace.subAdministrativeArea +
-                        '\n with the postcode: ' +
-                        loadedPlace.postalCode +
-                        '\n with the streetname: ' +
-                        loadedPlace.thoroughfare);
-                  } else {
-                    Future<LocationData> basicLocation =
-                        locationHelper.getLocationBasic();
-                    return FutureBuilder<LocationData>(
-                        future: basicLocation,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState !=
-                              ConnectionState.done) {
-                            return Icon(Icons.gps_not_fixed);
-                          }
+                    Placemark loadedPlace = snapshot.data ?? Placemark;
+                    if (position != null) {
+                      loadedLocation = loadedPlace;
+                      return new Text('You are in the: ' +
+                          loadedPlace.country +
+                          '\n more precisely: ' +
+                          loadedPlace.administrativeArea +
+                          '\n even more precisely: ' +
+                          loadedPlace.subAdministrativeArea +
+                          '\n with the postcode: ' +
+                          loadedPlace.postalCode +
+                          '\n with the streetname: ' +
+                          loadedPlace.thoroughfare);
+                    } else {
+                      Future<LocationData> basicLocation =
+                          locationHelper.getLocationBasic();
+                      return FutureBuilder<LocationData>(
+                          future: basicLocation,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState !=
+                                ConnectionState.done) {
+                              return Icon(Icons.gps_not_fixed);
+                            }
 
-                          if (basicLocation == null) {
-                            return new Text('Do not have location permission');
-                          }
-                          LocationData loadedBasic =
-                              snapshot.data ?? LocationData;
-                          return new Text("Lat: " +
-                              loadedBasic.latitude.toString() +
-                              " Lng: " +
-                              loadedBasic.longitude.toString());
-                        });
-                  }
-                }),
-            Form(
-              child: Column(
-                children: [
-                  TextFormField(
-                    autocorrect: false,
-                    controller: userNameController,
-                    decoration: const InputDecoration(
-                      hintText: 'User Name',
+                            if (basicLocation == null) {
+                              return new Text(
+                                  'Do not have location permission');
+                            }
+                            LocationData loadedBasic =
+                                snapshot.data ?? LocationData;
+                            return new Text("Lat: " +
+                                loadedBasic.latitude.toString() +
+                                " Lng: " +
+                                loadedBasic.longitude.toString());
+                          });
+                    }
+                  }),
+              Form(
+                child: Column(
+                  children: [
+                    TextFormField(
+                      autocorrect: false,
+                      controller: userNameController,
+                      decoration: const InputDecoration(
+                        hintText: 'User Name',
+                      ),
                     ),
-                  ),
-                  TextFormField(
-                    autocorrect: false,
-                    controller: passwordController,
-                    decoration: const InputDecoration(
-                      hintText: 'Password',
+                    TextFormField(
+                      autocorrect: false,
+                      controller: passwordController,
+                      decoration: const InputDecoration(
+                        hintText: 'Password',
+                      ),
                     ),
-                  ),
-                  TextFormField(
-                    autocorrect: false,
-                    controller: emailController,
-                    decoration: const InputDecoration(
-                      hintText: 'Email',
+                    TextFormField(
+                      autocorrect: false,
+                      controller: emailController,
+                      decoration: const InputDecoration(
+                        hintText: 'Email',
+                      ),
                     ),
-                  ),
-                  RaisedButton(
-                    onPressed: () {
-                      tcp.sendToServer(
-                          new User(userNameController.text,
-                              passwordController.text, emailController.text),
-                          "register",
-                          true);
-                    },
-                    child: Text("Register"),
-                  ),
-                  RaisedButton(
-                    onPressed: () async {
-                      bool auth = await tcp.login(new User(
-                          userNameController.text,
-                          passwordController.text,
-                          emailController.text));
+                    ButtonBar(
+                      children: [
+                        RaisedButton(
+                          onPressed: () {
+                            tcp.sendToServer(
+                                new User(
+                                    userNameController.text,
+                                    passwordController.text,
+                                    emailController.text),
+                                "register",
+                                true);
+                          },
+                          child: Text("Register"),
+                        ),
+                        RaisedButton(
+                            onPressed: () async {
+                              authentication = await tcp.login(new User(
+                                  userNameController.text,
+                                  passwordController.text,
+                                  emailController.text));
 
-                      if (auth) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => UserView(
-                                    currentUser: new User(
-                                        userNameController.text,
-                                        passwordController.text,
-                                        emailController.text),
-                                  )),
-                        );
-                      } else {
-                        log("no authentication");
-                      }
-                    },
-                    child: Text("Login"),
-                  ),
-                  RaisedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => WaitingView(
-                                  myUser: new User(
-                                      userNameController.text,
-                                      passwordController.text,
-                                      emailController.text),
-                                )),
-                      );
-                    },
-                    child: Text("Send Ready Message"),
-                  ),
-                  RaisedButton(
-                    onPressed: () {
-                      tcp.sendToServer(
-                          new User.nameOnly(userNameController.text),
-                          "run",
-                          true);
-                    },
-                    child: Text("Send run command"),
-                  ),
-                ],
+                              if (authentication) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => UserView(
+                                            currentUser: new User(
+                                                userNameController.text,
+                                                passwordController.text,
+                                                emailController.text),
+                                          )),
+                                );
+                              } else {
+                                log("no authentication");
+                              }
+                            },
+                            child: Text("Login")),
+                      ],
+                    ),
+                    // RaisedButton(
+                    //   onPressed: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //           builder: (context) => WaitingView(
+                    //                 myUser: new User(
+                    //                     userNameController.text,
+                    //                     passwordController.text,
+                    //                     emailController.text),
+                    //               )),
+                    //     );
+                    //   },
+                    //   child: Text("Send Ready Message"),
+                    // ),
+                    // RaisedButton(
+                    //   onPressed: () {
+                    //     tcp.sendToServer(
+                    //         new User.nameOnly(userNameController.text),
+                    //         "run",
+                    //         true);
+                    //   },
+                    //   child: Text("Send run command"),
+                    // ),
+                    // RaisedButton(
+                    //     child: Text("Send Message"),
+                    //     onPressed: () {
+                    //       tcp.sendToServer(
+                    //           new User(userNameController.text,
+                    //               passwordController.text, emailController.text),
+                    //           "login",
+                    //           false);
+                    //     }),
+                  ],
+                ),
               ),
-            ),
-            RaisedButton(
-                child: Text("Send Message"),
-                onPressed: () {
-                  tcp.sendToServer(
-                      new User(userNameController.text, passwordController.text,
-                          emailController.text),
-                      "login",
-                      false);
-                }),
-          ],
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
