@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:application/Helpers/TcpHelper.dart';
-import 'package:application/Models/WaitingRoom.dart';
 import 'package:application/Routes/MapView.dart';
 import 'package:application/Routes/WaitingView.dart';
 import 'package:flutter/material.dart';
@@ -86,11 +85,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   }
 
                   Placemark loadedPlace = snapshot.data ?? Placemark;
-                  //LocationData loadedPosition = snapshot.data ?? LocationData;
                   if (position != null) {
                     loadedLocation = loadedPlace;
-                    //lat = loadedPosition.latitude;
-                    //long = loadedPosition.longitude;
                     return new Text('You are in the: ' +
                         loadedPlace.country +
                         '\n more precisely: ' +
@@ -233,7 +229,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     )),
           );
         },
-        tooltip: "Go to next page",
+        tooltip: "Go to google maps with your location",
         child: Icon(Icons.map),
       ),
     );
