@@ -199,35 +199,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     child: Text("Send run command"),
                   ),
-                  FutureBuilder<WaitingRoom>(
-                    future: room,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        log(snapshot.data.getWaitingUsers());
-                      } else if (!snapshot.hasData) {
-                        //print("data is: " + snapshot.data.getWaitingUsers());
-                        return Text("The return has no data");
-                      }
-                      if (snapshot.connectionState != ConnectionState.done) {
-                        return CircularProgressIndicator();
-                      }
-                      if (snapshot.hasData) {
-                        WaitingRoom room = snapshot.data;
-                        setState(() {
-                          return ListView.builder(
-                              itemCount: room.waitingUsers.length,
-                              itemBuilder: (context, index) {
-                                User currentUser = room.waitingUsers[index];
-                                log(currentUser.toString());
-                                return ListTile(
-                                  leading: Text(currentUser.userName),
-                                );
-                              });
-                        });
-                      }
-                      return Text("Something went wrong with the request");
-                    },
-                  ),
                 ],
               ),
             ),
