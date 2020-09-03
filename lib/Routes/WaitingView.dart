@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/User.dart';
 import 'package:application/Models/WaitingRoom.dart';

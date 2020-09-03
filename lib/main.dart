@@ -217,8 +217,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           return ListView.builder(
                               itemCount: room.waitingUsers.length,
                               itemBuilder: (context, index) {
-                                User currentUser =
-                                    room.waitingUsers[index] as User;
+                                User currentUser = room.waitingUsers[index];
                                 log(currentUser.toString());
                                 return ListTile(
                                   leading: Text(currentUser.userName),
