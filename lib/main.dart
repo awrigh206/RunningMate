@@ -46,6 +46,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
 
+  final formKey = GlobalKey<FormState>();
+
   @override
   void dispose() {
     // Clean up the controller when the widget is removed from the
@@ -122,6 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     }
                   }),
               Form(
+                key: formKey,
                 child: Column(
                   children: [
                     TextFormField(
@@ -130,6 +133,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       decoration: const InputDecoration(
                         hintText: 'User Name',
                       ),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter your username';
+                        }
+                        if (value.contains(' ')) {
+                          return 'Please do not use spaces';
+                        }
+                        return null;
+                      },
                     ),
                     TextFormField(
                       autocorrect: false,
@@ -137,6 +149,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       decoration: const InputDecoration(
                         hintText: 'Password',
                       ),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        if (value.contains(' ')) {
+                          return 'Please do not use spaces';
+                        }
+                        return null;
+                      },
                     ),
                     TextFormField(
                       autocorrect: false,
@@ -144,6 +165,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       decoration: const InputDecoration(
                         hintText: 'Email',
                       ),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        if (value.contains(' ')) {
+                          return 'Please do not use spaces';
+                        }
+                        return null;
+                      },
                     ),
                     ButtonBar(
                       children: [
@@ -161,24 +191,26 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         RaisedButton(
                             onPressed: () async {
-                              authentication = await tcp.login(new User(
-                                  userNameController.text,
-                                  passwordController.text,
-                                  emailController.text));
+                              if (formKey.currentState.validate()) {
+                                authentication = await tcp.login(new User(
+                                    userNameController.text,
+                                    passwordController.text,
+                                    emailController.text));
 
-                              if (authentication) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => UserView(
-                                            currentUser: new User(
-                                                userNameController.text,
-                                                passwordController.text,
-                                                emailController.text),
-                                          )),
-                                );
-                              } else {
-                                log("no authentication");
+                                if (authentication) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => UserView(
+                                              currentUser: new User(
+                                                  userNameController.text,
+                                                  passwordController.text,
+                                                  emailController.text),
+                                            )),
+                                  );
+                                } else {
+                                  log("no authentication");
+                                }
                               }
                             },
                             child: Text("Login")),
