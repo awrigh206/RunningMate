@@ -6,17 +6,17 @@ import 'package:flutter/material.dart';
 class WaitingView extends StatefulWidget {
   WaitingView({Key key, @required this.myUser}) : super(key: key);
   final User myUser;
+  final TcpHelper tcp = TcpHelper();
 
   @override
   _WaitingViewState createState() => _WaitingViewState();
 }
 
 class _WaitingViewState extends State<WaitingView> {
-  final TcpHelper tcp = TcpHelper();
-
   @override
   Widget build(BuildContext context) {
-    Future<WaitingRoom> waitingRoom = tcp.getWaitingRoom(this.widget.myUser);
+    Future<WaitingRoom> waitingRoom =
+        this.widget.tcp.getWaitingRoom(this.widget.myUser);
     return Scaffold(
       appBar: AppBar(
         title: Text("Waiting Room"),
