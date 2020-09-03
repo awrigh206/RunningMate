@@ -1,6 +1,8 @@
 import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
 
+import 'WaitingView.dart';
+
 class UserView extends StatefulWidget {
   UserView({Key key, @required this.currentUser}) : super(key: key);
   final User currentUser;
@@ -31,6 +33,15 @@ class UserViewState extends State<UserView> {
               title: Text('Run against another user'),
               subtitle: Text("Go for a run it's lots of fun"),
               leading: Icon(Icons.directions_run),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          WaitingView(myUser: this.widget.currentUser)),
+                );
+              },
+              onLongPress: () {},
             ),
             ListTile(
               title: Text('Cycle against another user'),
