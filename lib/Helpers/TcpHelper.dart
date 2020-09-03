@@ -28,6 +28,23 @@ class TcpHelper {
     socket.close();
   }
 
+  Future<bool> login(User user) async {
+    Socket socket = await Socket.connect('82.23.232.59', 9090);
+    Completer<bool> completer = new Completer<bool>();
+    socket.write(new Payload(user.toJson(), '"' + "login" + '"').toJson());
+
+    socket.listen((data) {
+      bool authenticated = parseBool(data);
+      completer.complete(authenticated);
+    }, onDone: () {
+      print("Done");
+      socket.destroy();
+    });
+
+    socket.close();
+    return completer.future;
+  }
+
   Future<WaitingRoom> getWaitingRoom(User user) async {
     Socket socket = await Socket.connect('82.23.232.59', 9090);
     Completer<WaitingRoom> completer = new Completer<WaitingRoom>();

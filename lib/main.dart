@@ -10,6 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'Helpers/LocationHelper.dart';
 import 'Models/User.dart';
+import 'Routes/UserView.dart';
 
 void main() {
   runApp(MyApp());
@@ -45,7 +46,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final userNameController = TextEditingController();
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
-  Future<WaitingRoom> room;
 
   @override
   void dispose() {
@@ -159,24 +159,31 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("Register"),
                   ),
                   RaisedButton(
-                    onPressed: () {
-                      tcp.sendToServer(
-                          new User(userNameController.text,
-                              passwordController.text, emailController.text),
-                          "login",
-                          true);
+                    onPressed: () async {
+                      bool auth = await tcp.login(new User(
+                          userNameController.text,
+                          passwordController.text,
+                          emailController.text));
+
+                      if (auth) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserView(
+                                    currentUser: new User(
+                                        userNameController.text,
+                                        passwordController.text,
+                                        emailController.text),
+                                  )),
+                        );
+                      } else {
+                        log("no authentication");
+                      }
                     },
                     child: Text("Login"),
                   ),
                   RaisedButton(
                     onPressed: () {
-                      // Future<WaitingRoom> waitingRoom = tcp.getWaitingRoom(
-                      //     new User(userNameController.text,
-                      //         passwordController.text, emailController.text));
-                      // room = waitingRoom;
-
-                      // setState(() {});
-
                       Navigator.push(
                         context,
                         MaterialPageRoute(

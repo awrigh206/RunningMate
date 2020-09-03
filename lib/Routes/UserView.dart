@@ -14,11 +14,22 @@ class UserViewState extends State<UserView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Waiting Room"),
+        title: Text("Home"),
       ),
       body: Container(
-        child: Text("Hello"),
-      ),
+          child: Card(
+        child: Column(
+          children: [
+            ListTile(
+                title: Text(this.widget.currentUser.userName),
+                subtitle: Text(this.widget.currentUser.email),
+                leading: Icon(
+                  Icons.verified_user,
+                  color: Colors.blue[500],
+                )),
+          ],
+        ),
+      )),
     );
   }
 }
