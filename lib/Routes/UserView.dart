@@ -17,7 +17,7 @@ class UserViewState extends State<UserView> {
         title: Text("Home"),
       ),
       body: Container(
-          child: Card(
+          child: Center(
         child: Column(
           children: [
             ListTile(
@@ -27,6 +27,21 @@ class UserViewState extends State<UserView> {
                   Icons.verified_user,
                   color: Colors.blue[500],
                 )),
+            ListTile(
+              title: Text('Run against another user'),
+              subtitle: Text("Go for a run it's lots of fun"),
+              leading: Icon(Icons.directions_run),
+            ),
+            ListTile(
+              title: Text('Cycle against another user'),
+              subtitle: Text('Good luck!'),
+              leading: Icon(Icons.directions_bike),
+            ),
+            ListTile(
+              title: Text('Change account details'),
+              subtitle: Text('Quick and painless'),
+              leading: Icon(Icons.account_box),
+            )
           ],
         ),
       )),
