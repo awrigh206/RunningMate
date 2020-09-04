@@ -1,5 +1,6 @@
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/Models/User.dart';
+import 'package:application/Routes/SettingsView.dart';
 import 'package:flutter/material.dart';
 
 import 'WaitingView.dart';
@@ -53,6 +54,10 @@ class UserViewState extends State<UserView> {
               title: Text('Change account details'),
               subtitle: Text('Quick and painless'),
               leading: Icon(Icons.account_box),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SettingsView()));
+              },
             )
           ],
         ),

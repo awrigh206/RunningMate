@@ -1,4 +1,5 @@
 import 'package:application/Routes/LoginView.dart';
+import 'package:application/Routes/SettingsView.dart';
 import 'package:flutter/material.dart';
 
 class SideDrawer extends StatelessWidget {
@@ -29,7 +30,8 @@ class SideDrawer extends StatelessWidget {
           ListTile(
             title: Text('Settings'),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingsView()));
             },
             leading: Icon(Icons.settings),
           ),
@@ -39,7 +41,6 @@ class SideDrawer extends StatelessWidget {
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => LoginView()));
-              Navigator.pop(context);
             },
             leading: Icon(Icons.account_box),
           ),
