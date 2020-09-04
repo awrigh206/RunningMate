@@ -1,12 +1,12 @@
 import 'dart:developer';
 
+import 'package:application/CustomWidgets/LocalAuthentication.dart';
 import 'package:application/Helpers/LocationHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'MapView.dart';
 import 'UserView.dart';
 
@@ -184,6 +184,13 @@ class LoginViewState extends State<LoginView> {
                                 });
                               });
                         }
+                      }),
+                      Builder(builder: (BuildContext context) {
+                        return Column(
+                          children: [
+                            //LocalAuthentication(),
+                          ],
+                        );
                       }),
                       ButtonBar(
                         children: [
