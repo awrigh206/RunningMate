@@ -1,3 +1,4 @@
+import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
 
@@ -56,6 +57,7 @@ class UserViewState extends State<UserView> {
           ],
         ),
       )),
+      drawer: SideDrawer(),
     );
   }
 }

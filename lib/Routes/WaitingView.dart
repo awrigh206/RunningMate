@@ -1,3 +1,4 @@
+import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/User.dart';
 import 'package:application/Models/WaitingRoom.dart';
@@ -57,6 +58,7 @@ class _WaitingViewState extends State<WaitingView> {
           },
         ),
       ),
+      drawer: SideDrawer(),
     );
   }
 }
