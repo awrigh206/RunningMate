@@ -1,10 +1,13 @@
+import 'package:application/Models/User.dart';
 import 'package:application/Routes/LoginView.dart';
 import 'package:application/Routes/SettingsView.dart';
+import 'package:application/Routes/WaitingView.dart';
 import 'package:flutter/material.dart';
 
 class SideDrawer extends StatelessWidget {
-  const SideDrawer({Key key}) : super(key: key);
+  const SideDrawer({Key key, this.currentUser}) : super(key: key);
 
+  final User currentUser;
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -14,7 +17,12 @@ class SideDrawer extends StatelessWidget {
           ListTile(
             title: Text('Run'),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => WaitingView(
+                            myUser: currentUser,
+                          )));
             },
             leading: Icon(Icons.directions_run),
           ),
