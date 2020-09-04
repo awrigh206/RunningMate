@@ -5,7 +5,7 @@ import 'package:application/Routes/WaitingView.dart';
 import 'package:flutter/material.dart';
 
 class SideDrawer extends StatelessWidget {
-  const SideDrawer({Key key, this.currentUser}) : super(key: key);
+  const SideDrawer({Key key, @required this.currentUser}) : super(key: key);
 
   final User currentUser;
   @override
@@ -38,8 +38,11 @@ class SideDrawer extends StatelessWidget {
           ListTile(
             title: Text('Settings'),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SettingsView()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          SettingsView(currentUser: currentUser)));
             },
             leading: Icon(Icons.settings),
           ),

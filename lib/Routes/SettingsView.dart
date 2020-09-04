@@ -15,13 +15,19 @@ class SettingsViewState extends State<SettingsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: Text('Account Settings'),
       ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: ListView(
             children: [
+              ListTile(
+                title: Text(
+                    'Current User Name: ' + this.widget.currentUser.userName),
+                subtitle:
+                    Text('Current email: ' + this.widget.currentUser.email),
+              ),
               RaisedButton(
                 child: Text('Change User Name'),
                 onPressed: () {
