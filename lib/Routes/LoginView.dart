@@ -25,8 +25,8 @@ class LoginViewState extends State<LoginView> {
   final userNameController = TextEditingController();
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
-
   final formKey = GlobalKey<FormState>();
+  bool isRegistering = false;
 
   @override
   void dispose() {
@@ -142,58 +142,63 @@ class LoginViewState extends State<LoginView> {
                           return null;
                         },
                       ),
-                      TextFormField(
-                        autocorrect: false,
-                        controller: emailController,
-                        decoration: const InputDecoration(
-                          hintText: 'Email',
-                        ),
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Please enter your email';
-                          }
-                          if (value.contains(' ')) {
-                            return 'Please do not use spaces';
-                          }
-                          return null;
-                        },
-                      ),
+                      Builder(builder: (BuildContext context) {
+                        if (isRegistering) {
+                          return Column(
+                            children: [
+                              TextFormField(
+                                autocorrect: false,
+                                controller: emailController,
+                                decoration: const InputDecoration(
+                                  hintText: 'Email',
+                                ),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Please enter your email';
+                                  }
+                                  if (value.contains(' ')) {
+                                    return 'Please do not use spaces';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              CheckboxListTile(
+                                  value: isRegistering,
+                                  title: Text('Register'),
+                                  onChanged: (bool value) {
+                                    //so  something  when box is changed
+                                    setState(() {
+                                      isRegistering = value;
+                                    });
+                                  }),
+                            ],
+                          );
+                        } else {
+                          return CheckboxListTile(
+                              value: isRegistering,
+                              title: Text('Register'),
+                              onChanged: (bool value) {
+                                //so  something  when box is changed
+                                setState(() {
+                                  isRegistering = value;
+                                });
+                              });
+                        }
+                      }),
                       ButtonBar(
                         children: [
                           RaisedButton(
-                            onPressed: () {
-                              if (formKey.currentState.validate()) {
-                                tcp.sendToServer(
-                                    new User(
-                                        userNameController.text,
-                                        passwordController.text,
-                                        emailController.text),
-                                    "register",
-                                    true);
-
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => UserView(
-                                            currentUser: new User(
-                                                userNameController.text,
-                                                passwordController.text,
-                                                emailController.text),
-                                          )),
-                                );
-                              }
-                            },
-                            child: Text("Register"),
-                          ),
-                          RaisedButton(
                               onPressed: () async {
                                 if (formKey.currentState.validate()) {
-                                  authentication = await tcp.login(new User(
-                                      userNameController.text,
-                                      passwordController.text,
-                                      emailController.text));
+                                  if (isRegistering) {
+                                    tcp.sendToServer(
+                                        new User(
+                                            userNameController.text,
+                                            passwordController.text,
+                                            emailController.text),
+                                        "register",
+                                        true);
 
-                                  if (authentication) {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -205,31 +210,31 @@ class LoginViewState extends State<LoginView> {
                                               )),
                                     );
                                   } else {
-                                    log("no authentication");
+                                    authentication = await tcp.login(new User(
+                                        userNameController.text,
+                                        passwordController.text,
+                                        emailController.text));
+
+                                    if (authentication) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => UserView(
+                                                  currentUser: new User(
+                                                      userNameController.text,
+                                                      passwordController.text,
+                                                      emailController.text),
+                                                )),
+                                      );
+                                    } else {
+                                      log("no authentication");
+                                    }
                                   }
                                 }
                               },
-                              child: Text("Login")),
+                              child: Text('Submit')),
                         ],
                       ),
-                      // RaisedButton(
-                      //   onPressed: () {
-                      //     tcp.sendToServer(
-                      //         new User.nameOnly(userNameController.text),
-                      //         "run",
-                      //         true);
-                      //   },
-                      //   child: Text("Send run command"),
-                      // ),
-                      // RaisedButton(
-                      //     child: Text("Send Message"),
-                      //     onPressed: () {
-                      //       tcp.sendToServer(
-                      //           new User(userNameController.text,
-                      //               passwordController.text, emailController.text),
-                      //           "login",
-                      //           false);
-                      //     }),
                     ],
                   ),
                 ),

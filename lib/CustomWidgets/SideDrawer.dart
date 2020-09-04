@@ -1,8 +1,6 @@
 import 'package:application/Routes/LoginView.dart';
 import 'package:flutter/material.dart';
 
-import '../main.dart';
-
 class SideDrawer extends StatelessWidget {
   const SideDrawer({Key key}) : super(key: key);
 
