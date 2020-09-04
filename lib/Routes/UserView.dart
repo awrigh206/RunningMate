@@ -55,14 +55,17 @@ class UserViewState extends State<UserView> {
               subtitle: Text('Quick and painless'),
               leading: Icon(Icons.account_box),
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SettingsView()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SettingsView(
+                            currentUser: this.widget.currentUser)));
               },
             )
           ],
         ),
       )),
-      drawer: SideDrawer(),
+      drawer: SideDrawer(currentUser: this.widget.currentUser),
     );
   }
 }

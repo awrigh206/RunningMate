@@ -58,7 +58,7 @@ class _WaitingViewState extends State<WaitingView> {
           },
         ),
       ),
-      drawer: SideDrawer(),
+      drawer: SideDrawer(currentUser: this.widget.myUser),
     );
   }
 }

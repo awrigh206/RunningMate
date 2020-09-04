@@ -1,8 +1,10 @@
 import 'package:application/CustomWidgets/SideDrawer.dart';
+import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
 
 class SettingsView extends StatefulWidget {
-  SettingsView({Key key}) : super(key: key);
+  SettingsView({Key key, @required this.currentUser}) : super(key: key);
+  final User currentUser;
 
   @override
   SettingsViewState createState() => SettingsViewState();
@@ -43,7 +45,9 @@ class SettingsViewState extends State<SettingsView> {
           ),
         ),
       ),
-      drawer: SideDrawer(),
+      drawer: SideDrawer(
+        currentUser: this.widget.currentUser,
+      ),
     );
   }
 }
