@@ -12,28 +12,35 @@ class SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Settings'),
+      ),
       body: Center(
-        child: ListView(
-          children: [
-            ListTile(
-              title: Text('Change User Name'),
-              onTap: () {
-                //change the user  name of the current user
-              },
-            ),
-            ListTile(
-              title: Text('Change Password'),
-              onTap: () {
-                //change password of current user
-              },
-            ),
-            ListTile(
-              title: Text('Delete Account'),
-              onTap: () {
-                //delete the current user from the system
-              },
-            )
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: ListView(
+            children: [
+              RaisedButton(
+                child: Text('Change User Name'),
+                onPressed: () {
+                  //change the user name of the current user
+                },
+              ),
+              RaisedButton(
+                child: Text('Change Password'),
+                onPressed: () {
+                  //change the password of the current user
+                },
+              ),
+              RaisedButton(
+                child: Text('Delete Account'),
+                onPressed: () {
+                  //Delete account of current user
+                },
+                color: Colors.red[100],
+              ),
+            ],
+          ),
         ),
       ),
       drawer: SideDrawer(),
