@@ -13,6 +13,8 @@ class WaitingView extends StatefulWidget {
 }
 
 class _WaitingViewState extends State<WaitingView> {
+  final TcpHelper tcp = TcpHelper();
+
   @override
   Widget build(BuildContext context) {
     Future<WaitingRoom> waitingRoom =
@@ -26,7 +28,7 @@ class _WaitingViewState extends State<WaitingView> {
           future: waitingRoom,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return Text("Something went wrong, check the log file");
+              return CircularProgressIndicator();
             }
             if (snapshot.connectionState != ConnectionState.done) {
               return CircularProgressIndicator();
@@ -39,6 +41,16 @@ class _WaitingViewState extends State<WaitingView> {
                     User currentUser = room.waitingUsers[index];
                     return ListTile(
                       leading: Text(currentUser.userName),
+                      trailing: RaisedButton(
+                        onPressed: () {
+                          //code to start a run  goes here
+                          tcp.sendToServer(
+                              new User.nameOnly(this.widget.myUser.userName),
+                              "run",
+                              true);
+                        },
+                        child: Text("Challenge"),
+                      ),
                     );
                   });
             }
