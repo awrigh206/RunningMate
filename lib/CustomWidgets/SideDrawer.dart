@@ -1,3 +1,4 @@
+import 'package:application/Routes/LoginView.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
@@ -39,7 +40,7 @@ class SideDrawer extends StatelessWidget {
             title: Text('Logout'),
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MyHomePage()));
+                  MaterialPageRoute(builder: (context) => LoginView()));
               Navigator.pop(context);
             },
             leading: Icon(Icons.account_box),
