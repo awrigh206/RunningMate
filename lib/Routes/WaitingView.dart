@@ -24,7 +24,7 @@ class _WaitingViewState extends State<WaitingView> {
       appBar: AppBar(
         title: Text("Waiting Room"),
       ),
-      body: Container(
+      body: Center(
         child: FutureBuilder(
           future: waitingRoom,
           builder: (context, snapshot) {
@@ -59,6 +59,13 @@ class _WaitingViewState extends State<WaitingView> {
         ),
       ),
       drawer: SideDrawer(currentUser: this.widget.myUser),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {});
+        },
+        tooltip: "Refresh the waiting room",
+        child: Icon(Icons.refresh),
+      ),
     );
   }
 }

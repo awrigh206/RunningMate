@@ -1,6 +1,4 @@
 import 'dart:developer';
-
-import 'package:application/CustomWidgets/LocalAuthentication.dart';
 import 'package:application/Helpers/LocationHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/User.dart';
@@ -14,7 +12,6 @@ class LoginView extends StatefulWidget {
   LoginView({Key key, this.title}) : super(key: key);
 
   final String title;
-
   @override
   LoginViewState createState() => LoginViewState();
 }
@@ -221,7 +218,6 @@ class LoginViewState extends State<LoginView> {
                                         userNameController.text,
                                         passwordController.text,
                                         emailController.text));
-
                                     if (authentication) {
                                       Navigator.push(
                                         context,

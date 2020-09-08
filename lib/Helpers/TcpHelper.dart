@@ -57,7 +57,6 @@ class TcpHelper {
       jsonData = parseText(data);
       Map roomMap = await jsonDecode(jsonData.substring(2));
       room = new WaitingRoom.fromJson(roomMap);
-      log("Users waiting: " + room.getWaitingUsers().toString());
       completer.complete(room);
     }, onDone: () {
       print("Done");
