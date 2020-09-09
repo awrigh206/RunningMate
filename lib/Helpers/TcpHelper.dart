@@ -8,6 +8,25 @@ import 'package:application/Models/User.dart';
 import 'package:application/Models/WaitingRoom.dart';
 
 class TcpHelper {
+  Future<dynamic> race() async {}
+
+  Future<dynamic> sendPayload(Payload load) async {
+    Socket socket = await Socket.connect('82.23.232.59', 9090);
+    //Completer<dynamic> completer = new Completer<dynamic>();
+    socket.write(load.toJson());
+
+    socket.listen((data) {
+      dynamic gotData = data;
+      //completer.complete(gotData);
+    }, onDone: () {
+      print("Done");
+      socket.destroy();
+    });
+
+    socket.close();
+    //return completer.future;
+  }
+
   Future<dynamic> sendToServer(
       dynamic user, String operation, bool text) async {
     Socket socket = await Socket.connect('82.23.232.59', 9090);

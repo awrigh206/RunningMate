@@ -1,5 +1,7 @@
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/Helpers/TcpHelper.dart';
+import 'package:application/Models/Pair.dart';
+import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
 import 'package:application/Models/WaitingRoom.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +37,6 @@ class _WaitingViewState extends State<WaitingView> {
               return CircularProgressIndicator();
             } else {
               WaitingRoom room = snapshot.data;
-              //return Text(room.toJson().toString());
               return ListView.builder(
                   itemCount: room.waitingUsers.length,
                   itemBuilder: (context, index) {
@@ -45,10 +46,9 @@ class _WaitingViewState extends State<WaitingView> {
                       trailing: RaisedButton(
                         onPressed: () {
                           //code to start a run  goes here
-                          tcp.sendToServer(
-                              new User.nameOnly(this.widget.myUser.userName),
-                              "run",
-                              true);
+                          Pair pair = Pair(this.widget.myUser, currentUser);
+                          Payload payload = new Payload(pair.toJson(), '"run"');
+                          tcp.sendPayload(payload);
                         },
                         child: Text("Challenge"),
                       ),
