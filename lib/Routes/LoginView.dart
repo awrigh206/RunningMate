@@ -38,8 +38,6 @@ class LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     bool authentication = false;
-    Future<Placemark> position = locationHelper.getCurrentAddress();
-    Placemark loadedLocation;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -250,12 +248,7 @@ class LoginViewState extends State<LoginView> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => MapView(
-                      location: loadedLocation,
-                      coordinates: LatLng(loadedLocation.position.latitude,
-                          loadedLocation.position.longitude),
-                    )),
+            MaterialPageRoute(builder: (context) => MapView()),
           );
         },
         tooltip: "Go to google maps with your location",
