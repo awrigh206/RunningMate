@@ -3,8 +3,6 @@ import 'package:application/Helpers/LocationHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'MapView.dart';
 import 'UserView.dart';
 
@@ -192,7 +190,9 @@ class LoginViewState extends State<LoginView> {
                           RaisedButton(
                               onPressed: () async {
                                 if (formKey.currentState.validate()) {
-                                  if (isRegistering) {
+                                  bool userExists = await tcp
+                                      .userExists(userNameController.text);
+                                  if (isRegistering && !userExists) {
                                     tcp.sendToServer(
                                         new User(
                                             userNameController.text,
@@ -230,6 +230,10 @@ class LoginViewState extends State<LoginView> {
                                     } else {
                                       log("no authentication");
                                     }
+                                  }
+                                  if (userExists) {
+                                    //display message that the user already exists in the  system
+                                    log("User exists ");
                                   }
                                 }
                               },

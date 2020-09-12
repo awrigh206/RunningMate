@@ -47,6 +47,24 @@ class TcpHelper {
     socket.close();
   }
 
+  Future<bool> userExists(String name) async {
+    Socket socket = await Socket.connect('82.23.232.59', 9090);
+    Completer<bool> completer = new Completer<bool>();
+    User user = new User.nameOnly(name);
+    socket.write(new Payload(user.toJson(), '"' + "exists" + '"').toJson());
+
+    socket.listen((data) {
+      bool exists = parseBool(data);
+      completer.complete(exists);
+    }, onDone: () {
+      print("Done");
+      socket.destroy();
+    });
+
+    socket.close();
+    return completer.future;
+  }
+
   Future<bool> login(User user) async {
     Socket socket = await Socket.connect('82.23.232.59', 9090);
     Completer<bool> completer = new Completer<bool>();

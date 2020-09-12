@@ -10,9 +10,9 @@ class User {
   }
 
   User.nameOnly(String userName) {
-    this.userName = '"' + userName + '"';
-    this.password = '""';
-    this.email = '""';
+    this.userName = userName;
+    this.password = '';
+    this.email = '';
   }
 
   User.fromJson(Map<String, dynamic> json)
