@@ -1,6 +1,9 @@
 import 'package:application/CustomWidgets/SideDrawer.dart';
+import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
+
+import 'LoginView.dart';
 
 class SettingsView extends StatefulWidget {
   SettingsView({Key key, @required this.currentUser}) : super(key: key);
@@ -11,6 +14,7 @@ class SettingsView extends StatefulWidget {
 }
 
 class SettingsViewState extends State<SettingsView> {
+  final TcpHelper tcpHelper = TcpHelper();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +48,11 @@ class SettingsViewState extends State<SettingsView> {
                 child: Text('Delete Account'),
                 onPressed: () {
                   //Delete account of current user
+                  tcpHelper.sendToServer(
+                      this.widget.currentUser, "remove", true);
+
+                  Navigator.popUntil(
+                      context, ModalRoute.withName('/LoginView'));
                 },
                 color: Colors.red[100],
               ),

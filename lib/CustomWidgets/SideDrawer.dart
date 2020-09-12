@@ -1,5 +1,4 @@
 import 'package:application/Models/User.dart';
-import 'package:application/Routes/LoginView.dart';
 import 'package:application/Routes/SettingsView.dart';
 import 'package:application/Routes/WaitingView.dart';
 import 'package:flutter/material.dart';
@@ -50,8 +49,7 @@ class SideDrawer extends StatelessWidget {
           ListTile(
             title: Text('Logout'),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => LoginView()));
+              Navigator.popUntil(context, ModalRoute.withName("/LoginView"));
             },
             leading: Icon(Icons.account_box),
           ),

@@ -212,6 +212,7 @@ class LoginViewState extends State<LoginView> {
                                               )),
                                     );
                                   } else {
+                                    log("trying to login");
                                     authentication = await tcp.login(new User(
                                         userNameController.text,
                                         passwordController.text,
@@ -231,9 +232,10 @@ class LoginViewState extends State<LoginView> {
                                       log("no authentication");
                                     }
                                   }
-                                  if (userExists) {
+                                  if (userExists && isRegistering) {
                                     //display message that the user already exists in the  system
-                                    log("User exists ");
+                                    log("user exists");
+                                    showTheDialog();
                                   }
                                 }
                               },
@@ -258,6 +260,33 @@ class LoginViewState extends State<LoginView> {
         tooltip: "Go to google maps with your location",
         child: Icon(Icons.map),
       ),
+    );
+  }
+
+  Future<void> showTheDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('User already exists'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Please choose a different user name'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
