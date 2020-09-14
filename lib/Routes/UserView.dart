@@ -70,12 +70,13 @@ class UserViewState extends State<UserView> {
                     );
                   }
                   return new ListTile(
-                    title: Text('You have been challenged'),
+                    title: Text('You have been challenged!'),
                     subtitle: Text('By user: ' + challanger.userName),
                     trailing: RaisedButton(
-                      child: Text('Accept?'),
-                      onPressed: () {},
-                    ),
+                        child: Text('Accept?'),
+                        textColor: Colors.white,
+                        color: Colors.greenAccent,
+                        onPressed: () {}),
                   );
                 }),
             ListTile(
