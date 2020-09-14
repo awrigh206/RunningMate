@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/Payload.dart';
@@ -37,6 +39,13 @@ class UserViewState extends State<UserView> {
           child: Center(
         child: Column(
           children: [
+            ListTile(
+                title: Text(this.widget.currentUser.userName),
+                subtitle: Text(this.widget.currentUser.email),
+                leading: Icon(
+                  Icons.verified_user,
+                  color: Colors.blue[500],
+                )),
             FutureBuilder<dynamic>(
                 future: challenger,
                 builder: (context, snapshot) {
@@ -53,7 +62,13 @@ class UserViewState extends State<UserView> {
                       trailing: Icon(Icons.error),
                     );
                   }
-                  User challanger = snapshot.data as User;
+                  User challanger = User.fromJson(
+                      jsonDecode(snapshot.data.toString().substring(2)));
+                  if (challanger.userName == "none") {
+                    return new ListTile(
+                      title: Text('There are no outstanding challenges'),
+                    );
+                  }
                   return new ListTile(
                     title: Text('You have been challenged'),
                     subtitle: Text('By user: ' + challanger.userName),
@@ -63,13 +78,6 @@ class UserViewState extends State<UserView> {
                     ),
                   );
                 }),
-            ListTile(
-                title: Text(this.widget.currentUser.userName),
-                subtitle: Text(this.widget.currentUser.email),
-                leading: Icon(
-                  Icons.verified_user,
-                  color: Colors.blue[500],
-                )),
             ListTile(
               title: Text('Run against another user'),
               subtitle: Text("Go for a run it's lots of fun"),
