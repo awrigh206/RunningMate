@@ -1,4 +1,6 @@
 import 'package:application/CustomWidgets/SideDrawer.dart';
+import 'package:application/Helpers/TcpHelper.dart';
+import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
 import 'package:application/Routes/SettingsView.dart';
 import 'package:flutter/material.dart';
@@ -14,16 +16,53 @@ class UserView extends StatefulWidget {
 }
 
 class UserViewState extends State<UserView> {
+  TcpHelper tcpHelper;
+  Future<dynamic> challenger;
+
+  @override
+  void initState() {
+    super.initState();
+    tcpHelper = TcpHelper();
+  }
+
   @override
   Widget build(BuildContext context) {
+    Payload load = Payload(this.widget.currentUser.toJson(), '"check"');
+    challenger = tcpHelper.sendPayload(load);
     return Scaffold(
       appBar: AppBar(
         title: Text("Home"),
       ),
-      body: Container(
+      body: SingleChildScrollView(
           child: Center(
         child: Column(
           children: [
+            FutureBuilder<dynamic>(
+                future: challenger,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return new ListTile(
+                      title: Text('Checking for challenges'),
+                      trailing: CircularProgressIndicator(),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return new ListTile(
+                      title: Text('There has been an error'),
+                      subtitle: Text('Please try again later'),
+                      trailing: Icon(Icons.error),
+                    );
+                  }
+                  User challanger = snapshot.data as User;
+                  return new ListTile(
+                    title: Text('You have been challenged'),
+                    subtitle: Text('By user: ' + challanger.userName),
+                    trailing: RaisedButton(
+                      child: Text('Accept?'),
+                      onPressed: () {},
+                    ),
+                  );
+                }),
             ListTile(
                 title: Text(this.widget.currentUser.userName),
                 subtitle: Text(this.widget.currentUser.email),
@@ -65,6 +104,13 @@ class UserViewState extends State<UserView> {
           ],
         ),
       )),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {});
+        },
+        tooltip: "Refresh the page",
+        child: Icon(Icons.refresh),
+      ),
       drawer: SideDrawer(currentUser: this.widget.currentUser),
     );
   }

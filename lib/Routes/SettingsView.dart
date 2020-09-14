@@ -3,8 +3,6 @@ import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
 
-import 'LoginView.dart';
-
 class SettingsView extends StatefulWidget {
   SettingsView({Key key, @required this.currentUser}) : super(key: key);
   final User currentUser;
