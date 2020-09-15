@@ -48,57 +48,6 @@ class LoginViewState extends State<LoginView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              // FutureBuilder<Placemark>(
-              //     future: position,
-              //     builder: (context, snapshot) {
-              //       if (snapshot.connectionState != ConnectionState.done) {
-              //         return CircularProgressIndicator();
-              //       }
-              //       if (snapshot.hasError) {
-              //         return Icon(Icons.error);
-              //       }
-
-              //       if (position == null) {
-              //         return new Text('Do not have location permission');
-              //       }
-
-              //       Placemark loadedPlace = snapshot.data ?? Placemark;
-              //       if (position != null) {
-              //         loadedLocation = loadedPlace;
-              //         return new Text('You are in the: ' +
-              //             loadedPlace.country +
-              //             '\n more precisely: ' +
-              //             loadedPlace.administrativeArea +
-              //             '\n even more precisely: ' +
-              //             loadedPlace.subAdministrativeArea +
-              //             '\n with the postcode: ' +
-              //             loadedPlace.postalCode +
-              //             '\n with the streetname: ' +
-              //             loadedPlace.thoroughfare);
-              //       } else {
-              //         Future<LocationData> basicLocation =
-              //             locationHelper.getLocationBasic();
-              //         return FutureBuilder<LocationData>(
-              //             future: basicLocation,
-              //             builder: (context, snapshot) {
-              //               if (snapshot.connectionState !=
-              //                   ConnectionState.done) {
-              //                 return Icon(Icons.gps_not_fixed);
-              //               }
-
-              //               if (basicLocation == null) {
-              //                 return new Text(
-              //                     'Do not have location permission');
-              //               }
-              //               LocationData loadedBasic =
-              //                   snapshot.data ?? LocationData;
-              //               return new Text("Lat: " +
-              //                   loadedBasic.latitude.toString() +
-              //                   " Lng: " +
-              //                   loadedBasic.longitude.toString());
-              //             });
-              //       }
-              //     }),
               Form(
                 key: formKey,
                 child: Padding(
@@ -205,13 +154,8 @@ class LoginViewState extends State<LoginView> {
                                   bool userExists = await tcp
                                       .userExists(userNameController.text);
                                   if (isRegistering && !userExists) {
-                                    tcp.sendPayload(
-                                        new Payload(user.toJson(), "register"));
-                                    // tcp.sendToServer(
-                                    //     new User(userNameController.text,
-                                    //         password, emailController.text),
-                                    //     "register",
-                                    //     true);
+                                    tcp.sendPayload(new Payload(
+                                        user.toJson(), '"register"'));
 
                                     Navigator.push(
                                       context,
@@ -222,9 +166,7 @@ class LoginViewState extends State<LoginView> {
                                     );
                                   } else {
                                     log("trying to login");
-                                    // authentication = await tcp.login(user);
-                                    authentication = await tcp.sendPayload(
-                                        new Payload(user.toJson(), "login"));
+                                    authentication = await tcp.login(user);
                                     if (authentication) {
                                       Navigator.push(
                                         context,

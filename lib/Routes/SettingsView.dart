@@ -1,5 +1,6 @@
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/Helpers/TcpHelper.dart';
+import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
 
@@ -46,8 +47,8 @@ class SettingsViewState extends State<SettingsView> {
                 child: Text('Delete Account'),
                 onPressed: () {
                   //Delete account of current user
-                  tcpHelper.sendToServer(
-                      this.widget.currentUser, "remove", true);
+                  tcpHelper.sendPayload(new Payload(
+                      this.widget.currentUser.toJson(), '"remove"'));
 
                   Navigator.popUntil(
                       context, ModalRoute.withName('/LoginView'));

@@ -27,25 +27,25 @@ class TcpHelper {
     return completer.future;
   }
 
-  Future<dynamic> sendToServer(
-      dynamic user, String operation, bool text) async {
-    Socket socket = await Socket.connect('82.23.232.59', 9090);
-    socket.write(new Payload(user.toJson(), '"' + operation + '"').toJson());
+  // Future<dynamic> sendToServer(
+  //     dynamic user, String operation, bool text) async {
+  //   Socket socket = await Socket.connect('82.23.232.59', 9090);
+  //   socket.write(new Payload(user.toJson(), '"' + operation + '"').toJson());
 
-    //Establish the onData, and onDone callbacks
-    socket.listen((data) {
-      if (text) {
-        return parseText(data);
-      }
-      log("Answer: " + parseBool(data).toString());
-      return parseBool(data);
-    }, onDone: () {
-      print("Done");
-      socket.destroy();
-    });
+  //   //Establish the onData, and onDone callbacks
+  //   socket.listen((data) {
+  //     if (text) {
+  //       return parseText(data);
+  //     }
+  //     log("Answer: " + parseBool(data).toString());
+  //     return parseBool(data);
+  //   }, onDone: () {
+  //     print("Done");
+  //     socket.destroy();
+  //   });
 
-    socket.close();
-  }
+  //   socket.close();
+  // }
 
   Future<bool> userExists(String name) async {
     Socket socket = await Socket.connect('82.23.232.59', 9090);
