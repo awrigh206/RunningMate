@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:application/Helpers/LocationHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
+import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
 import 'package:password/password.dart';
@@ -199,40 +200,37 @@ class LoginViewState extends State<LoginView> {
                                 if (formKey.currentState.validate()) {
                                   String password = Password.hash(
                                       passwordController.text, new PBKDF2());
+                                  User user = User(userNameController.text,
+                                      password, emailController.text);
                                   bool userExists = await tcp
                                       .userExists(userNameController.text);
                                   if (isRegistering && !userExists) {
-                                    tcp.sendToServer(
-                                        new User(userNameController.text,
-                                            password, emailController.text),
-                                        "register",
-                                        true);
+                                    tcp.sendPayload(
+                                        new Payload(user.toJson(), "register"));
+                                    // tcp.sendToServer(
+                                    //     new User(userNameController.text,
+                                    //         password, emailController.text),
+                                    //     "register",
+                                    //     true);
 
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => UserView(
-                                                currentUser: new User(
-                                                    userNameController.text,
-                                                    password,
-                                                    emailController.text),
+                                                currentUser: user,
                                               )),
                                     );
                                   } else {
                                     log("trying to login");
-                                    authentication = await tcp.login(new User(
-                                        userNameController.text,
-                                        password,
-                                        emailController.text));
+                                    // authentication = await tcp.login(user);
+                                    authentication = await tcp.sendPayload(
+                                        new Payload(user.toJson(), "login"));
                                     if (authentication) {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => UserView(
-                                                  currentUser: new User(
-                                                      userNameController.text,
-                                                      password,
-                                                      emailController.text),
+                                                  currentUser: user,
                                                 )),
                                       );
                                     } else {
