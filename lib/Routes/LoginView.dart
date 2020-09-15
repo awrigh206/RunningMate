@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:password/password.dart';
 import 'MapView.dart';
 import 'UserView.dart';
+import 'package:password_strength/password_strength.dart';
 
 class LoginView extends StatefulWidget {
   LoginView({Key key, this.title}) : super(key: key);
@@ -129,6 +130,11 @@ class LoginViewState extends State<LoginView> {
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Please enter your password';
+                          }
+                          double passwordStrength =
+                              estimatePasswordStrength(passwordController.text);
+                          if (passwordStrength < 0.3) {
+                            return 'Your password is too weak';
                           }
                           if (value.contains(' ')) {
                             return 'Please do not use spaces';
