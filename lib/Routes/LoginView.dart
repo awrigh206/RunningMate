@@ -3,6 +3,7 @@ import 'package:application/Helpers/LocationHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
+import 'package:password/password.dart';
 import 'MapView.dart';
 import 'UserView.dart';
 
@@ -190,14 +191,14 @@ class LoginViewState extends State<LoginView> {
                           RaisedButton(
                               onPressed: () async {
                                 if (formKey.currentState.validate()) {
+                                  String password = Password.hash(
+                                      passwordController.text, new PBKDF2());
                                   bool userExists = await tcp
                                       .userExists(userNameController.text);
                                   if (isRegistering && !userExists) {
                                     tcp.sendToServer(
-                                        new User(
-                                            userNameController.text,
-                                            passwordController.text,
-                                            emailController.text),
+                                        new User(userNameController.text,
+                                            password, emailController.text),
                                         "register",
                                         true);
 
@@ -207,7 +208,7 @@ class LoginViewState extends State<LoginView> {
                                           builder: (context) => UserView(
                                                 currentUser: new User(
                                                     userNameController.text,
-                                                    passwordController.text,
+                                                    password,
                                                     emailController.text),
                                               )),
                                     );
@@ -215,7 +216,7 @@ class LoginViewState extends State<LoginView> {
                                     log("trying to login");
                                     authentication = await tcp.login(new User(
                                         userNameController.text,
-                                        passwordController.text,
+                                        password,
                                         emailController.text));
                                     if (authentication) {
                                       Navigator.push(
@@ -224,7 +225,7 @@ class LoginViewState extends State<LoginView> {
                                             builder: (context) => UserView(
                                                   currentUser: new User(
                                                       userNameController.text,
-                                                      passwordController.text,
+                                                      password,
                                                       emailController.text),
                                                 )),
                                       );
