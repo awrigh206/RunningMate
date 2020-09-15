@@ -35,6 +35,7 @@ dependencies:
   password: ^1.0.0
   password_strength: ^0.1.2
   encrypt: ^4.0.3
+  email_validator: '^1.0.0'
 
 dev_dependencies:
   flutter_test:

@@ -8,6 +8,7 @@ import 'package:password/password.dart';
 import 'MapView.dart';
 import 'UserView.dart';
 import 'package:password_strength/password_strength.dart';
+import 'package:email_validator/email_validator.dart';
 
 class LoginView extends StatefulWidget {
   LoginView({Key key, this.title}) : super(key: key);
@@ -103,6 +104,10 @@ class LoginViewState extends State<LoginView> {
                                   hintText: 'Email',
                                 ),
                                 validator: (value) {
+                                  String email = emailController.text;
+                                  if (!EmailValidator.validate(email)) {
+                                    return 'That email is not valid';
+                                  }
                                   if (value.isEmpty) {
                                     return 'Please enter your email';
                                   }
