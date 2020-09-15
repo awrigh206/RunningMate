@@ -156,11 +156,12 @@ class LoginViewState extends State<LoginView> {
                                       passwordController.text, new PBKDF2());
                                   User user = User(userNameController.text,
                                       password, emailController.text);
-                                  bool userExists = await tcp
-                                      .userExists(userNameController.text);
+                                  bool userExists =
+                                      await tcp.sendPayloadBoolean(
+                                          new Payload(user.toJson(), 'exists'));
                                   if (isRegistering && !userExists) {
-                                    tcp.sendPayload(new Payload(
-                                        user.toJson(), '"register"'));
+                                    tcp.sendPayload(
+                                        new Payload(user.toJson(), 'register'));
 
                                     Navigator.push(
                                       context,
@@ -170,8 +171,9 @@ class LoginViewState extends State<LoginView> {
                                               )),
                                     );
                                   } else {
-                                    log("trying to login");
-                                    authentication = await tcp.login(user);
+                                    authentication =
+                                        await tcp.sendPayloadBoolean(
+                                            Payload(user.toJson(), 'login'));
                                     if (authentication) {
                                       Navigator.push(
                                         context,

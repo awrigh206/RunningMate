@@ -47,8 +47,8 @@ class SettingsViewState extends State<SettingsView> {
                 child: Text('Delete Account'),
                 onPressed: () {
                   //Delete account of current user
-                  tcpHelper.sendPayload(new Payload(
-                      this.widget.currentUser.toJson(), '"remove"'));
+                  tcpHelper.sendPayload(
+                      new Payload(this.widget.currentUser.toJson(), 'remove'));
 
                   Navigator.popUntil(
                       context, ModalRoute.withName('/LoginView'));

@@ -26,11 +26,10 @@ class TcpHelper {
     return completer.future;
   }
 
-  Future<bool> userExists(String name) async {
+  Future<bool> sendPayloadBoolean(Payload load) async {
     Socket socket = await Socket.connect('82.23.232.59', 9090);
     Completer<bool> completer = new Completer<bool>();
-    User user = new User.nameOnly(name);
-    socket.write(new Payload(user.toJson(), '"' + "exists" + '"').toJson());
+    socket.write(load.toJson());
 
     socket.listen((data) {
       bool exists = parseBool(data);
@@ -44,27 +43,10 @@ class TcpHelper {
     return completer.future;
   }
 
-  Future<bool> login(User user) async {
-    Socket socket = await Socket.connect('82.23.232.59', 9090);
-    Completer<bool> completer = new Completer<bool>();
-    socket.write(new Payload(user.toJson(), '"' + "login" + '"').toJson());
-
-    socket.listen((data) {
-      bool authenticated = parseBool(data);
-      completer.complete(authenticated);
-    }, onDone: () {
-      print("Done");
-      socket.destroy();
-    });
-
-    socket.close();
-    return completer.future;
-  }
-
   Future<WaitingRoom> getWaitingRoom(User user) async {
     Socket socket = await Socket.connect('82.23.232.59', 9090);
     Completer<WaitingRoom> completer = new Completer<WaitingRoom>();
-    socket.write(new Payload(user.toJson(), '"' + "ready" + '"').toJson());
+    socket.write(new Payload(user.toJson(), 'ready').toJson());
     String jsonData = "";
     WaitingRoom room;
 
@@ -93,7 +75,7 @@ class TcpHelper {
   bool intToBool(int number) => number == 0 ? false : true;
 
   String encrypt(String plainText) {
-    final key = Key.fromUtf8("Hello there");
+    final key = Key.fromUtf8("keyGoesHere");
     final iv = IV.fromLength(16);
     final encrypter = Encrypter(AES(key));
     final encrypted = encrypter.encrypt(plainText, iv: iv);

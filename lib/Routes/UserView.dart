@@ -29,7 +29,7 @@ class UserViewState extends State<UserView> {
 
   @override
   Widget build(BuildContext context) {
-    Payload load = Payload(this.widget.currentUser.toJson(), '"check"');
+    Payload load = Payload(this.widget.currentUser.toJson(), 'check');
     challenger = tcpHelper.sendPayload(load);
     return Scaffold(
       appBar: AppBar(

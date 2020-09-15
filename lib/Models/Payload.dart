@@ -12,7 +12,7 @@ class Payload {
         operation = json['"operation"'];
 
   Map<String, dynamic> toJson() => {
-        '"operation"': operation,
+        '"operation"': '"' + operation + '"',
         '"jsonMessage"': jsonMessage,
       };
 }

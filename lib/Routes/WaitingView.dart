@@ -48,8 +48,7 @@ class _WaitingViewState extends State<WaitingView> {
                           User myUser = this.widget.myUser;
                           //code to start a run  goes here
                           Pair pair = Pair(myUser, currentUser);
-                          Payload payload =
-                              new Payload(pair.toJson(), '"pair"');
+                          Payload payload = new Payload(pair.toJson(), 'pair');
                           tcp.sendPayload(payload);
                         },
                         child: Text("Challenge"),

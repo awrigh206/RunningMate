@@ -23,7 +23,7 @@ class _ActiveViewState extends State<ActiveView> {
     tcpHelper = TcpHelper();
     timer = Timer(Duration(seconds: 2), () {
       //Code in this function body is run every two seconds
-      tcpHelper.sendPayload(new Payload(distanceTravelled.toJson(), "update"));
+      tcpHelper.sendPayload(new Payload(distanceTravelled.toJson(), 'update'));
     });
   }
 
