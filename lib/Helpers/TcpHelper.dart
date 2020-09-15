@@ -44,23 +44,13 @@ class TcpHelper {
   }
 
   Future<WaitingRoom> getWaitingRoom(User user) async {
-    Socket socket = await Socket.connect('82.23.232.59', 9090);
     Completer<WaitingRoom> completer = new Completer<WaitingRoom>();
-    socket.write(new Payload(user.toJson(), 'ready').toJson());
-    String jsonData = "";
+    String text = await sendPayload(Payload(user.toJson(), 'ready'));
     WaitingRoom room;
+    Map roomMap = await jsonDecode(text.substring(2));
 
-    //Establish the onData, and onDone callbacks
-    socket.listen((data) async {
-      jsonData = parseText(data);
-      Map roomMap = await jsonDecode(jsonData.substring(2));
-      room = new WaitingRoom.fromJson(roomMap);
-      completer.complete(room);
-    }, onDone: () {
-      print("Done");
-      socket.destroy();
-    });
-    socket.close();
+    room = WaitingRoom.fromJson(roomMap);
+    completer.complete(room);
     return completer.future;
   }
 
