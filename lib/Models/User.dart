@@ -1,3 +1,6 @@
+import 'package:application/Helpers/Encryption.dart';
+import 'package:encrypt/encrypt.dart';
+
 class User {
   String userName;
   String password;
@@ -25,4 +28,12 @@ class User {
         '"password"': '"' + password + '"',
         '"email"': '"' + email + '"',
       };
+  encryptDetails() async {
+    Encryption crypt = Encryption();
+    Encrypted encryptedName = await crypt.encrypt(this.userName);
+    this.userName = encryptedName.base64;
+
+    Encrypted encryptedEmail = await crypt.encrypt(this.email);
+    this.email = encryptedEmail.base64;
+  }
 }

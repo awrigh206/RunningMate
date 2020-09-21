@@ -6,9 +6,9 @@ import 'package:application/Helpers/Encryption.dart';
 import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
 import 'package:application/Models/WaitingRoom.dart';
+import 'package:encrypt/encrypt.dart';
 
 class TcpHelper {
-  Encryption encrypt = Encryption();
   Future<dynamic> sendPayload(Payload load) async {
     Socket socket = await Socket.connect('82.23.232.59', 9090);
     Completer<dynamic> completer = new Completer<dynamic>();
@@ -31,8 +31,7 @@ class TcpHelper {
     Socket socket = await Socket.connect('82.23.232.59', 9090);
     Completer<bool> completer = new Completer<bool>();
     socket.write(load.toJson());
-    String encyptedPayload = await encrypt.encrypt(load.toJson().toString());
-    // socket.write(encyptedPayload);
+    print(load.toJson());
 
     socket.listen((data) {
       bool exists = parseBool(data);

@@ -154,14 +154,19 @@ class LoginViewState extends State<LoginView> {
                                 if (formKey.currentState.validate()) {
                                   String password = Password.hash(
                                       passwordController.text, new PBKDF2());
-                                  User user = User(userNameController.text,
-                                      password, emailController.text);
+                                  User userEncrypted = User(
+                                      userNameController.text,
+                                      password,
+                                      emailController.text);
+                                  User user = userEncrypted;
+                                  await userEncrypted
+                                      .encryptDetails(); //protect user details
                                   bool userExists =
-                                      await tcp.sendPayloadBoolean(
-                                          new Payload(user.toJson(), 'exists'));
+                                      await tcp.sendPayloadBoolean(new Payload(
+                                          userEncrypted.toJson(), 'exists'));
                                   if (isRegistering && !userExists) {
-                                    tcp.sendPayload(
-                                        new Payload(user.toJson(), 'register'));
+                                    tcp.sendPayload(new Payload(
+                                        userEncrypted.toJson(), 'register'));
 
                                     Navigator.push(
                                       context,
@@ -172,8 +177,8 @@ class LoginViewState extends State<LoginView> {
                                     );
                                   } else {
                                     authentication =
-                                        await tcp.sendPayloadBoolean(
-                                            Payload(user.toJson(), 'login'));
+                                        await tcp.sendPayloadBoolean(Payload(
+                                            userEncrypted.toJson(), 'login'));
                                     if (authentication) {
                                       Navigator.push(
                                         context,
