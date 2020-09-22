@@ -1,13 +1,17 @@
 import 'dart:async';
 
+import 'package:application/Helpers/LocationHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/Distance.dart';
+import 'package:application/Models/Pair.dart';
 import 'package:application/Models/Payload.dart';
+import 'package:application/Models/Position.dart';
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 
 class ActiveView extends StatefulWidget {
-  ActiveView({Key key}) : super(key: key);
-
+  ActiveView({Key key, @required this.currentPair}) : super(key: key);
+  final Pair currentPair;
   @override
   _ActiveViewState createState() => _ActiveViewState();
 }
@@ -16,15 +20,31 @@ class _ActiveViewState extends State<ActiveView> {
   Timer timer;
   TcpHelper tcpHelper;
   Distance distanceTravelled;
+  LocationHelper locationHelper = new LocationHelper();
+  Position currentPosition;
 
   @override
   void initState() {
     super.initState();
     tcpHelper = TcpHelper();
-    timer = Timer(Duration(seconds: 2), () {
-      //Code in this function body is run every two seconds
-      tcpHelper.sendPayload(new Payload(distanceTravelled.toJson(), 'update'));
+    const duration = const Duration(seconds: 2);
+    timer = Timer.periodic(duration, (timer) async {
+      await sendData();
     });
+  }
+
+  Future<void> sendData() async {
+    String id = this.widget.currentPair.playerOne.userName +
+        this.widget.currentPair.playerTwo.userName;
+    //Code in this function body is run every two seconds
+    LocationData locationData = await locationHelper.getLocationBasic();
+    Position currentPosition = new Position(
+        id,
+        this.widget.currentPair.playerOne.userName,
+        locationData.latitude,
+        locationData.longitude,
+        locationData.altitude);
+    tcpHelper.sendPayload(new Payload(currentPosition.toJson(), 'update'));
   }
 
   @override
@@ -41,8 +61,18 @@ class _ActiveViewState extends State<ActiveView> {
         title: Text("Go!"),
       ),
       body: Center(
-        child: Text("placeholder"),
-      ),
+          child: ListView(
+        children: [
+          ListTile(
+            title: Text('Player One: '),
+            trailing: Text(this.widget.currentPair.playerOne.userName),
+          ),
+          ListTile(
+            title: Text('Player Two: '),
+            trailing: Text(this.widget.currentPair.playerTwo.userName),
+          )
+        ],
+      )),
     );
   }
 }
