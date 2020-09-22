@@ -63,22 +63,21 @@ class UserViewState extends State<UserView> {
                     );
                   }
                   WaitingRoom challangers = snapshot.data;
-                  return SingleChildScrollView(
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: challangers.waitingUsers.length,
-                        itemBuilder: (context, index) {
-                          User current = challangers.waitingUsers[index];
-                          return ListTile(
-                            leading: Text('Challenged by: ' + current.userName),
-                            trailing: RaisedButton(
-                                child: Text('Accept?'),
-                                textColor: Colors.white,
-                                color: Colors.greenAccent,
-                                onPressed: () {}),
-                          );
-                        }),
-                  );
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: challangers.waitingUsers.length,
+                      primary: false,
+                      itemBuilder: (context, index) {
+                        User current = challangers.waitingUsers[index];
+                        return ListTile(
+                          leading: Text('Challenged by: ' + current.userName),
+                          trailing: RaisedButton(
+                              child: Text('Accept?'),
+                              textColor: Colors.white,
+                              color: Colors.greenAccent,
+                              onPressed: () {}),
+                        );
+                      });
                 }),
             ListTile(
               title: Text('Run against another user'),
