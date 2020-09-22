@@ -154,11 +154,12 @@ class LoginViewState extends State<LoginView> {
                                 if (formKey.currentState.validate()) {
                                   String password = Password.hash(
                                       passwordController.text, new PBKDF2());
+                                  User user = new User(userNameController.text,
+                                      password, emailController.text);
                                   User userEncrypted = User(
                                       userNameController.text,
                                       password,
                                       emailController.text);
-                                  User user = userEncrypted;
                                   await userEncrypted
                                       .encryptDetails(); //protect user details
                                   bool userExists =

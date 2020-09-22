@@ -4,6 +4,7 @@ import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
+import 'package:application/Models/WaitingRoom.dart';
 import 'package:application/Routes/SettingsView.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,7 @@ class UserView extends StatefulWidget {
 
 class UserViewState extends State<UserView> {
   TcpHelper tcpHelper;
-  Future<dynamic> challenger;
+  Future<WaitingRoom> challenger;
 
   @override
   void initState() {
@@ -29,8 +30,7 @@ class UserViewState extends State<UserView> {
 
   @override
   Widget build(BuildContext context) {
-    Payload load = Payload(this.widget.currentUser.toJson(), 'check');
-    challenger = tcpHelper.sendPayload(load);
+    challenger = tcpHelper.getWaitingRoom(this.widget.currentUser, 'check');
     return Scaffold(
       appBar: AppBar(
         title: Text("Home"),
@@ -62,21 +62,22 @@ class UserViewState extends State<UserView> {
                       trailing: Icon(Icons.error),
                     );
                   }
-                  User challanger = User.fromJson(
-                      jsonDecode(snapshot.data.toString().substring(2)));
-                  if (challanger.userName == "none") {
-                    return new ListTile(
-                      title: Text('There are no outstanding challenges'),
-                    );
-                  }
-                  return new ListTile(
-                    title: Text('You have been challenged!'),
-                    subtitle: Text('By user: ' + challanger.userName),
-                    trailing: RaisedButton(
-                        child: Text('Accept?'),
-                        textColor: Colors.white,
-                        color: Colors.greenAccent,
-                        onPressed: () {}),
+                  WaitingRoom challangers = snapshot.data;
+                  return SingleChildScrollView(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: challangers.waitingUsers.length,
+                        itemBuilder: (context, index) {
+                          User current = challangers.waitingUsers[index];
+                          return ListTile(
+                            leading: Text('Challenged by: ' + current.userName),
+                            trailing: RaisedButton(
+                                child: Text('Accept?'),
+                                textColor: Colors.white,
+                                color: Colors.greenAccent,
+                                onPressed: () {}),
+                          );
+                        }),
                   );
                 }),
             ListTile(

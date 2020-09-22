@@ -2,18 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:application/Helpers/Encryption.dart';
 import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
 import 'package:application/Models/WaitingRoom.dart';
-import 'package:encrypt/encrypt.dart';
 
 class TcpHelper {
   Future<dynamic> sendPayload(Payload load) async {
     Socket socket = await Socket.connect('82.23.232.59', 9090);
     Completer<dynamic> completer = new Completer<dynamic>();
     socket.write(load.toJson());
-    //socket.write(encrypt.encrypt(load.toJson().toString()));
 
     socket.listen((data) {
       dynamic sent = parseText(data);
@@ -31,7 +28,6 @@ class TcpHelper {
     Socket socket = await Socket.connect('82.23.232.59', 9090);
     Completer<bool> completer = new Completer<bool>();
     socket.write(load.toJson());
-    print(load.toJson());
 
     socket.listen((data) {
       bool exists = parseBool(data);
@@ -45,9 +41,9 @@ class TcpHelper {
     return completer.future;
   }
 
-  Future<WaitingRoom> getWaitingRoom(User user) async {
+  Future<WaitingRoom> getWaitingRoom(User user, String operation) async {
     Completer<WaitingRoom> completer = new Completer<WaitingRoom>();
-    String text = await sendPayload(Payload(user.toJson(), 'ready'));
+    String text = await sendPayload(Payload(user.toJson(), operation));
     WaitingRoom room;
     Map roomMap = await jsonDecode(text.substring(2));
 

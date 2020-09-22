@@ -21,7 +21,7 @@ class _WaitingViewState extends State<WaitingView> {
   @override
   Widget build(BuildContext context) {
     Future<WaitingRoom> waitingRoom =
-        this.widget.tcp.getWaitingRoom(this.widget.myUser);
+        this.widget.tcp.getWaitingRoom(this.widget.myUser, "ready");
     return Scaffold(
       appBar: AppBar(
         title: Text("Waiting Room"),
