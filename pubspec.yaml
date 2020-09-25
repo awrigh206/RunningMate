@@ -39,6 +39,7 @@ dependencies:
   encrypt: ^4.0.3
   pointycastle: ^1.0.2
   path_provider: ^1.6.16
+  flutter_slidable:
 
 dev_dependencies:
   flutter_test:
