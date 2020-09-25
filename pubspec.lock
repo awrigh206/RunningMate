@@ -331,20 +331,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.13"
-  rsa_encrypt:
-    dependency: "direct main"
-    description:
-      name: rsa_encrypt
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.4"
-  simple_rsa:
-    dependency: "direct main"
-    description:
-      name: simple_rsa
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.5"
   sky_engine:
     dependency: transitive
     description: flutter

@@ -39,8 +39,6 @@ dependencies:
   encrypt: ^4.0.3
   pointycastle: ^1.0.2
   path_provider: ^1.6.16
-  rsa_encrypt: ^1.0.4
-  simple_rsa: ^0.0.5
 
 dev_dependencies:
   flutter_test:
