@@ -1,11 +1,8 @@
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/CustomWidgets/Slideable.dart';
 import 'package:application/Helpers/TcpHelper.dart';
-import 'package:application/Models/Pair.dart';
-import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
 import 'package:application/Models/WaitingRoom.dart';
-import 'package:application/Routes/ActiveView.dart';
 import 'package:application/Routes/SettingsView.dart';
 import 'package:application/Routes/WaitingView.dart';
 import 'package:flutter/material.dart';
@@ -72,25 +69,6 @@ class UserViewState extends State<UserView> {
                         return new Slideable(
                             displayUser: current,
                             currentUser: this.widget.currentUser);
-                        // return ListTile(
-                        //   leading: Text('Challenged by: ' + current.userName),
-                        //   trailing: RaisedButton(
-                        //       child: Text('Accept?'),
-                        //       textColor: Colors.white,
-                        //       color: Colors.greenAccent,
-                        //       onPressed: () {
-                        //         Pair pair =
-                        //             new Pair(this.widget.currentUser, current);
-                        //         tcpHelper.sendPayload(
-                        //             new Payload(pair.toJson(), "run"));
-                        //         Navigator.push(
-                        //           context,
-                        //           MaterialPageRoute(
-                        //               builder: (context) =>
-                        //                   ActiveView(currentPair: pair)),
-                        //         );
-                        //       }),
-                        // );
                       });
                 }),
             ListTile(

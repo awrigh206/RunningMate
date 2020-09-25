@@ -4,11 +4,13 @@ import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:password/password.dart';
 import 'MapView.dart';
 import 'UserView.dart';
 import 'package:password_strength/password_strength.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:lottie/lottie.dart';
 
 class LoginView extends StatefulWidget {
   LoginView({Key key, this.title}) : super(key: key);
@@ -18,7 +20,7 @@ class LoginView extends StatefulWidget {
   LoginViewState createState() => LoginViewState();
 }
 
-class LoginViewState extends State<LoginView> {
+class LoginViewState extends State<LoginView> with TickerProviderStateMixin {
   final locationHelper = LocationHelper();
   final TcpHelper tcp = TcpHelper();
   final userNameController = TextEditingController();
@@ -26,6 +28,23 @@ class LoginViewState extends State<LoginView> {
   final emailController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool isRegistering = false;
+  Color currentColor = Colors.white;
+  Future<LottieComposition> composition;
+  AnimationController loginAnimation;
+  bool processing = false;
+  Lottie animation;
+
+  @override
+  void initState() {
+    super.initState();
+    composition = fetchAnimation();
+  }
+
+  Future<LottieComposition> fetchAnimation() async {
+    var assetData =
+        await rootBundle.load('Assets/Animations/world-locations.json');
+    return await LottieComposition.fromByteData(assetData);
+  }
 
   @override
   void dispose() {
@@ -34,6 +53,7 @@ class LoginViewState extends State<LoginView> {
     userNameController.dispose();
     emailController.dispose();
     passwordController.dispose();
+    loginAnimation?.dispose();
     super.dispose();
   }
 
@@ -41,6 +61,7 @@ class LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     bool authentication = false;
     return Scaffold(
+      backgroundColor: currentColor,
       appBar: AppBar(
         title: Text(widget.title),
       ),
@@ -94,6 +115,17 @@ class LoginViewState extends State<LoginView> {
                         },
                       ),
                       Builder(builder: (BuildContext context) {
+                        if (processing) {
+                          return FutureBuilder(
+                              future: composition,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Lottie(composition: snapshot.data);
+                                } else {
+                                  return Container();
+                                }
+                              });
+                        }
                         if (isRegistering) {
                           return Column(
                             children: [
@@ -151,6 +183,9 @@ class LoginViewState extends State<LoginView> {
                         children: [
                           RaisedButton(
                               onPressed: () async {
+                                setState(() {
+                                  processing = true;
+                                });
                                 if (formKey.currentState.validate()) {
                                   String password = Password.hash(
                                       passwordController.text, new PBKDF2());
