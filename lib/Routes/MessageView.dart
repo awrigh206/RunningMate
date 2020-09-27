@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/Helpers/TcpHelper.dart';
+import 'package:application/Models/ChatRoom.dart';
 import 'package:application/Models/Message.dart';
 import 'package:application/Models/Pair.dart';
 import 'package:application/Models/Payload.dart';
@@ -19,18 +23,27 @@ class MessageView extends StatefulWidget {
 
 class _MessageViewState extends State<MessageView> {
   TcpHelper tcpHelper;
+  Future<ChatRoom> chat;
 
   @override
   void initState() {
     super.initState();
     tcpHelper = TcpHelper();
+    chat = getChatRoom();
+  }
+
+  Future<ChatRoom> getChatRoom() async {
+    Pair pair = new Pair(widget.currentUser, widget.userTalkingTo);
+    String text =
+        await tcpHelper.sendPayload(new Payload(pair.toJson(), 'get_messages'));
+    log("I got: " + text);
+    Map roomMap = await jsonDecode(text.substring(2));
+
+    return ChatRoom.fromJson(roomMap);
   }
 
   @override
   Widget build(BuildContext context) {
-    Pair pair = new Pair(widget.currentUser, widget.userTalkingTo);
-    Future<Message> messages =
-        tcpHelper.sendPayload(new Payload(pair.toJson(), 'message'));
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.userTalkingTo.userName),
@@ -38,9 +51,42 @@ class _MessageViewState extends State<MessageView> {
       body: Center(
         child: SingleChildScrollView(
             child: FutureBuilder(
-                future: messages, builder: (context, snapshot) {})),
+                future: chat,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    ChatRoom chatRoom = snapshot.data;
+                    if (chatRoom.messages.isEmpty) {
+                      return ListTile(
+                        title: Text('No messages'),
+                      );
+                    }
+                    return ListView.builder(
+                        primary: false,
+                        itemCount: chatRoom.messages.length,
+                        itemBuilder: (context, index) {
+                          Message message = chatRoom.messages[index];
+                          return ListTile(
+                            title: Text(message.messageBody),
+                            subtitle: Text(message.timeStamp),
+                          );
+                        });
+                  } else if (snapshot.hasError) {
+                    return new ListTile(
+                      title: Text('There has been an error, please try again'),
+                      trailing: Icon(Icons.error),
+                    );
+                  } else
+                    return CircularProgressIndicator();
+                })),
       ),
       drawer: SideDrawer(currentUser: widget.currentUser),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {});
+        },
+        tooltip: "Refresh the waiting room",
+        child: Icon(Icons.refresh),
+      ),
     );
   }
 }
