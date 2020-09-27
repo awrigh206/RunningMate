@@ -3,6 +3,7 @@ import 'package:application/Models/Pair.dart';
 import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
 import 'package:application/Routes/ActiveView.dart';
+import 'package:application/Routes/MessageView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -45,6 +46,10 @@ class Slideable extends StatelessWidget {
           caption: 'Decline',
           color: Colors.redAccent,
           icon: Icons.remove_circle,
+          onTap: () {
+            Pair pair = new Pair(currentUser, displayUser);
+            tcpHelper.sendPayload(new Payload(pair.toJson(), "deny"));
+          },
         )
       ],
       secondaryActions: <Widget>[
@@ -52,6 +57,14 @@ class Slideable extends StatelessWidget {
           caption: 'Message',
           icon: Icons.message,
           color: Colors.blueAccent,
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MessageView(
+                      currentUser: currentUser, userTalkingTo: displayUser),
+                ));
+          },
         )
       ],
     );

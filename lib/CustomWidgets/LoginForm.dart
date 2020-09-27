@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
-import 'package:application/Routes/UserView.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:password/password.dart';
