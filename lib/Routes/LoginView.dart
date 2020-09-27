@@ -1,10 +1,13 @@
 import 'package:application/CustomWidgets/LoginForm.dart';
 import 'package:application/Helpers/LocationHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
+import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'MapView.dart';
 import 'package:lottie/lottie.dart';
+
+import 'UserView.dart';
 
 class LoginView extends StatefulWidget {
   LoginView({Key key, this.title}) : super(key: key);
@@ -28,13 +31,27 @@ class LoginViewState extends State<LoginView> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     composition = fetchAnimation();
-    form = new LoginForm(tcp: tcp, update: update);
+    form = new LoginForm(
+      tcp: tcp,
+      play: playAnimation,
+      logIn: goToUserPage,
+    );
   }
 
-  void update() {
+  playAnimation(bool play) async {
     setState(() {
-      processing = true;
+      processing = play;
     });
+  }
+
+  void goToUserPage(User user) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => UserView(
+                currentUser: user,
+              )),
+    );
   }
 
   Future<LottieComposition> fetchAnimation() async {

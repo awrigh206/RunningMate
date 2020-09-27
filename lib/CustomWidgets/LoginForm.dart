@@ -10,10 +10,12 @@ import 'package:password/password.dart';
 import 'package:password_strength/password_strength.dart';
 
 class LoginForm extends StatefulWidget {
-  LoginForm({Key key, @required this.tcp, @required this.update})
+  LoginForm(
+      {Key key, @required this.tcp, @required this.play, @required this.logIn})
       : super(key: key);
   final TcpHelper tcp;
-  final Function update;
+  final Function play;
+  final Function logIn;
   @override
   _LoginFormState createState() => _LoginFormState();
 }
@@ -143,9 +145,15 @@ class _LoginFormState extends State<LoginForm> {
               children: [
                 RaisedButton(
                     onPressed: () async {
-                      await widget.update;
                       if (formKey.currentState.validate()) {
-                        login();
+                        await widget.play(true);
+                        User user = new User(
+                            userNameController.text, "", emailController.text);
+                        bool authenticated = await login(user);
+                        widget.play(false);
+                        if (authenticated) {
+                          widget.logIn(user);
+                        }
                       }
                     },
                     child: Text('Submit')),
@@ -157,10 +165,8 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-  Future<void> login() async {
+  Future<bool> login(User user) async {
     String password = Password.hash(passwordController.text, new PBKDF2());
-    User user =
-        new User(userNameController.text, password, emailController.text);
     User userEncrypted =
         User(userNameController.text, password, emailController.text);
     await userEncrypted.encryptDetails(); //protect user details
@@ -173,36 +179,19 @@ class _LoginFormState extends State<LoginForm> {
           .widget
           .tcp
           .sendPayload(new Payload(userEncrypted.toJson(), 'register'));
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => UserView(
-                  currentUser: user,
-                )),
-      );
     } else {
       authentication = await this
           .widget
           .tcp
           .sendPayloadBoolean(Payload(userEncrypted.toJson(), 'login'));
-      if (authentication) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => UserView(
-                    currentUser: user,
-                  )),
-        );
-      } else {
-        log("no authentication");
-      }
+      return authentication;
     }
     if (userExists && isRegistering) {
       //display message that the user already exists in the  system
       log("user exists");
       showTheDialog();
     }
+    return false;
   }
 
   Future<void> showTheDialog() async {
