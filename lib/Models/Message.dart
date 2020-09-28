@@ -34,4 +34,9 @@ class Message {
     Encrypted encryptedSender = await crypt.encrypt(this.sender);
     this.sender = encryptedSender.base64;
   }
+
+  @override
+  String toString() {
+    return "Body: " + messageBody + " , Sender: " + sender;
+  }
 }

@@ -36,9 +36,7 @@ class _MessageViewState extends State<MessageView> {
     Pair pair = new Pair(widget.currentUser, widget.userTalkingTo);
     String text =
         await tcpHelper.sendPayload(new Payload(pair.toJson(), 'get_messages'));
-    log("I got: " + text);
     Map roomMap = await jsonDecode(text.substring(2));
-
     return ChatRoom.fromJson(roomMap);
   }
 
@@ -50,6 +48,7 @@ class _MessageViewState extends State<MessageView> {
       ),
       body: Center(
         child: SingleChildScrollView(
+            primary: true,
             child: FutureBuilder(
                 future: chat,
                 builder: (context, snapshot) {
@@ -58,9 +57,12 @@ class _MessageViewState extends State<MessageView> {
                     if (chatRoom.messages.isEmpty) {
                       return ListTile(
                         title: Text('No messages'),
+                        trailing: Icon(Icons.message_rounded),
                       );
                     }
                     return ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
                         primary: false,
                         itemCount: chatRoom.messages.length,
                         itemBuilder: (context, index) {
@@ -82,7 +84,9 @@ class _MessageViewState extends State<MessageView> {
       drawer: SideDrawer(currentUser: widget.currentUser),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          setState(() {});
+          setState(() {
+            chat = getChatRoom();
+          });
         },
         tooltip: "Refresh the waiting room",
         child: Icon(Icons.refresh),

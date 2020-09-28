@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:application/Models/Payload.dart';
@@ -14,6 +15,7 @@ class TcpHelper {
 
     socket.listen((data) {
       dynamic sent = parseText(data);
+      log(sent);
       completer.complete(sent);
     }, onDone: () {
       print("Done");
