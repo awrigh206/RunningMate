@@ -41,6 +41,7 @@ dependencies:
   path_provider: ^1.6.16
   flutter_slidable:
   lottie: ^0.6.0
+  footer:
 
 dev_dependencies:
   flutter_test:
