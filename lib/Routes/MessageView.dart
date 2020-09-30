@@ -3,7 +3,9 @@ import 'dart:developer';
 import 'package:application/CustomWidgets/MessageList.dart';
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/Helpers/TcpHelper.dart';
+import 'package:application/Models/Message.dart';
 import 'package:application/Models/Pair.dart';
+import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
 import 'package:footer/footer.dart';
@@ -63,25 +65,30 @@ class _MessageViewState extends State<MessageView> {
                 Expanded(
                   child: TextField(
                     controller: messageController,
+                    decoration: const InputDecoration(
+                      hintText: 'Message',
+                    ),
                   ),
                 ),
                 IconButton(
                     color: Colors.blue,
                     icon: Icon(Icons.send),
-                    onPressed: () {}),
+                    onPressed: () {
+                      Message msg = Message(
+                          messageController.text,
+                          DateTime.now().toIso8601String(),
+                          widget.currentUser.userName);
+                      Pair pair =
+                          Pair(widget.currentUser, widget.userTalkingTo);
+                      Payload load =
+                          Payload(pair.toJson() + msg.toJson(), "send_message");
+                    }),
               ],
             ),
           ),
         ),
       ),
       drawer: SideDrawer(currentUser: widget.currentUser),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     setState(() {});
-      //   },
-      //   tooltip: "Refresh the message list",
-      //   child: Icon(Icons.refresh),
-      // ),
     );
   }
 }

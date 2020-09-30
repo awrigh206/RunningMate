@@ -15,7 +15,6 @@ class Encryption {
   }
 
   Future<Encrypted> encrypt(String plainText) async {
-    //final directory = await getApplicationDocumentsDirectory();
     final parser = RSAKeyParser();
     Directory directory = await getTemporaryDirectory();
     //Int8List key = await getPublicKey();
