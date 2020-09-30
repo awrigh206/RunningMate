@@ -74,14 +74,15 @@ class _MessageViewState extends State<MessageView> {
                     color: Colors.blue,
                     icon: Icon(Icons.send),
                     onPressed: () {
+                      Pair pair =
+                          Pair(widget.currentUser, widget.userTalkingTo);
                       Message msg = Message(
+                          pair,
                           messageController.text,
                           DateTime.now().toIso8601String(),
                           widget.currentUser.userName);
-                      Pair pair =
-                          Pair(widget.currentUser, widget.userTalkingTo);
-                      Payload load =
-                          Payload(pair.toJson() + msg.toJson(), "send_message");
+                      Payload load = Payload(msg.toJson(), "send_message");
+                      tcpHelper.sendPayload(load);
                     }),
               ],
             ),
