@@ -34,7 +34,7 @@ class LoginViewState extends State<LoginView> with TickerProviderStateMixin {
     form = new LoginForm(
       tcp: tcp,
       play: playAnimation,
-      logIn: goToUserPage,
+      goToUserPage: goToUserPage,
     );
   }
 

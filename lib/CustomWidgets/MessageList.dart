@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:application/CustomWidgets/MessageTile.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/ChatRoom.dart';
 import 'package:application/Models/Message.dart';
@@ -47,10 +47,10 @@ class _MessageListState extends State<MessageList> {
                 itemCount: chatRoom.messages.length,
                 itemBuilder: (context, index) {
                   Message message = chatRoom.messages[index];
-                  return ListTile(
-                    title: Text(message.messageBody),
-                    subtitle: Text(message.timeStamp),
-                  );
+                  return MessageTile(
+                      message: message,
+                      fromOtherUser:
+                          message.sender == widget.pair.playerOne.userName);
                 });
           } else if (snapshot.hasError) {
             return new ListTile(

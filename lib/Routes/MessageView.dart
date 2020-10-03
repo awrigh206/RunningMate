@@ -48,7 +48,7 @@ class _MessageViewState extends State<MessageView> {
       body: FooterView(
         children: [
           Padding(
-              padding: new EdgeInsets.all(10.0),
+              padding: new EdgeInsets.all(0.0),
               child: Center(
                 child: SingleChildScrollView(
                   primary: true,
@@ -83,6 +83,7 @@ class _MessageViewState extends State<MessageView> {
                           widget.currentUser.userName);
                       Payload load = Payload(msg.toJson(), "send_message");
                       tcpHelper.sendPayload(load);
+                      setState(() {});
                     }),
               ],
             ),

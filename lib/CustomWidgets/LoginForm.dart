@@ -10,11 +10,15 @@ import 'package:password_strength/password_strength.dart';
 
 class LoginForm extends StatefulWidget {
   LoginForm(
-      {Key key, @required this.tcp, @required this.play, @required this.logIn})
+      {Key key,
+      @required this.tcp,
+      @required this.play,
+      @required this.goToUserPage})
       : super(key: key);
+
   final TcpHelper tcp;
   final Function play;
-  final Function logIn;
+  final Function goToUserPage;
   @override
   _LoginFormState createState() => _LoginFormState();
 }
@@ -144,15 +148,11 @@ class _LoginFormState extends State<LoginForm> {
               children: [
                 RaisedButton(
                     onPressed: () async {
+                      widget.play(true);
                       if (formKey.currentState.validate()) {
-                        await widget.play(true);
                         User user = new User(
                             userNameController.text, "", emailController.text);
-                        bool authenticated = await login(user);
-                        widget.play(false);
-                        if (authenticated) {
-                          widget.logIn(user);
-                        }
+                        login(user);
                       }
                     },
                     child: Text('Submit')),
@@ -178,17 +178,22 @@ class _LoginFormState extends State<LoginForm> {
           .widget
           .tcp
           .sendPayload(new Payload(userEncrypted.toJson(), 'register'));
+      isRegistering = false;
+      login(user);
     } else {
       authentication = await this
           .widget
           .tcp
           .sendPayloadBoolean(Payload(userEncrypted.toJson(), 'login'));
-      return authentication;
     }
     if (userExists && isRegistering) {
       //display message that the user already exists in the  system
       log("user exists");
       showTheDialog();
+    }
+    if (authentication) {
+      widget.play(false);
+      widget.goToUserPage(user);
     }
     return false;
   }
