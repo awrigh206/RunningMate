@@ -1,9 +1,11 @@
 import 'dart:developer';
 
+import 'package:application/DTO/Submission.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:password/password.dart';
 import 'package:password_strength/password_strength.dart';
@@ -29,7 +31,6 @@ class _LoginFormState extends State<LoginForm> {
   final emailController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool isRegistering = false;
-  bool authentication = false;
   bool processing = false;
   @override
   void dispose() {
@@ -148,11 +149,13 @@ class _LoginFormState extends State<LoginForm> {
               children: [
                 RaisedButton(
                     onPressed: () async {
-                      widget.play(true);
                       if (formKey.currentState.validate()) {
-                        User user = new User(
-                            userNameController.text, "", emailController.text);
-                        login(user);
+                        widget.play(true);
+                        User user = new User(userNameController.text,
+                            passwordController.text, emailController.text);
+                        Submission submission = new Submission(isRegistering,
+                            user, widget.goToUserPage, widget.play, widget.tcp);
+                        compute(processSubmission, submission);
                       }
                     },
                     child: Text('Submit')),
@@ -162,40 +165,6 @@ class _LoginFormState extends State<LoginForm> {
         ),
       ),
     );
-  }
-
-  Future<bool> login(User user) async {
-    String password = Password.hash(passwordController.text, new PBKDF2());
-    User userEncrypted =
-        User(userNameController.text, password, emailController.text);
-    await userEncrypted.encryptDetails(); //protect user details
-    bool userExists = await this
-        .widget
-        .tcp
-        .sendPayloadBoolean(new Payload(userEncrypted.toJson(), 'exists'));
-    if (isRegistering && !userExists) {
-      this
-          .widget
-          .tcp
-          .sendPayload(new Payload(userEncrypted.toJson(), 'register'));
-      isRegistering = false;
-      login(user);
-    } else {
-      authentication = await this
-          .widget
-          .tcp
-          .sendPayloadBoolean(Payload(userEncrypted.toJson(), 'login'));
-    }
-    if (userExists && isRegistering) {
-      //display message that the user already exists in the  system
-      log("user exists");
-      showTheDialog();
-    }
-    if (authentication) {
-      widget.play(false);
-      widget.goToUserPage(user);
-    }
-    return false;
   }
 
   Future<void> showTheDialog() async {
@@ -224,4 +193,52 @@ class _LoginFormState extends State<LoginForm> {
       },
     );
   }
+}
+
+Future<void> processSubmission(Submission submission) async {
+  bool userExists = await doesUserExist(submission.user, submission.tcpHelper);
+  bool authentication = false;
+  if (submission.isRegistering && !userExists) {
+    register(submission.user, submission.tcpHelper, submission.goToUserPage);
+  } else {
+    authentication = await login(
+        submission.user, submission.tcpHelper, submission.goToUserPage);
+  }
+  if (userExists && submission.isRegistering) {
+    //display message that the user already exists in the  system
+    log("user exists");
+    //showTheDialog();
+  }
+  if (authentication) {
+    submission.play(false);
+    submission.goToUserPage(submission.user);
+  }
+}
+
+User encryptUser(User user) {
+  return User(user.userName, user.password, user.email);
+}
+
+Future<bool> doesUserExist(User user, TcpHelper tcpHelper) async {
+  user = encryptUser(user);
+  bool userExists =
+      await tcpHelper.sendPayloadBoolean(new Payload(user.toJson(), 'exists'));
+  return userExists;
+}
+
+Future<void> register(
+    User user, TcpHelper tcpHelper, Function goToUserPage) async {
+  User encrypted = encryptUser(user);
+  tcpHelper.sendPayload(new Payload(encrypted.toJson(), 'register'));
+  login(user, tcpHelper, goToUserPage);
+}
+
+Future<bool> login(
+    User user, TcpHelper tcpHelper, Function gotToUserPage) async {
+  user.password = Password.hash(user.password, new PBKDF2());
+  User userEncrypted = User(user.userName, user.password, user.email);
+  await userEncrypted.encryptDetails(); //protect user details
+  bool authentication = await tcpHelper
+      .sendPayloadBoolean(Payload(userEncrypted.toJson(), 'login'));
+  return authentication;
 }

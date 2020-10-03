@@ -25,11 +25,12 @@ class LoginViewState extends State<LoginView> with TickerProviderStateMixin {
   AnimationController loginAnimation;
   Lottie animation;
   LoginForm form;
-  bool processing = false;
+  bool processing;
 
   @override
   void initState() {
     super.initState();
+    processing = false;
     composition = fetchAnimation();
     form = new LoginForm(
       tcp: tcp,
