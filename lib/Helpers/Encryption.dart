@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:encrypt/encrypt.dart';
@@ -16,7 +17,7 @@ class Encryption {
 
   Future<Encrypted> encrypt(String plainText) async {
     final parser = RSAKeyParser();
-    Directory directory = await getTemporaryDirectory();
+    // Directory directory = await getTemporaryDirectory();
     //Int8List key = await getPublicKey();
     var publicKey = await getPublicKey();
     String textKey = String.fromCharCodes(publicKey).substring(2);
@@ -24,7 +25,7 @@ class Encryption {
     //textKey = stringToBase64.decode(textKey);
     //publicKey = utf8.decode(publicKey);
     //RSAAsymmetricKey key = parser.parse(key);
-    await File(directory.path + "/public.pem").writeAsString(textKey);
+    // await File(directory.path + "/public.pem").writeAsString(textKey);
 
     //final publicKey =
     //  await parseKeyFromFile<RSAPublicKey>(directory.path + '/public.pem');

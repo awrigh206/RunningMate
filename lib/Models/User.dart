@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:application/Helpers/Encryption.dart';
 import 'package:encrypt/encrypt.dart';
 
@@ -17,6 +18,10 @@ class User {
     this.password = '';
     this.email = '';
   }
+  @override
+  String toString() {
+    return 'user name: ' + userName + ', email: ' + email;
+  }
 
   User.fromJson(Map<String, dynamic> json)
       : userName = json['userName'],
@@ -29,6 +34,7 @@ class User {
         '"email"': '"' + email + '"',
       };
   encryptDetails() async {
+    log(this.toString());
     Encryption crypt = Encryption();
     Encrypted encryptedName = await crypt.encrypt(this.userName);
     this.userName = encryptedName.base64;

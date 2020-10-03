@@ -12,7 +12,7 @@ import 'package:password_strength/password_strength.dart';
 
 class LoginForm extends StatefulWidget {
   LoginForm(
-      {Key key,
+      {key,
       @required this.tcp,
       @required this.play,
       @required this.goToUserPage})
@@ -153,9 +153,16 @@ class _LoginFormState extends State<LoginForm> {
                         widget.play(true);
                         User user = new User(userNameController.text,
                             passwordController.text, emailController.text);
-                        Submission submission = new Submission(isRegistering,
-                            user, widget.goToUserPage, widget.play, widget.tcp);
-                        compute(processSubmission, submission);
+                        Submission submission =
+                            new Submission(isRegistering, user, widget.tcp);
+                        bool auth =
+                            await compute(processSubmission, submission);
+                        if (auth) {
+                          widget.play(false);
+                          widget.goToUserPage(user);
+                        } else {
+                          widget.play(false);
+                        }
                       }
                     },
                     child: Text('Submit')),
@@ -195,50 +202,50 @@ class _LoginFormState extends State<LoginForm> {
   }
 }
 
-Future<void> processSubmission(Submission submission) async {
-  bool userExists = await doesUserExist(submission.user, submission.tcpHelper);
+Future<bool> processSubmission(Submission submission) async {
+  User user = submission.user;
+  user.password = Password.hash(user.password, new PBKDF2());
+  User userEncrypted = await encryptUser(user);
+  bool userExists = await doesUserExist(userEncrypted, submission.tcpHelper);
   bool authentication = false;
   if (submission.isRegistering && !userExists) {
-    register(submission.user, submission.tcpHelper, submission.goToUserPage);
+    register(userEncrypted, submission.tcpHelper);
   } else {
     authentication = await login(
-        submission.user, submission.tcpHelper, submission.goToUserPage);
+      userEncrypted,
+      submission.tcpHelper,
+    );
   }
+  return authentication;
   if (userExists && submission.isRegistering) {
     //display message that the user already exists in the  system
     log("user exists");
     //showTheDialog();
   }
   if (authentication) {
-    submission.play(false);
-    submission.goToUserPage(submission.user);
+    // submission.play(false);
+    // submission.goToUserPage(submission.user);
   }
 }
 
-User encryptUser(User user) {
-  return User(user.userName, user.password, user.email);
+Future<User> encryptUser(User user) async {
+  await user.encryptDetails();
+  return user;
 }
 
 Future<bool> doesUserExist(User user, TcpHelper tcpHelper) async {
-  user = encryptUser(user);
   bool userExists =
       await tcpHelper.sendPayloadBoolean(new Payload(user.toJson(), 'exists'));
   return userExists;
 }
 
-Future<void> register(
-    User user, TcpHelper tcpHelper, Function goToUserPage) async {
-  User encrypted = encryptUser(user);
-  tcpHelper.sendPayload(new Payload(encrypted.toJson(), 'register'));
-  login(user, tcpHelper, goToUserPage);
+Future<void> register(User user, TcpHelper tcpHelper) async {
+  tcpHelper.sendPayload(new Payload(user.toJson(), 'register'));
+  login(user, tcpHelper);
 }
 
-Future<bool> login(
-    User user, TcpHelper tcpHelper, Function gotToUserPage) async {
-  user.password = Password.hash(user.password, new PBKDF2());
-  User userEncrypted = User(user.userName, user.password, user.email);
-  await userEncrypted.encryptDetails(); //protect user details
-  bool authentication = await tcpHelper
-      .sendPayloadBoolean(Payload(userEncrypted.toJson(), 'login'));
+Future<bool> login(User user, TcpHelper tcpHelper) async {
+  bool authentication =
+      await tcpHelper.sendPayloadBoolean(Payload(user.toJson(), 'login'));
   return authentication;
 }
