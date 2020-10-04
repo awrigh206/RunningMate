@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:application/CustomWidgets/Login/EmailField.dart';
 import 'package:application/CustomWidgets/Login/PasswordField.dart';
 import 'package:application/CustomWidgets/Login/UserNameField.dart';
 import 'package:application/DTO/Submission.dart';
@@ -30,19 +31,14 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final userNameField = UserNameField();
   final passwordField = PasswordField();
-  final emailController = TextEditingController();
+  final emailField = EmailField();
   final formKey = GlobalKey<FormState>();
   bool isRegistering = false;
   bool processing = false;
   @override
   void dispose() {
     // Clean up the controller
-    emailController.dispose();
     super.dispose();
-  }
-
-  bool getProcessing() {
-    return processing;
   }
 
   @override
@@ -59,26 +55,6 @@ class _LoginFormState extends State<LoginForm> {
               if (isRegistering) {
                 return Column(
                   children: [
-                    TextFormField(
-                      autocorrect: false,
-                      controller: emailController,
-                      decoration: const InputDecoration(
-                        hintText: 'Email',
-                      ),
-                      validator: (value) {
-                        String email = emailController.text;
-                        if (!EmailValidator.validate(email)) {
-                          return 'That email is not valid';
-                        }
-                        if (value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        if (value.contains(' ')) {
-                          return 'Please do not use spaces';
-                        }
-                        return null;
-                      },
-                    ),
                     CheckboxListTile(
                         value: isRegistering,
                         title: Text('Register'),
@@ -118,7 +94,7 @@ class _LoginFormState extends State<LoginForm> {
                         User user = new User(
                             userNameField.userNameController.text,
                             passwordField.passwordController.text,
-                            emailController.text);
+                            emailField.emailController.text);
                         Submission submission =
                             new Submission(isRegistering, user, widget.tcp);
                         bool auth =
@@ -183,15 +159,6 @@ Future<bool> processSubmission(Submission submission) async {
     );
   }
   return authentication;
-  if (userExists && submission.isRegistering) {
-    //display message that the user already exists in the  system
-    log("user exists");
-    //showTheDialog();
-  }
-  if (authentication) {
-    // submission.play(false);
-    // submission.goToUserPage(submission.user);
-  }
 }
 
 Future<User> encryptUser(User user) async {
