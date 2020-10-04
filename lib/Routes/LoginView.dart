@@ -1,4 +1,4 @@
-import 'package:application/CustomWidgets/LoginForm.dart';
+import 'package:application/CustomWidgets/Login/LoginForm.dart';
 import 'package:application/Helpers/LocationHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/User.dart';

@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:application/CustomWidgets/Login/PasswordField.dart';
+import 'package:application/CustomWidgets/Login/UserNameField.dart';
 import 'package:application/DTO/Submission.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/Payload.dart';
@@ -26,8 +28,8 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  final userNameController = TextEditingController();
-  final passwordController = TextEditingController();
+  final userNameField = UserNameField();
+  final passwordField = PasswordField();
   final emailController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool isRegistering = false;
@@ -35,9 +37,7 @@ class _LoginFormState extends State<LoginForm> {
   @override
   void dispose() {
     // Clean up the controller
-    userNameController.dispose();
     emailController.dispose();
-    passwordController.dispose();
     super.dispose();
   }
 
@@ -53,44 +53,8 @@ class _LoginFormState extends State<LoginForm> {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            TextFormField(
-              autocorrect: false,
-              controller: userNameController,
-              decoration: const InputDecoration(
-                hintText: 'User Name',
-              ),
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter your username';
-                }
-                if (value.contains(' ')) {
-                  return 'Please do not use spaces';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              autocorrect: false,
-              controller: passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                hintText: 'Password',
-              ),
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter your password';
-                }
-                double passwordStrength =
-                    estimatePasswordStrength(passwordController.text);
-                if (passwordStrength < 0.3) {
-                  return 'Your password is too weak';
-                }
-                if (value.contains(' ')) {
-                  return 'Please do not use spaces';
-                }
-                return null;
-              },
-            ),
+            userNameField,
+            passwordField,
             Builder(builder: (BuildContext context) {
               if (isRegistering) {
                 return Column(
@@ -151,8 +115,10 @@ class _LoginFormState extends State<LoginForm> {
                     onPressed: () async {
                       if (formKey.currentState.validate()) {
                         widget.play(true);
-                        User user = new User(userNameController.text,
-                            passwordController.text, emailController.text);
+                        User user = new User(
+                            userNameField.userNameController.text,
+                            passwordField.passwordController.text,
+                            emailController.text);
                         Submission submission =
                             new Submission(isRegistering, user, widget.tcp);
                         bool auth =
