@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:application/CustomWidgets/Login/EmailField.dart';
 import 'package:application/CustomWidgets/Login/PasswordField.dart';
 import 'package:application/CustomWidgets/Login/UserNameField.dart';
@@ -7,11 +5,9 @@ import 'package:application/DTO/Submission.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:password/password.dart';
-import 'package:password_strength/password_strength.dart';
 
 class LoginForm extends StatefulWidget {
   LoginForm(
