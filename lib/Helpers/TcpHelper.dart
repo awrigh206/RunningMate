@@ -3,19 +3,19 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:application/Models/Message.dart';
 import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
 import 'package:application/Models/WaitingRoom.dart';
 
 class TcpHelper {
   Future<dynamic> sendPayload(Payload load) async {
-    Socket socket = await Socket.connect('82.23.232.59', 9090);
+    Socket socket = await openSocket();
     Completer<dynamic> completer = new Completer<dynamic>();
     socket.write(load.toJson());
 
     socket.listen((data) {
       dynamic sent = parseText(data);
-      log(sent);
       completer.complete(sent);
     }, onDone: () {
       print("Done");
@@ -27,7 +27,7 @@ class TcpHelper {
   }
 
   Future<bool> sendPayloadBoolean(Payload load) async {
-    Socket socket = await Socket.connect('82.23.232.59', 9090);
+    Socket socket = await openSocket();
     Completer<bool> completer = new Completer<bool>();
     socket.write(load.toJson());
 
@@ -52,6 +52,10 @@ class TcpHelper {
     room = WaitingRoom.fromJson(roomMap);
     completer.complete(room);
     return completer.future;
+  }
+
+  Future<Socket> openSocket() async {
+    return await Socket.connect('82.23.232.59', 9090);
   }
 
   String parseText(Uint8List data) {

@@ -1,6 +1,10 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:application/CustomWidgets/MessageList.dart';
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/Helpers/TcpHelper.dart';
+import 'package:application/Models/ChatRoom.dart';
 import 'package:application/Models/Message.dart';
 import 'package:application/Models/Pair.dart';
 import 'package:application/Models/Payload.dart';
@@ -23,11 +27,17 @@ class MessageView extends StatefulWidget {
 class _MessageViewState extends State<MessageView> {
   TcpHelper tcpHelper;
   final messageController = TextEditingController();
-
+  List<Message> newMessages = List();
+  MessageList messageList;
+  Future<ChatRoom> chat;
+  ChatRoom chatRoom;
+  Pair pair;
   @override
   void initState() {
     super.initState();
     tcpHelper = TcpHelper();
+    pair = new Pair(widget.currentUser, widget.userTalkingTo);
+    chat = getChatRoom();
   }
 
   @override
@@ -49,11 +59,33 @@ class _MessageViewState extends State<MessageView> {
               padding: new EdgeInsets.all(0.0),
               child: Center(
                 child: SingleChildScrollView(
-                  primary: true,
-                  child: MessageList(
-                      pair: new Pair(widget.currentUser, widget.userTalkingTo)),
-                ),
-              ))
+                    primary: true,
+                    child: FutureBuilder(
+                      future: chat,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          chatRoom = snapshot.data;
+                          if (newMessages != null) {
+                            chatRoom.messages.addAll(newMessages);
+                          }
+                          return MessageList(
+                            pair: new Pair(
+                              widget.currentUser,
+                              widget.userTalkingTo,
+                            ),
+                            chat: chatRoom,
+                          );
+                        } else if (snapshot.hasError) {
+                          return new ListTile(
+                            title: Text('There has been an error'),
+                            trailing: Icon(Icons.error),
+                          );
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      },
+                    )),
+              )),
         ],
         footer: new Footer(
           child: Padding(
@@ -72,16 +104,7 @@ class _MessageViewState extends State<MessageView> {
                     color: Colors.blue,
                     icon: Icon(Icons.send),
                     onPressed: () {
-                      Pair pair =
-                          Pair(widget.currentUser, widget.userTalkingTo);
-                      Message msg = Message(
-                          pair,
-                          messageController.text,
-                          DateTime.now().toIso8601String(),
-                          widget.currentUser.userName);
-                      Payload load = Payload(msg.toJson(), "send_message");
-                      tcpHelper.sendPayload(load);
-                      setState(() {});
+                      sendMessage(chatRoom);
                     }),
               ],
             ),
@@ -90,5 +113,42 @@ class _MessageViewState extends State<MessageView> {
       ),
       drawer: SideDrawer(currentUser: widget.currentUser),
     );
+  }
+
+  Future<void> sendMessage(ChatRoom chatRoom) async {
+    Pair pair = Pair(widget.currentUser, widget.userTalkingTo);
+    Message msg = Message(pair, messageController.text,
+        DateTime.now().toIso8601String(), widget.currentUser.userName);
+    Payload load = Payload(msg.toJson(), "send_message");
+    tcpHelper.sendPayload(load);
+    log(chatRoom.toJson().toString());
+    Message toAdd = await getNew(chatRoom);
+    setState(() {
+      newMessages.add(toAdd);
+    });
+  }
+
+  Future<ChatRoom> getChatRoom() async {
+    String text =
+        await tcpHelper.sendPayload(new Payload(pair.toJson(), 'get_messages'));
+    return await parseRoom(text);
+  }
+
+  Future<ChatRoom> parseRoom(String text) async {
+    Map roomMap = await jsonDecode(text.substring(2));
+    return ChatRoom.fromJson(roomMap);
+  }
+
+  Future<Message> parseMessage(String text) async {
+    Map msgMap = await jsonDecode(text.substring(2));
+    return Message.fromJson(msgMap);
+  }
+
+  Future<Message> getNew(ChatRoom chat) async {
+    Map json = pair.toJson();
+    json.addAll(chat.messages.last.toJson());
+    String text = await tcpHelper.sendPayload(new Payload(json, 'get_new'));
+    log("we got this: " + text);
+    return await parseMessage(text);
   }
 }
