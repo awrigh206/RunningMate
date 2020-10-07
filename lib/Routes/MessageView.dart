@@ -119,10 +119,19 @@ class _MessageViewState extends State<MessageView> {
     Pair pair = Pair(widget.currentUser, widget.userTalkingTo);
     Message msg = Message(pair, messageController.text,
         DateTime.now().toIso8601String(), widget.currentUser.userName);
+    ChatRoom currentRoom = await chat;
+    for (Message current in currentRoom.messages) {
+      current.pair = pair;
+    }
     Payload load = Payload(msg.toJson(), "send_message");
-    tcpHelper.sendPayload(load);
-    log(chatRoom.toJson().toString());
-    Message toAdd = await getNew(chatRoom);
+    await tcpHelper.sendPayload(load);
+    Message toAdd;
+    if (currentRoom.messages.length > 0) {
+      toAdd = await getNew(currentRoom);
+    } else {
+      toAdd = Message.empty();
+    }
+
     setState(() {
       newMessages.add(toAdd);
     });
@@ -148,7 +157,7 @@ class _MessageViewState extends State<MessageView> {
     Map json = pair.toJson();
     json.addAll(chat.messages.last.toJson());
     String text = await tcpHelper.sendPayload(new Payload(json, 'get_new'));
-    log("we got this: " + text);
+    log("we got this: " + text.substring(2));
     return await parseMessage(text);
   }
 }

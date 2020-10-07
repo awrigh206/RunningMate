@@ -16,7 +16,7 @@ class Message {
     this.pair = pair;
   }
 
-  Message.empty() {}
+  Message.empty();
 
   Message.fromJson(Map<String, dynamic> json)
       : pair = json['pair'],
