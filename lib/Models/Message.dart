@@ -16,7 +16,11 @@ class Message {
     this.pair = pair;
   }
 
-  Message.empty();
+  Message.empty() {
+    this.messageBody = " ";
+    this.sender = " ";
+    this.timeStamp = " ";
+  }
 
   Message.fromJson(Map<String, dynamic> json)
       : pair = json['pair'],

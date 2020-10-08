@@ -27,7 +27,7 @@ class MessageView extends StatefulWidget {
 class _MessageViewState extends State<MessageView> {
   TcpHelper tcpHelper;
   final messageController = TextEditingController();
-  List<Message> newMessages = List();
+  Message newMessage;
   MessageList messageList;
   Future<ChatRoom> chat;
   ChatRoom chatRoom;
@@ -65,8 +65,8 @@ class _MessageViewState extends State<MessageView> {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           chatRoom = snapshot.data;
-                          if (newMessages != null) {
-                            chatRoom.messages.addAll(newMessages);
+                          if (newMessage != null) {
+                            chatRoom.messages.add(newMessage);
                           }
                           return MessageList(
                             pair: new Pair(
@@ -133,7 +133,7 @@ class _MessageViewState extends State<MessageView> {
     }
 
     setState(() {
-      newMessages.add(toAdd);
+      newMessage = toAdd;
     });
   }
 
@@ -155,6 +155,10 @@ class _MessageViewState extends State<MessageView> {
 
   Future<Message> getNew(ChatRoom chat) async {
     Map json = pair.toJson();
+    Message lastMessage = chat.messages.last;
+    if (lastMessage == null || lastMessage.messageBody == "") {
+      lastMessage = new Message.empty();
+    }
     json.addAll(chat.messages.last.toJson());
     String text = await tcpHelper.sendPayload(new Payload(json, 'get_new'));
     log("we got this: " + text.substring(2));

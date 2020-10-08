@@ -18,6 +18,7 @@ class MessageTile extends StatelessWidget {
             message.messageBody,
             style: TextStyle(color: Colors.white),
           ),
+          subtitle: Text("Sent: " + message.timeStamp),
           tileColor: Colors.blue[100],
         );
       } else {
@@ -27,7 +28,7 @@ class MessageTile extends StatelessWidget {
             style: TextStyle(color: Colors.black),
           ),
           subtitle: Text(
-            'Sent by:' + message.sender,
+            'Sent:' + message.timeStamp,
             style: TextStyle(color: Colors.black),
           ),
           tileColor: Colors.white,
