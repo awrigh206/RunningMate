@@ -1,8 +1,6 @@
 import 'package:application/Models/Payload.dart';
 
-/**
- * Class to send a batch of payloads to the server at the same time
- */
+///Class to send a batch of payloads to the server at the same time
 class BatchPayload {
   List<Payload> payloads;
 
