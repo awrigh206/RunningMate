@@ -8,18 +8,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class Slideable extends StatelessWidget {
-  Slideable({Key key, @required this.displayUser, @required this.currentUser})
+  Slideable({Key key, @required this.pair, @required this.updatePage})
       : super(key: key);
-  final User displayUser;
-  final User currentUser;
+  final Pair pair;
   final TcpHelper tcpHelper = TcpHelper();
+  final Function updatePage;
   @override
   Widget build(BuildContext context) {
     return Slidable(
       child: Container(
         color: Colors.white,
         child: ListTile(
-          title: Text("Challenged by: " + displayUser.userName),
+          title: Text("Challenged by: " + pair.playerTwo.userName),
           leading: CircleAvatar(
             backgroundColor: Colors.purpleAccent,
           ),
@@ -33,7 +33,6 @@ class Slideable extends StatelessWidget {
           color: Colors.greenAccent,
           icon: Icons.check,
           onTap: () {
-            Pair pair = new Pair(currentUser, displayUser);
             tcpHelper.sendPayload(new Payload(pair.toJson(), "run"));
             Navigator.push(
               context,
@@ -47,8 +46,8 @@ class Slideable extends StatelessWidget {
           color: Colors.redAccent,
           icon: Icons.remove_circle,
           onTap: () {
-            Pair pair = new Pair(currentUser, displayUser);
             tcpHelper.sendPayload(new Payload(pair.toJson(), "deny"));
+            updatePage();
           },
         )
       ],
@@ -62,7 +61,8 @@ class Slideable extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => MessageView(
-                      currentUser: currentUser, userTalkingTo: displayUser),
+                      currentUser: pair.playerOne,
+                      userTalkingTo: pair.playerTwo),
                 ));
           },
         )

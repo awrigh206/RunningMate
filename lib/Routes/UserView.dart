@@ -1,6 +1,7 @@
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/CustomWidgets/Slideable.dart';
 import 'package:application/Helpers/TcpHelper.dart';
+import 'package:application/Models/Pair.dart';
 import 'package:application/Models/User.dart';
 import 'package:application/Models/WaitingRoom.dart';
 import 'package:application/Routes/SettingsView.dart';
@@ -66,9 +67,9 @@ class UserViewState extends State<UserView> {
                       primary: false,
                       itemBuilder: (context, index) {
                         User current = challangers.waitingUsers[index];
+                        Pair pair = new Pair(this.widget.currentUser, current);
                         return new Slideable(
-                            displayUser: current,
-                            currentUser: this.widget.currentUser);
+                            pair: pair, updatePage: updatePage);
                       });
                 }),
             ListTile(
@@ -114,5 +115,9 @@ class UserViewState extends State<UserView> {
       ),
       drawer: SideDrawer(currentUser: this.widget.currentUser),
     );
+  }
+
+  void updatePage() {
+    setState(() {});
   }
 }

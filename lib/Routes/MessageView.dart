@@ -95,9 +95,14 @@ class _MessageViewState extends State<MessageView> {
                 Expanded(
                   child: TextField(
                     controller: messageController,
-                    decoration: const InputDecoration(
-                      hintText: 'Message',
-                    ),
+                    decoration: InputDecoration(
+                        hintText: 'Message',
+                        prefixIcon: IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () {
+                            messageController.clear();
+                          },
+                        )),
                   ),
                 ),
                 IconButton(
@@ -134,6 +139,7 @@ class _MessageViewState extends State<MessageView> {
 
     setState(() {
       newMessage = toAdd;
+      messageController.clear();
     });
   }
 

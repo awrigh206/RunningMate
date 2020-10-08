@@ -18,7 +18,6 @@ class MessageList extends StatefulWidget {
 class _MessageListState extends State<MessageList> {
   TcpHelper tcpHelper;
   Message lastMessage;
-
   @override
   void initState() {
     super.initState();
@@ -50,7 +49,7 @@ class _MessageListState extends State<MessageList> {
             return MessageTile(
                 message: message,
                 fromOtherUser:
-                    message.sender == widget.pair.playerOne.userName);
+                    message.sender != widget.pair.playerOne.userName);
           });
     });
   }
