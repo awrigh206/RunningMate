@@ -51,11 +51,11 @@ class _LoginFormState extends State<LoginForm> {
               if (isRegistering) {
                 return Column(
                   children: [
+                    emailField,
                     CheckboxListTile(
                         value: isRegistering,
                         title: Text('Register'),
                         onChanged: (bool value) {
-                          //so  something  when box is changed
                           setState(() {
                             isRegistering = value;
                           });
