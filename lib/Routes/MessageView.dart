@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -25,6 +26,7 @@ class MessageView extends StatefulWidget {
 }
 
 class _MessageViewState extends State<MessageView> {
+  Timer updateTimer;
   TcpHelper tcpHelper;
   final messageController = TextEditingController();
   Message newMessage;
@@ -38,6 +40,18 @@ class _MessageViewState extends State<MessageView> {
     tcpHelper = TcpHelper();
     pair = new Pair(widget.currentUser, widget.userTalkingTo);
     chat = getChatRoom();
+    updateTimer = Timer.periodic(Duration(seconds: 2), (timer) async {
+      newMessage = await getNew(await chat);
+      if (newMessage.messageBody != chatRoom.messages.last.messageBody) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    updateTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -97,7 +111,7 @@ class _MessageViewState extends State<MessageView> {
                     controller: messageController,
                     decoration: InputDecoration(
                         hintText: 'Message',
-                        prefixIcon: IconButton(
+                        suffixIcon: IconButton(
                           icon: Icon(Icons.clear),
                           onPressed: () {
                             messageController.clear();
