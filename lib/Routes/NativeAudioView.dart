@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class NativeAudioView extends StatefulWidget {
   NativeAudioView({Key key, @required this.currentUser}) : super(key: key);
@@ -11,6 +14,8 @@ class NativeAudioView extends StatefulWidget {
 }
 
 class _NativeAudioViewState extends State<NativeAudioView> {
+  static const platform =
+      const MethodChannel('application.flutter.dev/playSound');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,8 +24,13 @@ class _NativeAudioViewState extends State<NativeAudioView> {
         title: Text('Audio Test'),
         actions: [
           IconButton(
-              icon: Icon(Icons.refresh),
-              onPressed: () {
+              icon: Icon(Icons.message),
+              onPressed: () async {
+                try {
+                  await platform.invokeMethod('playAudio');
+                } on PlatformException catch (e) {
+                  log(e.message);
+                }
                 setState(() {});
               }),
         ],
