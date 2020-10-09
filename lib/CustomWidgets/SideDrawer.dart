@@ -1,4 +1,5 @@
 import 'package:application/Models/User.dart';
+import 'package:application/Routes/NativeAudioView.dart';
 import 'package:application/Routes/SettingsView.dart';
 import 'package:application/Routes/WaitingView.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,18 @@ class SideDrawer extends StatelessWidget {
             },
             leading: Icon(Icons.account_box),
           ),
+          Divider(),
+          ListTile(
+            title: Text('Native Audio Testing'),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => NativeAudioView(
+                            currentUser: currentUser,
+                          )));
+            },
+          )
         ],
       ),
     );
