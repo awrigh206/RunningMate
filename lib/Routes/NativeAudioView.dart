@@ -27,7 +27,8 @@ class _NativeAudioViewState extends State<NativeAudioView> {
               icon: Icon(Icons.message),
               onPressed: () async {
                 try {
-                  await platform.invokeMethod('playAudio');
+                  await platform.invokeMethod(
+                      'playAudio', {'fileName': 'totalitarian.ogg'});
                 } on PlatformException catch (e) {
                   log(e.message);
                 }
