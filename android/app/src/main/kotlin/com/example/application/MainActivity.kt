@@ -1,5 +1,6 @@
 package com.example.application
 
+import android.content.res.Resources
 import com.google.vr.sdk.audio.GvrAudioEngine
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -20,7 +21,7 @@ class MainActivity: FlutterActivity() {
             call, result ->
             if(call.method == "playAudio"){
                 //Run the native code to play audio using resonance engine
-                var fileName: String ="Sounds/"+ call.argument<String>("fileName")!!;
+                var fileName: String ="package:raw/"+ call.argument<String>("fileName")!!;
                 playAudio(fileName);
             }
         }
@@ -29,14 +30,15 @@ class MainActivity: FlutterActivity() {
     private fun playAudio(fileName: String){
         Thread(
             Runnable {
+
                 prepareAudio();
                 // Preload the sound file
-                //audioEngine?.preloadSoundFile(fileName)!!;
-                sourceId = R.raw.totalitarian;
+                audioEngine?.preloadSoundFile(fileName)!!;
+                sourceId = audioEngine?.createSoundObject(fileName)!!;
                 audioEngine?.setSoundObjectPosition(
                         sourceId, 0.0F,0.0F, 0.0F);
                 audioEngine?.playSound(sourceId, true /* looped playback */);
-                Logger.getLogger(MainActivity::class.java.name).warning("Playing sound effect");
+                Logger.getLogger(MainActivity::class.java.name).warning("Play Sound");
             })
             .start()
     }
