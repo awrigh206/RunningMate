@@ -53,7 +53,7 @@ class TcpHelper {
   }
 
   Future<Socket> openSocket() async {
-    return await Socket.connect('82.23.232.59', 9090);
+    return await Socket.connect('192.168.0.45', 9090);
   }
 
   String parseText(Uint8List data) {

@@ -38,7 +38,7 @@ class Encryption {
   }
 
   Future<Uint8List> getPublicKey() async {
-    Socket socket = await Socket.connect('82.23.232.59', 9090);
+    Socket socket = await Socket.connect('192.168.0.45', 9090);
     var completer = new Completer<Uint8List>();
     socket.write("key");
 

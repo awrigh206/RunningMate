@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:application/CustomWidgets/Login/EmailField.dart';
 import 'package:application/CustomWidgets/Login/PasswordField.dart';
 import 'package:application/CustomWidgets/Login/UserNameField.dart';
@@ -146,6 +148,8 @@ Future<bool> processSubmission(Submission submission) async {
   User userEncrypted = await encryptUser(user);
   bool userExists = await doesUserExist(userEncrypted, submission.tcpHelper);
   bool authentication = false;
+  log("user exists: " + userExists.toString());
+  log("authenticated: " + authentication.toString());
   if (submission.isRegistering && !userExists) {
     register(userEncrypted, submission.tcpHelper);
   } else {
