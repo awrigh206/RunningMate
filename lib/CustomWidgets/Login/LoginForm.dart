@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:application/CustomWidgets/Login/EmailField.dart';
@@ -10,6 +11,7 @@ import 'package:application/Models/User.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:password/password.dart';
+import 'package:http/http.dart' as http;
 
 class LoginForm extends StatefulWidget {
   LoginForm(
@@ -145,18 +147,15 @@ class _LoginFormState extends State<LoginForm> {
 Future<bool> processSubmission(Submission submission) async {
   User user = submission.user;
   user.password = Password.hash(user.password, new PBKDF2());
-  User userEncrypted = await encryptUser(user);
-  bool userExists = await doesUserExist(userEncrypted, submission.tcpHelper);
+  // User userEncrypted = await encryptUser(user);
+  bool userExists = await doesUserExist(user);
   bool authentication = false;
   log("user exists: " + userExists.toString());
   log("authenticated: " + authentication.toString());
   if (submission.isRegistering && !userExists) {
-    register(userEncrypted, submission.tcpHelper);
+    register(user);
   } else {
-    authentication = await login(
-      userEncrypted,
-      submission.tcpHelper,
-    );
+    authentication = await login(user);
   }
   return authentication;
 }
@@ -166,19 +165,32 @@ Future<User> encryptUser(User user) async {
   return user;
 }
 
-Future<bool> doesUserExist(User user, TcpHelper tcpHelper) async {
-  bool userExists =
-      await tcpHelper.sendPayloadBoolean(new Payload(user.toJson(), 'exists'));
+Future<bool> doesUserExist(User user) async {
+  // bool userExists =
+  //     await tcpHelper.sendPayloadBoolean(new Payload(user.toJson(), 'exists'));
+  final response = await http.get('https://192.168.0.45:9090/user/exists');
+  bool userExists = false;
+  if (response.statusCode == 200) {
+    userExists = jsonDecode(response.body);
+  }
   return userExists;
 }
 
-Future<void> register(User user, TcpHelper tcpHelper) async {
-  tcpHelper.sendPayload(new Payload(user.toJson(), 'register'));
-  login(user, tcpHelper);
+Future<void> register(User user) async {
+  final response = await http.post('https://192.168.0.45:9090/user',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'authorization': 'Basic QWRtaW46cGFzc3dvcmQ=',
+      },
+      body: jsonEncode(user.toJson()));
+  login(user);
 }
 
-Future<bool> login(User user, TcpHelper tcpHelper) async {
-  bool authentication =
-      await tcpHelper.sendPayloadBoolean(Payload(user.toJson(), 'login'));
+Future<bool> login(User user) async {
+  //bool authentication =
+  //await tcpHelper.sendPayloadBoolean(Payload(user.toJson(), 'login'));
+
+  final response = await http.get('https://192.168.0.45:9090/user/auth');
+  bool authentication = jsonDecode(response.body);
   return authentication;
 }
