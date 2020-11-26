@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
-
+import 'dart:io';
 import 'package:application/CustomWidgets/Login/EmailField.dart';
 import 'package:application/CustomWidgets/Login/PasswordField.dart';
 import 'package:application/CustomWidgets/Login/UserNameField.dart';
 import 'package:application/DTO/Submission.dart';
 import 'package:application/Helpers/TcpHelper.dart';
-import 'package:application/Models/Payload.dart';
+import 'package:application/HttpSetting.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -96,7 +96,7 @@ class _LoginFormState extends State<LoginForm> {
                             passwordField.passwordController.text,
                             emailField.emailController.text);
                         Submission submission =
-                            new Submission(isRegistering, user, widget.tcp);
+                            new Submission(isRegistering, user);
                         bool auth =
                             await compute(processSubmission, submission);
                         if (auth) {
@@ -145,13 +145,12 @@ class _LoginFormState extends State<LoginForm> {
 }
 
 Future<bool> processSubmission(Submission submission) async {
+  HttpOverrides.global = new HttpSetting();
   User user = submission.user;
   user.password = Password.hash(user.password, new PBKDF2());
   // User userEncrypted = await encryptUser(user);
   bool userExists = await doesUserExist(user);
   bool authentication = false;
-  log("user exists: " + userExists.toString());
-  log("authenticated: " + authentication.toString());
   if (submission.isRegistering && !userExists) {
     register(user);
   } else {
@@ -166,13 +165,18 @@ Future<User> encryptUser(User user) async {
 }
 
 Future<bool> doesUserExist(User user) async {
-  // bool userExists =
-  //     await tcpHelper.sendPayloadBoolean(new Payload(user.toJson(), 'exists'));
-  final response = await http.get('https://192.168.0.45:9090/user/exists');
   bool userExists = false;
-  if (response.statusCode == 200) {
-    userExists = jsonDecode(response.body);
-  }
+  log(user.toJson().toString());
+  final response = await http.post('https://192.168.0.45:9090/user/exists',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'authorization': 'Basic QWRtaW46cGFzc3dvcmQ=',
+      },
+      body: user.toJson());
+  //bool authentication = jsonDecode(response.body);
+  print(response.body.toString());
+  bool authentication = true;
+  log("auth status " + authentication.toString());
   return userExists;
 }
 
@@ -187,10 +191,9 @@ Future<void> register(User user) async {
 }
 
 Future<bool> login(User user) async {
-  //bool authentication =
-  //await tcpHelper.sendPayloadBoolean(Payload(user.toJson(), 'login'));
-
   final response = await http.get('https://192.168.0.45:9090/user/auth');
-  bool authentication = jsonDecode(response.body);
+  //bool authentication = jsonDecode(response.body);
+  bool authentication = true;
+  log("auth status " + authentication.toString());
   return authentication;
 }

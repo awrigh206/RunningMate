@@ -1,7 +1,11 @@
+import 'dart:io';
+
+import 'package:application/HttpSetting.dart';
 import 'package:application/Routes/LoginView.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  HttpOverrides.global = new HttpSetting();
   runApp(MyApp());
 }
 

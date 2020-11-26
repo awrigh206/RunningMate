@@ -6,5 +6,5 @@ class Submission {
   User user;
   TcpHelper tcpHelper;
 
-  Submission(this.isRegistering, this.user, this.tcpHelper);
+  Submission(this.isRegistering, this.user);
 }
