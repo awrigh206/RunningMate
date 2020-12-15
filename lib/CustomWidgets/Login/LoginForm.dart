@@ -173,7 +173,9 @@ Future<bool> doesUserExist(User user) async {
   HttpHelper helper = HttpHelper(user);
   final response = await helper.postRequest(
       'https://192.168.0.45:9090/user/exists', user.toJson());
-  userExists = jsonDecode(response.data);
+  //userExists = jsonDecode(response.data);
+  //TODO: fix this check
+  userExists = false;
   return userExists;
 }
 

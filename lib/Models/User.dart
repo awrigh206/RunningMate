@@ -30,9 +30,9 @@ class User {
         email = json['email'];
 
   Map<String, dynamic> toJson() => {
-        '"userName"': '"' + userName + '"',
-        '"password"': '"' + password + '"',
-        '"email"': '"' + email + '"',
+        'userName': userName,
+        'password': password,
+        'email': email,
       };
   encryptDetails() async {
     log(this.toString());
