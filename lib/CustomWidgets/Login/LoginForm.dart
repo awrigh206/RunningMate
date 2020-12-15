@@ -5,9 +5,11 @@ import 'package:application/CustomWidgets/Login/EmailField.dart';
 import 'package:application/CustomWidgets/Login/PasswordField.dart';
 import 'package:application/CustomWidgets/Login/UserNameField.dart';
 import 'package:application/DTO/Submission.dart';
+import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/HttpSetting.dart';
 import 'package:application/Models/User.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:password/password.dart';
@@ -149,8 +151,8 @@ Future<bool> processSubmission(Submission submission) async {
   //enable self signed certificate
   HttpOverrides.global = new HttpSetting();
   User user = submission.user;
-  user.password = Password.hash(user.password,
-      new PBKDF2()); //hash password, this operation is expensive, needs to be done on seperate thread
+  // user.password = Password.hash(user.password,
+  //     new PBKDF2()); //hash password, this operation is expensive, needs to be done on seperate thread
   bool userExists = await doesUserExist(user);
   bool authentication = false; //auth is false by default
   if (submission.isRegistering && !userExists) {
@@ -168,36 +170,24 @@ Future<User> encryptUser(User user) async {
 
 Future<bool> doesUserExist(User user) async {
   bool userExists = false;
-  log(user.toJson().toString());
-  final response = await http.post('https://192.168.0.45:9090/user/exists',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'authorization': 'Basic QWRtaW46cGFzc3dvcmQ=',
-      },
-      body: jsonEncode(user.toJson()));
-  userExists = jsonDecode(response.body);
+  HttpHelper helper = HttpHelper(user);
+  final response = await helper.postRequest(
+      'https://192.168.0.45:9090/user/exists', user.toJson());
+  userExists = jsonDecode(response.data);
   return userExists;
 }
 
 Future<bool> register(User user) async {
-  final response = await http.post('https://192.168.0.45:9090/user',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'authorization': 'Basic QWRtaW46cGFzc3dvcmQ=',
-      },
-      body: jsonEncode(user.toJson()));
-  log(jsonEncode(user.toJson()));
+  HttpHelper helper = HttpHelper(user);
+  final response =
+      await helper.postRequest('https://192.168.0.45:9090/user', user.toJson());
   return true;
 }
 
 Future<bool> login(User user) async {
-  final response = await http.post('https://192.168.0.45:9090/user/auth',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'authorization': 'Basic QWRtaW46cGFzc3dvcmQ=',
-      },
-      body: jsonEncode(user.toJson()));
-  bool authentication = jsonDecode(response.body);
-  log("auth status " + authentication.toString());
+  HttpHelper helper = HttpHelper(user);
+  Response response = await helper.postRequest(
+      'https://192.168.0.45:9090/user/auth', user.toJson());
+  bool authentication = jsonDecode(response.data);
   return authentication;
 }
