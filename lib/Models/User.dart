@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:application/Helpers/Encryption.dart';
 import 'package:encrypt/encrypt.dart';
@@ -41,5 +42,12 @@ class User {
 
     Encrypted encryptedEmail = await crypt.encrypt(this.email);
     this.email = encryptedEmail.base64;
+  }
+
+  String authenticationString() {
+    String auth = userName + ':' + password;
+    var bytes = utf8.encode(auth);
+    var base64String = base64.encode(bytes);
+    return base64String;
   }
 }

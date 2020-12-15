@@ -43,6 +43,8 @@ dependencies:
   lottie: ^0.6.0
   footer:
   http: 
+  string_validator: ^0.1.4
+  dio: ^3.0.0
 
 dev_dependencies:
   flutter_test:
