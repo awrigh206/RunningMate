@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 import 'package:application/CustomWidgets/Login/EmailField.dart';
 import 'package:application/CustomWidgets/Login/PasswordField.dart';
@@ -9,12 +7,8 @@ import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/HttpSetting.dart';
 import 'package:application/Models/User.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:password/password.dart';
-import 'package:http/http.dart' as http;
-import 'package:string_validator/string_validator.dart';
 
 class LoginForm extends StatefulWidget {
   LoginForm(
@@ -151,8 +145,6 @@ Future<bool> processSubmission(Submission submission) async {
   //enable self signed certificate
   HttpOverrides.global = new HttpSetting();
   User user = submission.user;
-  // user.password = Password.hash(user.password,
-  //     new PBKDF2()); //hash password, this operation is expensive, needs to be done on seperate thread
   bool userExists = await doesUserExist(user);
   bool authentication = false; //auth is false by default
   if (submission.isRegistering && !userExists) {
@@ -188,8 +180,6 @@ Future<bool> register(User user) async {
 
 Future<bool> login(User user) async {
   HttpHelper helper = HttpHelper(user);
-  Response response = await helper.postRequest(
-      'https://192.168.0.45:9090/user/auth', user.toJson());
-  bool authentication = jsonDecode(response.data);
-  return authentication;
+  bool auth = await helper.login('https://192.168.0.45:9090/user/auth', true);
+  return auth;
 }

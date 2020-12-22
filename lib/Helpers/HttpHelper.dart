@@ -21,6 +21,21 @@ class HttpHelper {
     return await dio.get(requestUrl);
   }
 
+  Future<bool> login(String requestUrl, bool auth) async {
+    try {
+      Response response = await getRequest(requestUrl, auth);
+      if (response.statusCode == 200) {
+        return true;
+      }
+    } on DioError catch (exception) {
+      if (exception.response.statusCode == 401 ||
+          exception.response.statusCode == 403) {
+        return false;
+      }
+    }
+    return false;
+  }
+
   Future<Response> putRequest(
       String requestUrl, Map<String, dynamic> toSend) async {
     Dio dio = new Dio();
@@ -36,7 +51,13 @@ class HttpHelper {
     dio.options.headers = {
       HttpHeaders.authorizationHeader: "Basic " + user.authenticationString(),
     };
-    return await dio.post(requestUrl, data: jsonEncode(toSend));
+    Response res = await dio.post(requestUrl, data: jsonEncode(toSend));
+    if (res.statusCode != 200 || res.statusCode != 201) {
+      //Something went  wrong with the request
+      return null;
+    } else {
+      return res;
+    }
   }
 
   Future<Response> authorize(String requestUrl) async {
