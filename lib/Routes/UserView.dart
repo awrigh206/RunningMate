@@ -36,9 +36,8 @@ class UserViewState extends State<UserView> {
     List<String> waitingList = List();
     Response res =
         await helper.getRequest('https://192.168.0.45:9090' + "/waiting", true);
-    if (res.data.toString().isNotEmpty) {
-      waitingList = (jsonDecode(res.data) as List<dynamic>).cast<String>();
-    }
+    //waitingList = jsonDecode(res.data);
+    waitingList = res.data != null ? List.from(res.data) : null;
     return waitingList;
   }
 
