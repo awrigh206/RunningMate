@@ -45,6 +45,7 @@ dependencies:
   http: 
   string_validator: ^0.1.4
   dio: ^3.0.0
+  shared_preferences: any
 
 dev_dependencies:
   flutter_test:

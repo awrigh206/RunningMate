@@ -1,8 +1,8 @@
 import 'dart:io';
-
 import 'package:application/HttpSetting.dart';
 import 'package:application/Routes/LoginView.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   HttpOverrides.global = new HttpSetting();
@@ -21,5 +21,10 @@ class MyApp extends StatelessWidget {
       ),
       home: LoginView(title: 'Runnng Mate'),
     );
+  }
+
+  Future<void> setup() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("server", "https://192.168.0.45:9090");
   }
 }

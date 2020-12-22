@@ -3,12 +3,13 @@ import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/ChatRoom.dart';
 import 'package:application/Models/Message.dart';
 import 'package:application/Models/Pair.dart';
+import 'package:application/Models/StringPair.dart';
 import 'package:flutter/material.dart';
 
 class MessageList extends StatefulWidget {
   MessageList({Key key, @required this.pair, @required this.chat})
       : super(key: key);
-  final Pair pair;
+  final StringPair pair;
   final ChatRoom chat;
 
   @override
@@ -48,8 +49,7 @@ class _MessageListState extends State<MessageList> {
             Message message = chatRoom.messages[index];
             return MessageTile(
                 message: message,
-                fromOtherUser:
-                    message.sender != widget.pair.playerOne.userName);
+                fromOtherUser: message.sender != widget.pair.userOne);
           });
     });
   }

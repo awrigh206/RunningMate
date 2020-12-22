@@ -1,12 +1,17 @@
+import 'dart:convert';
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/CustomWidgets/Slideable.dart';
+import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/Pair.dart';
+import 'package:application/Models/StringPair.dart';
 import 'package:application/Models/User.dart';
 import 'package:application/Models/WaitingRoom.dart';
 import 'package:application/Routes/SettingsView.dart';
 import 'package:application/Routes/WaitingView.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserView extends StatefulWidget {
   UserView({Key key, @required this.currentUser}) : super(key: key);
@@ -18,7 +23,7 @@ class UserView extends StatefulWidget {
 
 class UserViewState extends State<UserView> {
   TcpHelper tcpHelper;
-  Future<WaitingRoom> challenger;
+  Future<List<String>> challengers;
 
   @override
   void initState() {
@@ -26,9 +31,25 @@ class UserViewState extends State<UserView> {
     tcpHelper = TcpHelper();
   }
 
+  Future<List<String>> getWaiting() async {
+    HttpHelper helper = HttpHelper(this.widget.currentUser);
+    List<String> waitingList = List();
+    Response res =
+        await helper.getRequest('https://192.168.0.45:9090' + "/waiting", true);
+    if (res.data.toString().isNotEmpty) {
+      waitingList = (jsonDecode(res.data) as List<dynamic>).cast<String>();
+    }
+    return waitingList;
+  }
+
+  Future<String> getServer() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString("server");
+  }
+
   @override
   Widget build(BuildContext context) {
-    challenger = tcpHelper.getWaitingRoom(this.widget.currentUser, 'check');
+    challengers = getWaiting();
     return Scaffold(
       appBar: AppBar(
         title: Text("Home"),
@@ -45,7 +66,7 @@ class UserViewState extends State<UserView> {
                   color: Colors.blue[500],
                 )),
             FutureBuilder<dynamic>(
-                future: challenger,
+                future: challengers,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return new ListTile(
@@ -60,14 +81,16 @@ class UserViewState extends State<UserView> {
                       trailing: Icon(Icons.error),
                     );
                   }
-                  WaitingRoom challangers = snapshot.data;
+                  List<String> challangers = snapshot.data;
                   return ListView.builder(
                       shrinkWrap: true,
-                      itemCount: challangers.waitingUsers.length,
+                      itemCount: challangers.length,
                       primary: false,
                       itemBuilder: (context, index) {
-                        User current = challangers.waitingUsers[index];
-                        Pair pair = new Pair(this.widget.currentUser, current);
+                        String current = challangers[index];
+                        //Pair pair = new Pair(this.widget.currentUser, current);
+                        StringPair pair = new StringPair(
+                            this.widget.currentUser.userName, current);
                         return new Slideable(
                             pair: pair, updatePage: updatePage);
                       });

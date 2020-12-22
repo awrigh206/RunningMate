@@ -1,6 +1,6 @@
 import 'package:application/Helpers/TcpHelper.dart';
-import 'package:application/Models/Pair.dart';
 import 'package:application/Models/Payload.dart';
+import 'package:application/Models/StringPair.dart';
 import 'package:application/Routes/ActiveView.dart';
 import 'package:application/Routes/MessageView.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 class Slideable extends StatelessWidget {
   Slideable({Key key, @required this.pair, @required this.updatePage})
       : super(key: key);
-  final Pair pair;
+  final StringPair pair;
   final TcpHelper tcpHelper = TcpHelper();
   final Function updatePage;
   @override
@@ -18,7 +18,7 @@ class Slideable extends StatelessWidget {
       child: Container(
         color: Colors.white,
         child: ListTile(
-          title: Text("Challenged by: " + pair.playerTwo.userName),
+          title: Text("Challenged by: " + pair.userTwo),
           leading: CircleAvatar(
             backgroundColor: Colors.purpleAccent,
           ),
@@ -59,10 +59,9 @@ class Slideable extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => MessageView(
-                      currentUser: pair.playerOne,
-                      userTalkingTo: pair.playerTwo),
-                ));
+                    builder: (context) => MessageView(
+                          pair: pair,
+                        )));
           },
         )
       ],

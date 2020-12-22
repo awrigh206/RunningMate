@@ -9,6 +9,7 @@ import 'package:application/HttpSetting.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginForm extends StatefulWidget {
   LoginForm(
@@ -182,4 +183,9 @@ Future<bool> login(User user) async {
   HttpHelper helper = HttpHelper(user);
   bool auth = await helper.login('https://192.168.0.45:9090/user/auth', true);
   return auth;
+}
+
+Future<String> getServer() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString("server");
 }
