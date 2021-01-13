@@ -34,8 +34,8 @@ class UserViewState extends State<UserView> {
   Future<List<String>> getWaiting() async {
     HttpHelper helper = HttpHelper(this.widget.currentUser);
     List<String> waitingList = List();
-    Response res =
-        await helper.getRequest('https://192.168.0.45:9090' + "/waiting", true);
+    Response res = await helper.getRequest(
+        'https://192.168.0.45:9090' + "/user/ready", true);
     //waitingList = jsonDecode(res.data);
     waitingList = res.data != null ? List.from(res.data) : null;
     return waitingList;
