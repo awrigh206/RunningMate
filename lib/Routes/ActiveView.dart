@@ -6,12 +6,13 @@ import 'package:application/Models/Distance.dart';
 import 'package:application/Models/Pair.dart';
 import 'package:application/Models/Payload.dart';
 import 'package:application/Models/Position.dart';
+import 'package:application/Models/StringPair.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 
 class ActiveView extends StatefulWidget {
   ActiveView({Key key, @required this.currentPair}) : super(key: key);
-  final Pair currentPair;
+  final StringPair currentPair;
   @override
   _ActiveViewState createState() => _ActiveViewState();
 }
@@ -34,16 +35,12 @@ class _ActiveViewState extends State<ActiveView> {
   }
 
   Future<void> sendData() async {
-    String id = this.widget.currentPair.playerOne.userName +
-        this.widget.currentPair.playerTwo.userName;
+    String id =
+        this.widget.currentPair.userOne + this.widget.currentPair.userTwo;
     //Code in this function body is run every two seconds
     LocationData locationData = await locationHelper.getLocationBasic();
-    Position currentPosition = new Position(
-        id,
-        this.widget.currentPair.playerOne.userName,
-        locationData.latitude,
-        locationData.longitude,
-        locationData.altitude);
+    Position currentPosition = new Position(id, this.widget.currentPair.userOne,
+        locationData.latitude, locationData.longitude, locationData.altitude);
     tcpHelper.sendPayload(new Payload(currentPosition.toJson(), 'update'));
   }
 
@@ -65,11 +62,11 @@ class _ActiveViewState extends State<ActiveView> {
         children: [
           ListTile(
             title: Text('Player One: '),
-            trailing: Text(this.widget.currentPair.playerOne.userName),
+            trailing: Text(this.widget.currentPair.userOne),
           ),
           ListTile(
             title: Text('Player Two: '),
-            trailing: Text(this.widget.currentPair.playerTwo.userName),
+            trailing: Text(this.widget.currentPair.userTwo),
           )
         ],
       )),

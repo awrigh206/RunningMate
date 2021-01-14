@@ -1,15 +1,15 @@
-import 'dart:developer';
-
+import 'dart:io';
 import 'package:application/CustomWidgets/Login/EmailField.dart';
 import 'package:application/CustomWidgets/Login/PasswordField.dart';
 import 'package:application/CustomWidgets/Login/UserNameField.dart';
 import 'package:application/DTO/Submission.dart';
+import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
-import 'package:application/Models/Payload.dart';
+import 'package:application/HttpSetting.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:password/password.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginForm extends StatefulWidget {
   LoginForm(
@@ -94,7 +94,7 @@ class _LoginFormState extends State<LoginForm> {
                             passwordField.passwordController.text,
                             emailField.emailController.text);
                         Submission submission =
-                            new Submission(isRegistering, user, widget.tcp);
+                            new Submission(isRegistering, user);
                         bool auth =
                             await compute(processSubmission, submission);
                         if (auth) {
@@ -143,20 +143,15 @@ class _LoginFormState extends State<LoginForm> {
 }
 
 Future<bool> processSubmission(Submission submission) async {
+  //enable self signed certificate
+  HttpOverrides.global = new HttpSetting();
   User user = submission.user;
-  user.password = Password.hash(user.password, new PBKDF2());
-  User userEncrypted = await encryptUser(user);
-  bool userExists = await doesUserExist(userEncrypted, submission.tcpHelper);
-  bool authentication = false;
-  log("user exists: " + userExists.toString());
-  log("authenticated: " + authentication.toString());
+  bool userExists = await doesUserExist(user);
+  bool authentication = false; //auth is false by default
   if (submission.isRegistering && !userExists) {
-    register(userEncrypted, submission.tcpHelper);
+    authentication = await register(user);
   } else {
-    authentication = await login(
-      userEncrypted,
-      submission.tcpHelper,
-    );
+    authentication = await login(user);
   }
   return authentication;
 }
@@ -166,19 +161,31 @@ Future<User> encryptUser(User user) async {
   return user;
 }
 
-Future<bool> doesUserExist(User user, TcpHelper tcpHelper) async {
-  bool userExists =
-      await tcpHelper.sendPayloadBoolean(new Payload(user.toJson(), 'exists'));
+Future<bool> doesUserExist(User user) async {
+  bool userExists = false;
+  HttpHelper helper = HttpHelper(user);
+  final response = await helper.postRequest(
+      'https://192.168.0.45:9090/user/exists', user.toJson());
+  //userExists = jsonDecode(response.data);
+  //TODO: fix this check
+  userExists = false;
   return userExists;
 }
 
-Future<void> register(User user, TcpHelper tcpHelper) async {
-  tcpHelper.sendPayload(new Payload(user.toJson(), 'register'));
-  login(user, tcpHelper);
+Future<bool> register(User user) async {
+  HttpHelper helper = HttpHelper(user);
+  final response =
+      await helper.postRequest('https://192.168.0.45:9090/user', user.toJson());
+  return true;
 }
 
-Future<bool> login(User user, TcpHelper tcpHelper) async {
-  bool authentication =
-      await tcpHelper.sendPayloadBoolean(Payload(user.toJson(), 'login'));
-  return authentication;
+Future<bool> login(User user) async {
+  HttpHelper helper = HttpHelper(user);
+  bool auth = await helper.login('https://192.168.0.45:9090/user/auth', true);
+  return auth;
+}
+
+Future<String> getServer() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString("server");
 }

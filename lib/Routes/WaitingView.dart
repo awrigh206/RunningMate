@@ -1,9 +1,8 @@
 import 'package:application/CustomWidgets/SideDrawer.dart';
+import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
-import 'package:application/Models/Pair.dart';
-import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
-import 'package:application/Models/WaitingRoom.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class WaitingView extends StatefulWidget {
@@ -20,15 +19,15 @@ class _WaitingViewState extends State<WaitingView> {
 
   @override
   Widget build(BuildContext context) {
-    Future<WaitingRoom> waitingRoom =
-        this.widget.tcp.getWaitingRoom(this.widget.myUser, "ready");
+    setReady();
+    Future<List<String>> waitingUsers = getWaitingUsers();
     return Scaffold(
       appBar: AppBar(
         title: Text("Waiting Room"),
       ),
       body: Center(
         child: FutureBuilder(
-          future: waitingRoom,
+          future: waitingUsers,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return CircularProgressIndicator();
@@ -36,20 +35,20 @@ class _WaitingViewState extends State<WaitingView> {
             if (snapshot.connectionState != ConnectionState.done) {
               return CircularProgressIndicator();
             } else {
-              WaitingRoom room = snapshot.data;
+              List<String> users = snapshot.data;
               return ListView.builder(
-                  itemCount: room.waitingUsers.length,
+                  itemCount: users.length,
                   itemBuilder: (context, index) {
-                    User currentUser = room.waitingUsers[index];
+                    String currentUser = users[index];
                     return ListTile(
-                      leading: Text(currentUser.userName),
+                      leading: Text(currentUser),
                       trailing: RaisedButton(
                         onPressed: () {
                           User myUser = this.widget.myUser;
                           //code to start a run  goes here
-                          Pair pair = Pair(myUser, currentUser);
-                          Payload payload = new Payload(pair.toJson(), 'pair');
-                          tcp.sendPayload(payload);
+                          // Pair pair = Pair(myUser, currentUser);
+                          // Payload payload = new Payload(pair.toJson(), 'pair');
+                          // tcp.sendPayload(payload);
                         },
                         child: Text("Challenge"),
                       ),
@@ -68,5 +67,21 @@ class _WaitingViewState extends State<WaitingView> {
         child: Icon(Icons.refresh),
       ),
     );
+  }
+
+  Future<void> setReady() async {
+    HttpHelper helper = HttpHelper(this.widget.myUser);
+    final response = await helper.postRequest(
+        'https://192.168.0.45:9090/user/make_ready',
+        this.widget.myUser.toJson());
+  }
+
+  Future<List<String>> getWaitingUsers() async {
+    HttpHelper helper = HttpHelper(this.widget.myUser);
+    List<String> waitingList = List();
+    Response res = await helper.getRequest(
+        'https://192.168.0.45:9090' + "/user/ready", true);
+    waitingList = res.data != null ? List.from(res.data) : null;
+    return waitingList;
   }
 }
