@@ -1,12 +1,9 @@
-import 'dart:convert';
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/CustomWidgets/Slideable.dart';
 import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
-import 'package:application/Models/Pair.dart';
 import 'package:application/Models/StringPair.dart';
 import 'package:application/Models/User.dart';
-import 'package:application/Models/WaitingRoom.dart';
 import 'package:application/Routes/SettingsView.dart';
 import 'package:application/Routes/WaitingView.dart';
 import 'package:dio/dio.dart';
@@ -104,7 +101,7 @@ class UserViewState extends State<UserView> {
                   MaterialPageRoute(
                       builder: (context) =>
                           WaitingView(myUser: this.widget.currentUser)),
-                );
+                ).then((value) => setNotWaiting());
               },
               onLongPress: () {},
             ),
@@ -137,6 +134,13 @@ class UserViewState extends State<UserView> {
       ),
       drawer: SideDrawer(currentUser: this.widget.currentUser),
     );
+  }
+
+  Future<void> setNotWaiting() async {
+    HttpHelper helper = HttpHelper(this.widget.currentUser);
+    final response = await helper.postRequest(
+        'https://192.168.0.45:9090/user/not_ready',
+        this.widget.currentUser.toJson());
   }
 
   void updatePage() {
