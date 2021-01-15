@@ -1,20 +1,20 @@
 import 'User.dart';
 
 class Pair {
-  User playerOne;
-  User playerTwo;
+  User issuingUser;
+  User challengedUser;
 
-  Pair(User playerOne, User playerTwo) {
-    this.playerOne = playerOne;
-    this.playerTwo = playerTwo;
+  Pair(User issuingUser, User challengedUser) {
+    this.issuingUser = issuingUser;
+    this.challengedUser = challengedUser;
   }
 
   Pair.fromJson(Map<String, dynamic> json)
-      : playerOne = json['"playerOne"'],
-        playerTwo = json['"playerTwo"'];
+      : issuingUser = json['issuingUser'],
+        challengedUser = json['challengedUser'];
 
   Map<String, dynamic> toJson() => {
-        '"playerOne"': playerOne.toJson(),
-        '"playerTwo"': playerTwo.toJson(),
+        'playerOne': issuingUser.toJson(),
+        'challengedUser': challengedUser.toJson(),
       };
 }
