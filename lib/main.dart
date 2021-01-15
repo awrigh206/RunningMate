@@ -2,10 +2,13 @@ import 'dart:io';
 import 'package:application/HttpSetting.dart';
 import 'package:application/Routes/LoginView.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   HttpOverrides.global = new HttpSetting();
+  GetIt getIt = GetIt.instance;
+  getIt.registerSingleton<String>("https://192.168.0.45/", signalsReady: true);
   runApp(MyApp());
 }
 

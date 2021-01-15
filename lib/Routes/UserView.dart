@@ -33,7 +33,10 @@ class UserViewState extends State<UserView> {
     HttpHelper helper = GetIt.instance<HttpHelper>();
     List<String> waitingList = List();
     Response res = await helper.getRequest(
-        'https://192.168.0.45:9090' + "/user/ready", true);
+        'https://192.168.0.45:9090' +
+            "/user/challenges?name=" +
+            GetIt.I<User>().userName,
+        true);
     //waitingList = jsonDecode(res.data);
     waitingList = res.data != null ? List.from(res.data) : null;
     return waitingList;

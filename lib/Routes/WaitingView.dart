@@ -40,16 +40,18 @@ class _WaitingViewState extends State<WaitingView> {
                   itemCount: users.length,
                   itemBuilder: (context, index) {
                     String currentUser = users[index];
-                    return ListTile(
-                      leading: Text(currentUser),
-                      trailing: RaisedButton(
-                        onPressed: () {
-                          Pair pair = Pair(user.userName, currentUser);
-                          sendChallenge(pair);
-                        },
-                        child: Text("Challenge"),
-                      ),
-                    );
+                    if (currentUser != user.userName) {
+                      return ListTile(
+                        leading: Text(currentUser),
+                        trailing: RaisedButton(
+                          onPressed: () {
+                            Pair pair = Pair(user.userName, currentUser);
+                            sendChallenge(pair);
+                          },
+                          child: Text("Challenge"),
+                        ),
+                      );
+                    }
                   });
             }
           },
