@@ -6,9 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class NativeAudioView extends StatefulWidget {
-  NativeAudioView({Key key, @required this.currentUser}) : super(key: key);
+  NativeAudioView({Key key}) : super(key: key);
 
-  final User currentUser;
   @override
   _NativeAudioViewState createState() => _NativeAudioViewState();
 }
@@ -19,7 +18,7 @@ class _NativeAudioViewState extends State<NativeAudioView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SideDrawer(currentUser: widget.currentUser),
+      drawer: SideDrawer(),
       appBar: AppBar(
         title: Text('Audio Test'),
         actions: [

@@ -8,11 +8,12 @@ import 'package:application/Routes/SettingsView.dart';
 import 'package:application/Routes/WaitingView.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserView extends StatefulWidget {
-  UserView({Key key, @required this.currentUser}) : super(key: key);
-  final User currentUser;
+  UserView({Key key}) : super(key: key);
+  //final User currentUser;
 
   @override
   UserViewState createState() => UserViewState();
@@ -29,7 +30,8 @@ class UserViewState extends State<UserView> {
   }
 
   Future<List<String>> getWaiting() async {
-    HttpHelper helper = HttpHelper(this.widget.currentUser);
+    User user = GetIt.instance<User>();
+    HttpHelper helper = HttpHelper(user);
     List<String> waitingList = List();
     Response res = await helper.getRequest(
         'https://192.168.0.45:9090' + "/user/ready", true);
@@ -46,6 +48,7 @@ class UserViewState extends State<UserView> {
   @override
   Widget build(BuildContext context) {
     challengers = getWaiting();
+    User user = GetIt.instance<User>();
     return Scaffold(
       appBar: AppBar(
         title: Text("Home"),
@@ -55,8 +58,8 @@ class UserViewState extends State<UserView> {
         child: Column(
           children: [
             ListTile(
-                title: Text(this.widget.currentUser.userName),
-                subtitle: Text(this.widget.currentUser.email),
+                title: Text(user.userName),
+                subtitle: Text(user.email),
                 leading: Icon(
                   Icons.verified_user,
                   color: Colors.blue[500],
@@ -85,8 +88,8 @@ class UserViewState extends State<UserView> {
                       itemBuilder: (context, index) {
                         String current = challangers[index];
                         //Pair pair = new Pair(this.widget.currentUser, current);
-                        StringPair pair = new StringPair(
-                            this.widget.currentUser.userName, current);
+                        StringPair pair =
+                            new StringPair(user.userName, current);
                         return new Slideable(
                             pair: pair, updatePage: updatePage);
                       });
@@ -99,9 +102,8 @@ class UserViewState extends State<UserView> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          WaitingView(myUser: this.widget.currentUser)),
-                ).then((value) => setNotWaiting());
+                      builder: (context) => WaitingView(myUser: user)),
+                ).then((value) => setNotWaiting(user));
               },
               onLongPress: () {},
             ),
@@ -115,11 +117,8 @@ class UserViewState extends State<UserView> {
               subtitle: Text('Quick and painless'),
               leading: Icon(Icons.account_box),
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SettingsView(
-                            currentUser: this.widget.currentUser)));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SettingsView()));
               },
             )
           ],
@@ -132,15 +131,14 @@ class UserViewState extends State<UserView> {
         tooltip: "Refresh the page",
         child: Icon(Icons.refresh),
       ),
-      drawer: SideDrawer(currentUser: this.widget.currentUser),
+      drawer: SideDrawer(),
     );
   }
 
-  Future<void> setNotWaiting() async {
-    HttpHelper helper = HttpHelper(this.widget.currentUser);
+  Future<void> setNotWaiting(User user) async {
+    HttpHelper helper = HttpHelper(user);
     final response = await helper.postRequest(
-        'https://192.168.0.45:9090/user/not_ready',
-        this.widget.currentUser.toJson());
+        'https://192.168.0.45:9090/user/not_ready', user.toJson());
   }
 
   void updatePage() {

@@ -58,7 +58,7 @@ class _WaitingViewState extends State<WaitingView> {
           },
         ),
       ),
-      drawer: SideDrawer(currentUser: this.widget.myUser),
+      drawer: SideDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {});

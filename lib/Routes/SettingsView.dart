@@ -3,10 +3,10 @@ import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class SettingsView extends StatefulWidget {
-  SettingsView({Key key, @required this.currentUser}) : super(key: key);
-  final User currentUser;
+  SettingsView({Key key}) : super(key: key);
 
   @override
   SettingsViewState createState() => SettingsViewState();
@@ -14,6 +14,7 @@ class SettingsView extends StatefulWidget {
 
 class SettingsViewState extends State<SettingsView> {
   final TcpHelper tcpHelper = TcpHelper();
+  GetIt getIt = GetIt.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,10 +27,8 @@ class SettingsViewState extends State<SettingsView> {
           child: ListView(
             children: [
               ListTile(
-                title: Text(
-                    'Current User Name: ' + this.widget.currentUser.userName),
-                subtitle:
-                    Text('Current email: ' + this.widget.currentUser.email),
+                title: Text('Current User Name: ' + getIt<User>().userName),
+                subtitle: Text('Current email: ' + getIt<User>().email),
               ),
               RaisedButton(
                 child: Text('Change User Name'),
@@ -48,7 +47,7 @@ class SettingsViewState extends State<SettingsView> {
                 onPressed: () {
                   //Delete account of current user
                   tcpHelper.sendPayload(
-                      new Payload(this.widget.currentUser.toJson(), 'remove'));
+                      new Payload(getIt<User>().toJson(), 'remove'));
 
                   Navigator.popUntil(
                       context, ModalRoute.withName('/LoginView'));
@@ -59,9 +58,7 @@ class SettingsViewState extends State<SettingsView> {
           ),
         ),
       ),
-      drawer: SideDrawer(
-        currentUser: this.widget.currentUser,
-      ),
+      drawer: SideDrawer(),
     );
   }
 }

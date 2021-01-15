@@ -19,6 +19,12 @@ class User {
     this.password = '';
     this.email = '';
   }
+
+  User.empty() {
+    this.userName = '';
+    this.password = '';
+    this.email = '';
+  }
   @override
   String toString() {
     return 'user name: ' + userName + ', email: ' + email;

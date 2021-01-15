@@ -48,10 +48,7 @@ class LoginViewState extends State<LoginView> with TickerProviderStateMixin {
   void goToUserPage(User user) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-          builder: (context) => UserView(
-                currentUser: user,
-              )),
+      MaterialPageRoute(builder: (context) => UserView()),
     );
   }
 

@@ -3,13 +3,14 @@ import 'package:application/Routes/NativeAudioView.dart';
 import 'package:application/Routes/SettingsView.dart';
 import 'package:application/Routes/WaitingView.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class SideDrawer extends StatelessWidget {
-  const SideDrawer({Key key, @required this.currentUser}) : super(key: key);
+  const SideDrawer({Key key}) : super(key: key);
 
-  final User currentUser;
   @override
   Widget build(BuildContext context) {
+    User user = GetIt.I<User>();
     return Drawer(
       child: ListView(
         children: [
@@ -21,7 +22,7 @@ class SideDrawer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => WaitingView(
-                            myUser: currentUser,
+                            myUser: user,
                           )));
             },
             leading: Icon(Icons.directions_run),
@@ -38,11 +39,8 @@ class SideDrawer extends StatelessWidget {
           ListTile(
             title: Text('Settings'),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          SettingsView(currentUser: currentUser)));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingsView()));
             },
             leading: Icon(Icons.settings),
           ),
@@ -58,12 +56,8 @@ class SideDrawer extends StatelessWidget {
           ListTile(
             title: Text('Native Audio Testing'),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => NativeAudioView(
-                            currentUser: currentUser,
-                          )));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => NativeAudioView()));
             },
           )
         ],

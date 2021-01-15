@@ -16,10 +16,8 @@ import 'package:footer/footer_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MessageView extends StatefulWidget {
-  MessageView({Key key, @required this.pair, @required this.currentUser})
-      : super(key: key);
+  MessageView({Key key, @required this.pair}) : super(key: key);
   final StringPair pair;
-  final User currentUser;
 
   @override
   _MessageViewState createState() => _MessageViewState();
@@ -126,7 +124,7 @@ class _MessageViewState extends State<MessageView> {
           ),
         ),
       ),
-      drawer: SideDrawer(currentUser: widget.currentUser),
+      drawer: SideDrawer(),
     );
   }
 

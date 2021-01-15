@@ -7,8 +7,10 @@ import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/HttpSetting.dart';
 import 'package:application/Models/User.dart';
+import 'package:application/main.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginForm extends StatefulWidget {
@@ -33,6 +35,8 @@ class _LoginFormState extends State<LoginForm> {
   final formKey = GlobalKey<FormState>();
   bool isRegistering = false;
   bool processing = false;
+  GetIt getIt = GetIt.instance;
+
   @override
   void dispose() {
     // Clean up the controller
@@ -98,6 +102,10 @@ class _LoginFormState extends State<LoginForm> {
                         bool auth =
                             await compute(processSubmission, submission);
                         if (auth) {
+                          getIt.registerSingleton<User>(user,
+                              signalsReady: true);
+                          getIt.registerSingleton<TcpHelper>(this.widget.tcp,
+                              signalsReady: true);
                           widget.play(false);
                           widget.goToUserPage(user);
                         } else {
