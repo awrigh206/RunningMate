@@ -12,7 +12,7 @@ class Pair {
         challengedUser = json['challengedUser'];
 
   Map<String, dynamic> toJson() => {
-        'playerOne': issuingUser,
+        'issuingUser': issuingUser,
         'challengedUser': challengedUser,
       };
 }

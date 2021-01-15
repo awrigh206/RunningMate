@@ -83,7 +83,7 @@ class _WaitingViewState extends State<WaitingView> {
 
   Future<void> sendChallenge(Pair pair) async {
     HttpHelper helper = HttpHelper(user);
-    helper.putRequest(
+    final res = await helper.putRequest(
         'https://192.168.0.45:9090/user/challenge', pair.toJson());
   }
 }
