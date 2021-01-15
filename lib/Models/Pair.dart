@@ -1,5 +1,3 @@
-import 'User.dart';
-
 class Pair {
   String issuingUser;
   String challengedUser;

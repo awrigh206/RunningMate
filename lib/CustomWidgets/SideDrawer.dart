@@ -24,12 +24,8 @@ class SideDrawer extends StatelessWidget {
           ListTile(
             title: Text('Run'),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => WaitingView(
-                            myUser: user,
-                          )));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => WaitingView()));
             },
             leading: Icon(Icons.directions_run),
           ),
