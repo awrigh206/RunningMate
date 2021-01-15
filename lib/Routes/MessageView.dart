@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:application/CustomWidgets/MessageList.dart';
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/Helpers/HttpHelper.dart';
-import 'package:application/Models/ChatRoom.dart';
 import 'package:application/Models/Message.dart';
 import 'package:application/Models/Pair.dart';
 import 'package:application/Models/User.dart';
@@ -25,13 +24,12 @@ class _MessageViewState extends State<MessageView> {
   final messageController = TextEditingController();
   Message newMessage;
   Future<List<Message>> messages;
-  Future<ChatRoom> chat;
-  ChatRoom chatRoom;
   @override
   void initState() {
     super.initState();
     // chat = getChatRoom();
     updateTimer = Timer.periodic(Duration(seconds: 2), (timer) async {
+      setState(() {});
       // // newMessage = await getNew(await chat);
       // if (newMessage.messageBody != chatRoom.messages.last.messageBody) {
       //   setState(() {});
@@ -42,16 +40,24 @@ class _MessageViewState extends State<MessageView> {
   @override
   void dispose() {
     updateTimer?.cancel();
+    messageController.dispose();
     super.dispose();
   }
 
   Future<List<Message>> getMessages(Pair pair) async {
     GetIt getIt = GetIt.I;
     HttpHelper helper = getIt<HttpHelper>();
-    List<Message> messages;
-    final res = await helper.getRequest(getIt<String>(), true);
-    messages = res.data != null ? List.from(res.data) : null;
-    return messages;
+    final res =
+        await helper.putRequest(getIt<String>() + 'message', pair.toJson());
+    if (res.data == null) {
+      //then there are no messages
+      return List();
+    } else {
+      var list = res.data as List;
+      List<Message> messages = list.map((i) => Message.fromJson(i)).toList();
+      // messages = res.data != null ? List.from(res.data) : null;
+      return messages;
+    }
   }
 
   Future<void> sendMessage(Message message) async {
@@ -59,6 +65,7 @@ class _MessageViewState extends State<MessageView> {
     HttpHelper helper = getIt<HttpHelper>();
     final res =
         await helper.postRequest(getIt<String>() + 'message', message.toJson());
+    messageController.text = "";
   }
 
   @override
@@ -86,13 +93,13 @@ class _MessageViewState extends State<MessageView> {
                       future: messages,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          chatRoom = snapshot.data;
-                          if (newMessage != null) {
-                            chatRoom.messages.add(newMessage);
-                          }
+                          // chatRoom = snapshot.data;
+                          // if (newMessage != null) {
+                          //   chatRoom.messages.add(newMessage);
+                          // }
                           return MessageList(
                             pair: this.widget.pair,
-                            chat: chatRoom,
+                            messages: snapshot.data,
                           );
                         } else if (snapshot.hasError) {
                           return new ListTile(
@@ -129,10 +136,10 @@ class _MessageViewState extends State<MessageView> {
                     icon: Icon(Icons.send),
                     onPressed: () {
                       Message msg = Message(
-                          this.widget.pair,
                           messageController.text,
                           DateTime.now().toIso8601String(),
-                          GetIt.I<User>().userName);
+                          GetIt.I<User>().userName,
+                          widget.pair.challengedUser);
                       sendMessage(msg);
                     }),
               ],
@@ -166,16 +173,6 @@ class _MessageViewState extends State<MessageView> {
   //     messageController.clear();
   //   });
   // }
-
-  Future<ChatRoom> parseRoom(String text) async {
-    Map roomMap = await jsonDecode(text.substring(2));
-    return ChatRoom.fromJson(roomMap);
-  }
-
-  Future<Message> parseMessage(String text) async {
-    Map msgMap = await jsonDecode(text.substring(2));
-    return Message.fromJson(msgMap);
-  }
 
   // Future<Message> getNew(ChatRoom chat) async {
   //   Map json = pair.toJson();

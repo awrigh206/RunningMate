@@ -4,35 +4,36 @@ import 'package:encrypt/encrypt.dart';
 import 'Pair.dart';
 
 class Message {
-  Pair pair;
   String messageBody;
   String timeStamp;
   String sender;
+  String recipient;
 
-  Message(Pair pair, String body, String timeStamp, String sender) {
+  Message(String body, String timeStamp, String sender, String recipient) {
     this.messageBody = body;
     this.timeStamp = timeStamp;
     this.sender = sender;
-    this.pair = pair;
+    this.recipient = recipient;
   }
 
   Message.empty() {
+    this.recipient = "";
     this.messageBody = " ";
     this.sender = " ";
     this.timeStamp = " ";
   }
 
   Message.fromJson(Map<String, dynamic> json)
-      : pair = json['pair'],
-        messageBody = json['messageBody'],
+      : messageBody = json['messageBody'],
         timeStamp = json['timeStamp'],
-        sender = json['sender'];
+        sender = json['sender'],
+        recipient = json['recipient'];
 
   Map<String, dynamic> toJson() => {
-        '"pair"': pair.toJson().toString(),
-        '"messageBody"': '"' + messageBody + '"',
-        '"timeStamp"': '"' + timeStamp + '"',
-        '"sender"': '"' + sender + '"',
+        'messageBody': messageBody,
+        'timeStamp': timeStamp,
+        'sender': sender,
+        'recipient': recipient
       };
 
   encryptDetails() async {
