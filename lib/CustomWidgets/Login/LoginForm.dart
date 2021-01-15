@@ -104,7 +104,7 @@ class _LoginFormState extends State<LoginForm> {
                         if (auth) {
                           getIt.registerSingleton<User>(user,
                               signalsReady: true);
-                          getIt.registerSingleton<TcpHelper>(this.widget.tcp,
+                          getIt.registerSingleton<HttpHelper>(HttpHelper(user),
                               signalsReady: true);
                           widget.play(false);
                           widget.goToUserPage(user);

@@ -14,7 +14,13 @@ class SideDrawer extends StatelessWidget {
     return Drawer(
       child: ListView(
         children: [
-          DrawerHeader(child: Text('Header')),
+          DrawerHeader(
+              child: Column(
+            children: [
+              Text('User: ' + user.userName),
+              Text('Email: ' + user.email)
+            ],
+          )),
           ListTile(
             title: Text('Run'),
             onTap: () {

@@ -30,8 +30,7 @@ class UserViewState extends State<UserView> {
   }
 
   Future<List<String>> getWaiting() async {
-    User user = GetIt.instance<User>();
-    HttpHelper helper = HttpHelper(user);
+    HttpHelper helper = GetIt.instance<HttpHelper>();
     List<String> waitingList = List();
     Response res = await helper.getRequest(
         'https://192.168.0.45:9090' + "/user/ready", true);
@@ -136,7 +135,7 @@ class UserViewState extends State<UserView> {
   }
 
   Future<void> setNotWaiting(User user) async {
-    HttpHelper helper = HttpHelper(user);
+    HttpHelper helper = GetIt.instance<HttpHelper>();
     final response = await helper.postRequest(
         'https://192.168.0.45:9090/user/not_ready', user.toJson());
   }
