@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:application/CustomWidgets/Login/EmailField.dart';
 import 'package:application/CustomWidgets/Login/PasswordField.dart';
@@ -102,6 +103,7 @@ class _LoginFormState extends State<LoginForm> {
                         bool auth =
                             await compute(processSubmission, submission);
                         if (auth) {
+                          user = await userFromServer(user);
                           getIt.registerSingleton<User>(user,
                               signalsReady: true);
                           getIt.registerSingleton<HttpHelper>(HttpHelper(user),
@@ -148,6 +150,18 @@ class _LoginFormState extends State<LoginForm> {
       },
     );
   }
+}
+
+Future<User> userFromServer(User user) async {
+  HttpHelper helper = HttpHelper(user);
+  final res = await helper.getRequest(
+      'https://192.168.0.45:9090/user/email?name=' + user.userName, true);
+  User gotUser = User.empty();
+  gotUser.userName = res.data['name'];
+  gotUser.password = user.password;
+  gotUser.email = res.data['email'];
+  print(gotUser.toString());
+  return gotUser;
 }
 
 Future<bool> processSubmission(Submission submission) async {
