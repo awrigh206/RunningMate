@@ -24,7 +24,7 @@ class _MessageViewState extends State<MessageView> {
   Timer updateTimer;
   final messageController = TextEditingController();
   Message newMessage;
-  MessageList messageList;
+  Future<List<Message>> messages;
   Future<ChatRoom> chat;
   ChatRoom chatRoom;
   @override
@@ -54,14 +54,16 @@ class _MessageViewState extends State<MessageView> {
     return messages;
   }
 
-  Future<List<void>> sendMessage(Message message) async {
+  Future<void> sendMessage(Message message) async {
     GetIt getIt = GetIt.I;
     HttpHelper helper = getIt<HttpHelper>();
-    final res = await helper.postRequest(getIt<String>(), message.toJson());
+    final res =
+        await helper.postRequest(getIt<String>() + 'message', message.toJson());
   }
 
   @override
   Widget build(BuildContext context) {
+    messages = getMessages(this.widget.pair);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.pair.challengedUser),
@@ -81,7 +83,7 @@ class _MessageViewState extends State<MessageView> {
                 child: SingleChildScrollView(
                     primary: true,
                     child: FutureBuilder(
-                      future: chat,
+                      future: messages,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           chatRoom = snapshot.data;

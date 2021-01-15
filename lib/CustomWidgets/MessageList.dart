@@ -1,16 +1,14 @@
 import 'package:application/CustomWidgets/MessageTile.dart';
 import 'package:application/Helpers/TcpHelper.dart';
-import 'package:application/Models/ChatRoom.dart';
 import 'package:application/Models/Message.dart';
 import 'package:application/Models/Pair.dart';
-import 'package:application/Models/StringPair.dart';
 import 'package:flutter/material.dart';
 
 class MessageList extends StatefulWidget {
-  MessageList({Key key, @required this.pair, @required this.chat})
+  MessageList({Key key, @required this.pair, @required this.messages})
       : super(key: key);
   final Pair pair;
-  final ChatRoom chat;
+  final List<Message> messages;
 
   @override
   _MessageListState createState() => _MessageListState();
@@ -28,25 +26,25 @@ class _MessageListState extends State<MessageList> {
 
   @override
   Widget build(BuildContext context) {
-    ChatRoom chatRoom = widget.chat;
+    List<Message> messages = widget.messages;
     return Builder(builder: (context) {
-      if (chatRoom.messages.isEmpty) {
+      if (messages.isEmpty) {
         return ListTile(
           title: Text('No messages'),
           trailing: Icon(Icons.message_rounded),
         );
       }
-      if (chatRoom.messages.length > 1) {
-        lastMessage = chatRoom.messages[chatRoom.messages.length - 1];
+      if (messages.length > 1) {
+        lastMessage = messages[messages.length - 1];
       }
 
       return ListView.builder(
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
           primary: false,
-          itemCount: chatRoom.messages.length,
+          itemCount: messages.length,
           itemBuilder: (context, index) {
-            Message message = chatRoom.messages[index];
+            Message message = messages[index];
             return MessageTile(
                 message: message,
                 fromOtherUser: message.sender != widget.pair.issuingUser);
