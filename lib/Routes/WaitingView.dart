@@ -1,13 +1,14 @@
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
+import 'package:application/Models/Pair.dart';
 import 'package:application/Models/User.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class WaitingView extends StatefulWidget {
-  WaitingView({Key key, @required this.myUser}) : super(key: key);
-  final User myUser;
+  WaitingView({Key key}) : super(key: key);
   final TcpHelper tcp = TcpHelper();
 
   @override
@@ -15,8 +16,7 @@ class WaitingView extends StatefulWidget {
 }
 
 class _WaitingViewState extends State<WaitingView> {
-  final TcpHelper tcp = TcpHelper();
-
+  User user = GetIt.I<User>();
   @override
   Widget build(BuildContext context) {
     setReady();
@@ -44,11 +44,8 @@ class _WaitingViewState extends State<WaitingView> {
                       leading: Text(currentUser),
                       trailing: RaisedButton(
                         onPressed: () {
-                          User myUser = this.widget.myUser;
-                          //code to start a run  goes here
-                          // Pair pair = Pair(myUser, currentUser);
-                          // Payload payload = new Payload(pair.toJson(), 'pair');
-                          // tcp.sendPayload(payload);
+                          Pair pair = Pair(user.userName, currentUser);
+                          sendChallenge(pair);
                         },
                         child: Text("Challenge"),
                       ),
@@ -70,18 +67,23 @@ class _WaitingViewState extends State<WaitingView> {
   }
 
   Future<void> setReady() async {
-    HttpHelper helper = HttpHelper(this.widget.myUser);
+    HttpHelper helper = HttpHelper(user);
     final response = await helper.postRequest(
-        'https://192.168.0.45:9090/user/make_ready',
-        this.widget.myUser.toJson());
+        'https://192.168.0.45:9090/user/make_ready', user.toJson());
   }
 
   Future<List<String>> getWaitingUsers() async {
-    HttpHelper helper = HttpHelper(this.widget.myUser);
+    HttpHelper helper = HttpHelper(user);
     List<String> waitingList = List();
     Response res = await helper.getRequest(
         'https://192.168.0.45:9090' + "/user/ready", true);
     waitingList = res.data != null ? List.from(res.data) : null;
     return waitingList;
+  }
+
+  Future<void> sendChallenge(Pair pair) async {
+    HttpHelper helper = HttpHelper(user);
+    helper.putRequest(
+        'https://192.168.0.45:9090/user/challenge', pair.toJson());
   }
 }

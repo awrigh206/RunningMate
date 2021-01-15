@@ -100,8 +100,7 @@ class UserViewState extends State<UserView> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => WaitingView(myUser: user)),
+                  MaterialPageRoute(builder: (context) => WaitingView()),
                 ).then((value) => setNotWaiting(user));
               },
               onLongPress: () {},

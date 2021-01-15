@@ -1,10 +1,10 @@
 import 'User.dart';
 
 class Pair {
-  User issuingUser;
-  User challengedUser;
+  String issuingUser;
+  String challengedUser;
 
-  Pair(User issuingUser, User challengedUser) {
+  Pair(String issuingUser, String challengedUser) {
     this.issuingUser = issuingUser;
     this.challengedUser = challengedUser;
   }
@@ -14,7 +14,7 @@ class Pair {
         challengedUser = json['challengedUser'];
 
   Map<String, dynamic> toJson() => {
-        'playerOne': issuingUser.toJson(),
-        'challengedUser': challengedUser.toJson(),
+        'playerOne': issuingUser,
+        'challengedUser': challengedUser,
       };
 }
