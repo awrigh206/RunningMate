@@ -8,7 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   HttpOverrides.global = new HttpSetting();
   GetIt getIt = GetIt.instance;
-  getIt.registerSingleton<String>("https://192.168.0.45/", signalsReady: true);
+  getIt.registerSingleton<String>("https://192.168.0.45:9090/",
+      signalsReady: true);
   runApp(MyApp());
 }
 

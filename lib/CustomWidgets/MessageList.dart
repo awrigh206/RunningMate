@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 class MessageList extends StatefulWidget {
   MessageList({Key key, @required this.pair, @required this.chat})
       : super(key: key);
-  final StringPair pair;
+  final Pair pair;
   final ChatRoom chat;
 
   @override
@@ -49,7 +49,7 @@ class _MessageListState extends State<MessageList> {
             Message message = chatRoom.messages[index];
             return MessageTile(
                 message: message,
-                fromOtherUser: message.sender != widget.pair.userOne);
+                fromOtherUser: message.sender != widget.pair.issuingUser);
           });
     });
   }

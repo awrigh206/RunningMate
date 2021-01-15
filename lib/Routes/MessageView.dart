@@ -1,23 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'package:application/CustomWidgets/MessageList.dart';
 import 'package:application/CustomWidgets/SideDrawer.dart';
-import 'package:application/Helpers/TcpHelper.dart';
+import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Models/ChatRoom.dart';
 import 'package:application/Models/Message.dart';
 import 'package:application/Models/Pair.dart';
-import 'package:application/Models/Payload.dart';
-import 'package:application/Models/StringPair.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
 import 'package:footer/footer.dart';
 import 'package:footer/footer_view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_it/get_it.dart';
 
 class MessageView extends StatefulWidget {
   MessageView({Key key, @required this.pair}) : super(key: key);
-  final StringPair pair;
+  final Pair pair;
 
   @override
   _MessageViewState createState() => _MessageViewState();
@@ -25,23 +22,20 @@ class MessageView extends StatefulWidget {
 
 class _MessageViewState extends State<MessageView> {
   Timer updateTimer;
-  TcpHelper tcpHelper;
   final messageController = TextEditingController();
   Message newMessage;
   MessageList messageList;
   Future<ChatRoom> chat;
   ChatRoom chatRoom;
-  StringPair pair;
   @override
   void initState() {
     super.initState();
-    tcpHelper = TcpHelper();
-    chat = getChatRoom();
+    // chat = getChatRoom();
     updateTimer = Timer.periodic(Duration(seconds: 2), (timer) async {
-      newMessage = await getNew(await chat);
-      if (newMessage.messageBody != chatRoom.messages.last.messageBody) {
-        setState(() {});
-      }
+      // // newMessage = await getNew(await chat);
+      // if (newMessage.messageBody != chatRoom.messages.last.messageBody) {
+      //   setState(() {});
+      // }
     });
   }
 
@@ -51,11 +45,26 @@ class _MessageViewState extends State<MessageView> {
     super.dispose();
   }
 
+  Future<List<Message>> getMessages(Pair pair) async {
+    GetIt getIt = GetIt.I;
+    HttpHelper helper = getIt<HttpHelper>();
+    List<Message> messages;
+    final res = await helper.getRequest(getIt<String>(), true);
+    messages = res.data != null ? List.from(res.data) : null;
+    return messages;
+  }
+
+  Future<List<void>> sendMessage(Message message) async {
+    GetIt getIt = GetIt.I;
+    HttpHelper helper = getIt<HttpHelper>();
+    final res = await helper.postRequest(getIt<String>(), message.toJson());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.pair.userTwo),
+        title: Text(widget.pair.challengedUser),
         actions: [
           IconButton(
               icon: Icon(Icons.refresh),
@@ -80,7 +89,7 @@ class _MessageViewState extends State<MessageView> {
                             chatRoom.messages.add(newMessage);
                           }
                           return MessageList(
-                            pair: pair,
+                            pair: this.widget.pair,
                             chat: chatRoom,
                           );
                         } else if (snapshot.hasError) {
@@ -117,7 +126,12 @@ class _MessageViewState extends State<MessageView> {
                     color: Colors.blue,
                     icon: Icon(Icons.send),
                     onPressed: () {
-                      // sendMessage(chatRoom);
+                      Message msg = Message(
+                          this.widget.pair,
+                          messageController.text,
+                          DateTime.now().toIso8601String(),
+                          GetIt.I<User>().userName);
+                      sendMessage(msg);
                     }),
               ],
             ),
@@ -151,12 +165,6 @@ class _MessageViewState extends State<MessageView> {
   //   });
   // }
 
-  Future<ChatRoom> getChatRoom() async {
-    String text =
-        await tcpHelper.sendPayload(new Payload(pair.toJson(), 'get_messages'));
-    return await parseRoom(text);
-  }
-
   Future<ChatRoom> parseRoom(String text) async {
     Map roomMap = await jsonDecode(text.substring(2));
     return ChatRoom.fromJson(roomMap);
@@ -167,20 +175,15 @@ class _MessageViewState extends State<MessageView> {
     return Message.fromJson(msgMap);
   }
 
-  Future<Message> getNew(ChatRoom chat) async {
-    Map json = pair.toJson();
-    Message lastMessage = chat.messages.last;
-    if (lastMessage == null || lastMessage.messageBody == "") {
-      lastMessage = new Message.empty();
-    }
-    json.addAll(chat.messages.last.toJson());
-    String text = await tcpHelper.sendPayload(new Payload(json, 'get_new'));
-    log("we got this: " + text.substring(2));
-    return await parseMessage(text);
-  }
-
-  Future<String> getServer() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString("server");
-  }
+  // Future<Message> getNew(ChatRoom chat) async {
+  //   Map json = pair.toJson();
+  //   Message lastMessage = chat.messages.last;
+  //   if (lastMessage == null || lastMessage.messageBody == "") {
+  //     lastMessage = new Message.empty();
+  //   }
+  //   json.addAll(chat.messages.last.toJson());
+  //   String text = await tcpHelper.sendPayload(new Payload(json, 'get_new'));
+  //   log("we got this: " + text.substring(2));
+  //   return await parseMessage(text);
+  // }
 }

@@ -9,7 +9,6 @@ import 'package:get_it/get_it.dart';
 
 class WaitingView extends StatefulWidget {
   WaitingView({Key key}) : super(key: key);
-  final TcpHelper tcp = TcpHelper();
 
   @override
   _WaitingViewState createState() => _WaitingViewState();

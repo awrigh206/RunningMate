@@ -2,6 +2,7 @@ import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/CustomWidgets/Slideable.dart';
 import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
+import 'package:application/Models/Pair.dart';
 import 'package:application/Models/StringPair.dart';
 import 'package:application/Models/User.dart';
 import 'package:application/Routes/SettingsView.dart';
@@ -90,8 +91,7 @@ class UserViewState extends State<UserView> {
                       itemBuilder: (context, index) {
                         String current = challangers[index];
                         //Pair pair = new Pair(this.widget.currentUser, current);
-                        StringPair pair =
-                            new StringPair(user.userName, current);
+                        Pair pair = new Pair(user.userName, current);
                         return new Slideable(
                             pair: pair, updatePage: updatePage);
                       });

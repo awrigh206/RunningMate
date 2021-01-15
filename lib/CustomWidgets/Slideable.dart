@@ -1,4 +1,5 @@
 import 'package:application/Helpers/TcpHelper.dart';
+import 'package:application/Models/Pair.dart';
 import 'package:application/Models/Payload.dart';
 import 'package:application/Models/StringPair.dart';
 import 'package:application/Routes/ActiveView.dart';
@@ -9,7 +10,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 class Slideable extends StatelessWidget {
   Slideable({Key key, @required this.pair, @required this.updatePage})
       : super(key: key);
-  final StringPair pair;
+  final Pair pair;
   final TcpHelper tcpHelper = TcpHelper();
   final Function updatePage;
   @override
@@ -18,7 +19,7 @@ class Slideable extends StatelessWidget {
       child: Container(
         color: Colors.white,
         child: ListTile(
-          title: Text("Challenged by: " + pair.userTwo),
+          title: Text("Challenged by: " + pair.challengedUser),
           leading: CircleAvatar(
             backgroundColor: Colors.purpleAccent,
           ),
