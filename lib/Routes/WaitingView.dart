@@ -51,6 +51,10 @@ class _WaitingViewState extends State<WaitingView> {
                           child: Text("Challenge"),
                         ),
                       );
+                    } else {
+                      return ListTile(
+                        leading: Text('You are in the waiting list'),
+                      );
                     }
                   });
             }
