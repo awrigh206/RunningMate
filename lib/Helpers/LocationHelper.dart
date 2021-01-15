@@ -1,5 +1,7 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as geo;
+import 'package:workmanager/workmanager.dart';
 
 class LocationHelper {
   Location location = new Location();
@@ -62,4 +64,18 @@ class LocationHelper {
       return null;
     }
   }
+}
+
+const fetchBackground = "fetchBackground";
+
+void callbackDispatcher() {
+  Workmanager.executeTask((task, inputData) async {
+    switch (task) {
+      case fetchBackground:
+        Position userLocation = await Geolocator()
+            .getCurrentPosition(desiredAccuracy: geo.LocationAccuracy.high);
+        break;
+    }
+    return Future.value(true);
+  });
 }
