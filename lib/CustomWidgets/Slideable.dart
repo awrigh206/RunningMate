@@ -1,7 +1,6 @@
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/Pair.dart';
 import 'package:application/Models/Payload.dart';
-import 'package:application/Models/StringPair.dart';
 import 'package:application/Routes/ActiveView.dart';
 import 'package:application/Routes/MessageView.dart';
 import 'package:flutter/material.dart';
