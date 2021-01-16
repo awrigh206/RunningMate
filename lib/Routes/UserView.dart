@@ -3,7 +3,6 @@ import 'package:application/CustomWidgets/Slideable.dart';
 import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/Pair.dart';
-import 'package:application/Models/StringPair.dart';
 import 'package:application/Models/User.dart';
 import 'package:application/Routes/SettingsView.dart';
 import 'package:application/Routes/WaitingView.dart';
