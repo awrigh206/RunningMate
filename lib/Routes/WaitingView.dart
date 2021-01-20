@@ -1,6 +1,5 @@
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/Helpers/HttpHelper.dart';
-import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/Pair.dart';
 import 'package:application/Models/User.dart';
 import 'package:dio/dio.dart';
@@ -15,6 +14,7 @@ class WaitingView extends StatefulWidget {
 }
 
 class _WaitingViewState extends State<WaitingView> {
+  GetIt getIt = GetIt.I;
   User user = GetIt.I<User>();
   @override
   Widget build(BuildContext context) {
@@ -74,14 +74,14 @@ class _WaitingViewState extends State<WaitingView> {
   Future<void> setReady() async {
     HttpHelper helper = HttpHelper(user);
     final response = await helper.postRequest(
-        'https://192.168.0.45:9090/user/make_ready', user.toJson());
+        getIt<String>() + 'user/make_ready', user.toJson());
   }
 
   Future<List<String>> getWaitingUsers() async {
     HttpHelper helper = HttpHelper(user);
     List<String> waitingList = List();
-    Response res = await helper.getRequest(
-        'https://192.168.0.45:9090' + "/user/ready", true);
+    Response res =
+        await helper.getRequest(getIt<String>() + "/user/ready", true);
     waitingList = res.data != null ? List.from(res.data) : null;
     return waitingList;
   }
@@ -89,6 +89,6 @@ class _WaitingViewState extends State<WaitingView> {
   Future<void> sendChallenge(Pair pair) async {
     HttpHelper helper = HttpHelper(user);
     final res = await helper.putRequest(
-        'https://192.168.0.45:9090/user/challenge', pair.toJson());
+        getIt<String>() + 'user/challenge', pair.toJson());
   }
 }
