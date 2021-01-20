@@ -23,15 +23,20 @@ class _ActiveViewState extends State<ActiveView> {
   Future<LocationData> currentPosition;
   Future<LocationData> lastPosition;
   GetIt getIt = GetIt.instance;
+  Future<bool> otherUserReady;
 
   @override
   void initState() {
-    beginRun();
+    otherUserReady = isOpponentReady();
     currentPosition = locationHelper.getLocationBasic();
     super.initState();
-    const duration = const Duration(seconds: 2);
+    const duration = const Duration(seconds: 4);
     timer = Timer.periodic(duration, (timer) async {
-      await sendData();
+      bool ready = await otherUserReady;
+      if (ready) {
+        await beginRun();
+        await sendData();
+      }
     });
   }
 
@@ -74,6 +79,20 @@ class _ActiveViewState extends State<ActiveView> {
     return deg * (pi / 180);
   }
 
+  Future<bool> isOpponentReady() async {
+    HttpHelper httpHelper = getIt<HttpHelper>();
+    final res = await httpHelper.getRequest(
+        getIt<String>() + 'run?name=' + this.widget.currentPair.challengedUser,
+        true);
+    return res.data;
+  }
+
+  Future<void> setWaiting(String name) async {
+    HttpHelper httpHelper = getIt<HttpHelper>();
+    final res =
+        await httpHelper.getRequest(getIt<String>() + 'run?name=' + name, true);
+  }
+
   @override
   void dispose() {
     //Stop/ get  rid of timer when view  is popped
@@ -87,19 +106,35 @@ class _ActiveViewState extends State<ActiveView> {
       appBar: AppBar(
         title: Text("Go!"),
       ),
-      body: Center(
-          child: ListView(
-        children: [
-          ListTile(
-            title: Text('Player One: '),
-            trailing: Text(this.widget.currentPair.issuingUser),
-          ),
-          ListTile(
-            title: Text('Player Two: '),
-            trailing: Text(this.widget.currentPair.challengedUser),
-          )
-        ],
-      )),
+      body: FutureBuilder(
+        future: otherUserReady,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('There has been an error');
+          }
+          if (snapshot.hasData) {
+            if (snapshot.data) {
+              return Center(
+                  child: ListView(
+                children: [
+                  ListTile(
+                    title: Text('Player One: '),
+                    trailing: Text(this.widget.currentPair.issuingUser),
+                  ),
+                  ListTile(
+                    title: Text('Player Two: '),
+                    trailing: Text(this.widget.currentPair.challengedUser),
+                  )
+                ],
+              ));
+            } else {
+              return new Text('Waiting for your opponent');
+            }
+          } else {
+            return new CircularProgressIndicator();
+          }
+        },
+      ),
     );
   }
 }

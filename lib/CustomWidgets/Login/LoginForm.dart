@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:application/CustomWidgets/Login/EmailField.dart';
 import 'package:application/CustomWidgets/Login/PasswordField.dart';
@@ -8,7 +7,6 @@ import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/HttpSetting.dart';
 import 'package:application/Models/User.dart';
-import 'package:application/main.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -155,7 +153,7 @@ class _LoginFormState extends State<LoginForm> {
 Future<User> userFromServer(User user) async {
   HttpHelper helper = HttpHelper(user);
   final res = await helper.getRequest(
-      'https://192.168.0.45:9090/user/email?name=' + user.userName, true);
+      GetIt.I<String>() + 'user/email?name=' + user.userName, true);
   User gotUser = User.empty();
   gotUser.userName = res.data['name'];
   gotUser.password = user.password;
@@ -187,7 +185,7 @@ Future<bool> doesUserExist(User user) async {
   bool userExists = false;
   HttpHelper helper = HttpHelper(user);
   final response = await helper.postRequest(
-      'https://192.168.0.45:9090/user/exists', user.toJson());
+      GetIt.I<String>() + 'user/exists', user.toJson());
   //userExists = jsonDecode(response.data);
   //TODO: fix this check
   userExists = false;
@@ -197,7 +195,7 @@ Future<bool> doesUserExist(User user) async {
 Future<bool> register(User user) async {
   HttpHelper helper = HttpHelper(user);
   final response =
-      await helper.postRequest('https://192.168.0.45:9090/user', user.toJson());
+      await helper.postRequest(GetIt.I<String>() + 'user', user.toJson());
   return true;
 }
 
