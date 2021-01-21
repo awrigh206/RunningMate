@@ -7,6 +7,7 @@ import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Models/Message.dart';
 import 'package:application/Models/Pair.dart';
 import 'package:application/Models/User.dart';
+import 'package:application/Routes/ImageView.dart';
 import 'package:flutter/material.dart';
 import 'package:footer/footer.dart';
 import 'package:footer/footer_view.dart';
@@ -26,8 +27,10 @@ class _MessageViewState extends State<MessageView> {
   final messageController = TextEditingController();
   Message newMessage;
   Future<List<Message>> messages;
+  Future<List<Message>> imageMessages;
   @override
   void initState() {
+    imageMessages = getImages();
     super.initState();
     // chat = getChatRoom();
     updateTimer = Timer.periodic(Duration(seconds: 2), (timer) async {
@@ -78,9 +81,15 @@ class _MessageViewState extends State<MessageView> {
         title: Text(widget.pair.challengedUser),
         actions: [
           IconButton(
-              icon: Icon(Icons.refresh),
+              icon: Icon(Icons.image_rounded),
               onPressed: () {
-                setState(() {});
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ImageView(
+                            images: imageMessages,
+                          )),
+                );
               }),
         ],
       ),
@@ -173,5 +182,21 @@ class _MessageViewState extends State<MessageView> {
     Message msg = Message(base64, DateTime.now().toIso8601String(),
         getIt<User>().userName, widget.pair.challengedUser);
     httpHelper.postRequest(getIt<String>() + 'message/image', msg.toJson());
+  }
+
+  Future<List<Message>> getImages() async {
+    GetIt getIt = GetIt.I;
+    HttpHelper httpHelper = getIt<HttpHelper>();
+    final res = await httpHelper.putRequest(
+        getIt<String>() + 'message/images', widget.pair.toJson());
+    if (res.data == null) {
+      //then there are no messages
+      return List();
+    } else {
+      var list = res.data as List;
+      List<Message> messages = list.map((i) => Message.fromJson(i)).toList();
+      // messages = res.data != null ? List.from(res.data) : null;
+      return messages;
+    }
   }
 }
