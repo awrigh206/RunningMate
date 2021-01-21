@@ -20,7 +20,6 @@ class _MessageListState extends State<MessageList> {
   @override
   void initState() {
     super.initState();
-    tcpHelper = TcpHelper();
     lastMessage = new Message.empty();
   }
 
