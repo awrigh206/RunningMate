@@ -81,7 +81,7 @@ class _WaitingViewState extends State<WaitingView> {
     HttpHelper helper = HttpHelper(user);
     List<String> waitingList = List();
     Response res =
-        await helper.getRequest(getIt<String>() + "/user/ready", true);
+        await helper.getRequest(getIt<String>() + "user/ready", true);
     waitingList = res.data != null ? List.from(res.data) : null;
     return waitingList;
   }

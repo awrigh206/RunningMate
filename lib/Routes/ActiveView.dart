@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:application/DTO/UpdateDto.dart';
 import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Helpers/LocationHelper.dart';
@@ -27,14 +28,18 @@ class _ActiveViewState extends State<ActiveView> {
 
   @override
   void initState() {
+    start();
+    super.initState();
+  }
+
+  Future<void> start() async {
+    await beginRun();
     otherUserReady = isOpponentReady();
     currentPosition = locationHelper.getLocationBasic();
-    super.initState();
-    const duration = const Duration(seconds: 4);
+    const duration = const Duration(seconds: 2);
     timer = Timer.periodic(duration, (timer) async {
       bool ready = await otherUserReady;
       if (ready) {
-        await beginRun();
         await sendData();
       }
     });
@@ -82,7 +87,9 @@ class _ActiveViewState extends State<ActiveView> {
   Future<bool> isOpponentReady() async {
     HttpHelper httpHelper = getIt<HttpHelper>();
     final res = await httpHelper.getRequest(
-        getIt<String>() + 'run?name=' + this.widget.currentPair.challengedUser,
+        getIt<String>() +
+            'run/challenger?name=' +
+            this.widget.currentPair.challengedUser,
         true);
     return res.data;
   }

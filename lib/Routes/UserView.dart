@@ -22,6 +22,7 @@ class UserView extends StatefulWidget {
 class UserViewState extends State<UserView> {
   TcpHelper tcpHelper;
   Future<List<String>> challengers;
+  GetIt getIt = GetIt.I;
 
   @override
   void initState() {
@@ -30,12 +31,10 @@ class UserViewState extends State<UserView> {
   }
 
   Future<List<String>> getWaiting() async {
-    HttpHelper helper = GetIt.instance<HttpHelper>();
+    HttpHelper helper = getIt<HttpHelper>();
     List<String> waitingList = List();
     Response res = await helper.getRequest(
-        'https://192.168.0.45:9090' +
-            "/user/challenges?name=" +
-            GetIt.I<User>().userName,
+        getIt<String>() + "user/challenges?name=" + getIt<User>().userName,
         true);
     //waitingList = jsonDecode(res.data);
     waitingList = res.data != null ? List.from(res.data) : null;
@@ -138,7 +137,7 @@ class UserViewState extends State<UserView> {
   Future<void> setNotWaiting(User user) async {
     HttpHelper helper = GetIt.instance<HttpHelper>();
     final response = await helper.postRequest(
-        'https://192.168.0.45:9090/user/not_ready', user.toJson());
+        getIt<String>() + 'user/not_ready', user.toJson());
   }
 
   void updatePage() {
