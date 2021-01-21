@@ -93,10 +93,6 @@ class _MessageViewState extends State<MessageView> {
                       future: messages,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          // chatRoom = snapshot.data;
-                          // if (newMessage != null) {
-                          //   chatRoom.messages.add(newMessage);
-                          // }
                           return MessageList(
                             pair: this.widget.pair,
                             messages: snapshot.data,
