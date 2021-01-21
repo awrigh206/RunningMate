@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:application/CustomWidgets/MessageList.dart';
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/Helpers/HttpHelper.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:footer/footer.dart';
 import 'package:footer/footer_view.dart';
 import 'package:get_it/get_it.dart';
+import 'package:image_picker/image_picker.dart';
 
 class MessageView extends StatefulWidget {
   MessageView({Key key, @required this.pair}) : super(key: key);
@@ -128,6 +130,20 @@ class _MessageViewState extends State<MessageView> {
                   ),
                 ),
                 IconButton(
+                    icon: Icon(Icons.camera),
+                    onPressed: () async {
+                      File file = await ImagePicker.pickImage(
+                          source: ImageSource.camera);
+                      await sendImage(file);
+                    }),
+                IconButton(
+                    icon: Icon(Icons.image),
+                    onPressed: () async {
+                      File file = await ImagePicker.pickImage(
+                          source: ImageSource.gallery);
+                      await sendImage(file);
+                    }),
+                IconButton(
                     color: Colors.blue,
                     icon: Icon(Icons.send),
                     onPressed: () {
@@ -145,5 +161,17 @@ class _MessageViewState extends State<MessageView> {
       ),
       drawer: SideDrawer(),
     );
+  }
+
+  Future<void> sendImage(File file) async {
+    if (file == null) return;
+    String base64 = base64Encode(file.readAsBytesSync());
+    String name = file.path.split('/').last;
+
+    GetIt getIt = GetIt.I;
+    HttpHelper httpHelper = getIt<HttpHelper>();
+    Message msg = Message(base64, DateTime.now().toIso8601String(),
+        getIt<User>().userName, widget.pair.challengedUser);
+    httpHelper.postRequest(getIt<String>() + 'message/image', msg.toJson());
   }
 }
