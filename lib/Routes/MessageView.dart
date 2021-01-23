@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:application/CustomWidgets/MessageList.dart';
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/Helpers/HttpHelper.dart';
+import 'package:application/Models/ImageMessage.dart';
 import 'package:application/Models/Message.dart';
 import 'package:application/Models/Pair.dart';
 import 'package:application/Models/User.dart';
@@ -27,7 +28,7 @@ class _MessageViewState extends State<MessageView> {
   final messageController = TextEditingController();
   Message newMessage;
   Future<List<Message>> messages;
-  Future<List<Message>> imageMessages;
+  Future<List<ImageMessage>> imageMessages;
   @override
   void initState() {
     imageMessages = getImages();
@@ -142,14 +143,20 @@ class _MessageViewState extends State<MessageView> {
                     icon: Icon(Icons.camera),
                     onPressed: () async {
                       File file = await ImagePicker.pickImage(
-                          source: ImageSource.camera);
+                          source: ImageSource.camera,
+                          imageQuality: 20,
+                          maxHeight: 1280,
+                          maxWidth: 720);
                       await sendImage(file);
                     }),
                 IconButton(
                     icon: Icon(Icons.image),
                     onPressed: () async {
                       File file = await ImagePicker.pickImage(
-                          source: ImageSource.gallery);
+                          source: ImageSource.gallery,
+                          imageQuality: 20,
+                          maxHeight: 1280,
+                          maxWidth: 720);
                       await sendImage(file);
                     }),
                 IconButton(
@@ -179,12 +186,12 @@ class _MessageViewState extends State<MessageView> {
 
     GetIt getIt = GetIt.I;
     HttpHelper httpHelper = getIt<HttpHelper>();
-    Message msg = Message(base64, DateTime.now().toIso8601String(),
-        getIt<User>().userName, widget.pair.challengedUser);
+    ImageMessage msg = ImageMessage(
+        base64, name, getIt<User>().userName, widget.pair.challengedUser);
     httpHelper.postRequest(getIt<String>() + 'message/image', msg.toJson());
   }
 
-  Future<List<Message>> getImages() async {
+  Future<List<ImageMessage>> getImages() async {
     GetIt getIt = GetIt.I;
     HttpHelper httpHelper = getIt<HttpHelper>();
     final res = await httpHelper.putRequest(
@@ -194,7 +201,8 @@ class _MessageViewState extends State<MessageView> {
       return List();
     } else {
       var list = res.data as List;
-      List<Message> messages = list.map((i) => Message.fromJson(i)).toList();
+      List<ImageMessage> messages =
+          list.map((i) => ImageMessage.fromJson(i)).toList();
       // messages = res.data != null ? List.from(res.data) : null;
       return messages;
     }

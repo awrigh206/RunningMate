@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:application/DTO/UpdateDto.dart';
 import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Helpers/LocationHelper.dart';
-import 'package:application/Models/Distance.dart';
 import 'package:application/Models/Pair.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -19,7 +17,6 @@ class ActiveView extends StatefulWidget {
 
 class _ActiveViewState extends State<ActiveView> {
   Timer timer;
-  Distance distanceTravelled;
   LocationHelper locationHelper = new LocationHelper();
   Future<LocationData> currentPosition;
   Future<LocationData> lastPosition;
