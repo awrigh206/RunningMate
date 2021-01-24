@@ -3,6 +3,7 @@ import 'package:application/DTO/UpdateDto.dart';
 import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Helpers/LocationHelper.dart';
 import 'package:application/Models/Pair.dart';
+import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:location/location.dart';
@@ -46,6 +47,8 @@ class _ActiveViewState extends State<ActiveView> {
     HttpHelper httpHelper = getIt<HttpHelper>();
     final res = await httpHelper.postRequest(
         getIt<String>() + 'run', this.widget.currentPair.toJson());
+    final second = await httpHelper.getRequest(
+        getIt<String>() + 'run?name=' + getIt<User>().userName, true);
   }
 
   Future<void> sendData() async {
