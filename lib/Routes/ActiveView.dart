@@ -1,14 +1,8 @@
 import 'dart:async';
-import 'package:application/DTO/UpdateDto.dart';
-import 'package:application/Helpers/HttpHelper.dart';
-import 'package:application/Helpers/LocationHelper.dart';
 import 'package:application/Logic/ActiveLogic.dart';
 import 'package:application/Models/Pair.dart';
-import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:location/location.dart';
-import 'dart:math';
 
 class ActiveView extends StatefulWidget {
   ActiveView({Key key, @required this.currentPair}) : super(key: key);
@@ -31,7 +25,6 @@ class _ActiveViewState extends State<ActiveView> {
   }
 
   Future<void> start() async {
-    Pair pair = widget.currentPair;
     await logic.beginRun();
     otherUserReady = logic.isOpponentReady();
     const duration = const Duration(seconds: 2);
