@@ -11,7 +11,6 @@ import 'package:get_it/get_it.dart';
 
 class UserView extends StatefulWidget {
   UserView({Key key}) : super(key: key);
-  //final User currentUser;
 
   @override
   UserViewState createState() => UserViewState();
