@@ -1,9 +1,11 @@
+import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Models/Pair.dart';
-import 'package:application/Models/Payload.dart';
+import 'package:application/Models/User.dart';
 import 'package:application/Routes/ActiveView.dart';
 import 'package:application/Routes/MessageView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get_it/get_it.dart';
 
 class Slideable extends StatelessWidget {
   Slideable({Key key, @required this.pair, @required this.updatePage})
@@ -34,7 +36,7 @@ class Slideable extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (context) => ActiveView(currentPair: pair)),
-            );
+            ).then((value) => notReadyToRun());
           },
         ),
         IconSlideAction(
@@ -42,6 +44,7 @@ class Slideable extends StatelessWidget {
           color: Colors.redAccent,
           icon: Icons.remove_circle,
           onTap: () {
+            declineChallenge();
             updatePage();
           },
         )
@@ -62,5 +65,16 @@ class Slideable extends StatelessWidget {
         )
       ],
     );
+  }
+
+  Future<void> notReadyToRun() async {
+    final res = await GetIt.I<HttpHelper>().putRequest(
+        GetIt.I<String>() + 'user/run/no', GetIt.I<User>().toJson());
+  }
+
+  Future<void> declineChallenge() async {
+    GetIt getIt = GetIt.I;
+    final res = await getIt<HttpHelper>()
+        .putRequest(getIt<String>() + 'user/challenges/remove', pair.toJson());
   }
 }

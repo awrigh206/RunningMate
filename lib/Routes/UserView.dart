@@ -60,13 +60,13 @@ class UserViewState extends State<UserView> {
                       trailing: Icon(Icons.error),
                     );
                   }
-                  List<String> challangers = snapshot.data;
+                  List<String> challengers = snapshot.data;
                   return ListView.builder(
                       shrinkWrap: true,
-                      itemCount: challangers.length,
+                      itemCount: challengers.length,
                       primary: false,
                       itemBuilder: (context, index) {
-                        String current = challangers[index];
+                        String current = challengers[index];
                         //Pair pair = new Pair(this.widget.currentUser, current);
                         Pair pair = new Pair(user.userName, current);
                         return new Slideable(
