@@ -1,5 +1,4 @@
 import 'package:application/CustomWidgets/MessageTile.dart';
-import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/Message.dart';
 import 'package:application/Models/Pair.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,6 @@ class MessageList extends StatefulWidget {
 }
 
 class _MessageListState extends State<MessageList> {
-  TcpHelper tcpHelper;
   Message lastMessage;
   @override
   void initState() {

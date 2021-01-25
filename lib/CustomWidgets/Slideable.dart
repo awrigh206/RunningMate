@@ -1,4 +1,3 @@
-import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/Pair.dart';
 import 'package:application/Models/Payload.dart';
 import 'package:application/Routes/ActiveView.dart';
@@ -10,7 +9,6 @@ class Slideable extends StatelessWidget {
   Slideable({Key key, @required this.pair, @required this.updatePage})
       : super(key: key);
   final Pair pair;
-  final TcpHelper tcpHelper = TcpHelper();
   final Function updatePage;
   @override
   Widget build(BuildContext context) {
@@ -32,7 +30,6 @@ class Slideable extends StatelessWidget {
           color: Colors.greenAccent,
           icon: Icons.check,
           onTap: () {
-            tcpHelper.sendPayload(new Payload(pair.toJson(), "run"));
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -45,7 +42,6 @@ class Slideable extends StatelessWidget {
           color: Colors.redAccent,
           icon: Icons.remove_circle,
           onTap: () {
-            tcpHelper.sendPayload(new Payload(pair.toJson(), "deny"));
             updatePage();
           },
         )

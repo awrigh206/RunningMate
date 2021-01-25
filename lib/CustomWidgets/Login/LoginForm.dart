@@ -4,7 +4,6 @@ import 'package:application/CustomWidgets/Login/PasswordField.dart';
 import 'package:application/CustomWidgets/Login/UserNameField.dart';
 import 'package:application/DTO/Submission.dart';
 import 'package:application/Helpers/HttpHelper.dart';
-import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/HttpSetting.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/foundation.dart';
@@ -13,14 +12,9 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginForm extends StatefulWidget {
-  LoginForm(
-      {key,
-      @required this.tcp,
-      @required this.play,
-      @required this.goToUserPage})
+  LoginForm({key, @required this.play, @required this.goToUserPage})
       : super(key: key);
 
-  final TcpHelper tcp;
   final Function play;
   final Function goToUserPage;
   @override

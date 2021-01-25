@@ -1,6 +1,5 @@
 import 'package:application/CustomWidgets/Login/LoginForm.dart';
 import 'package:application/Helpers/LocationHelper.dart';
-import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +18,6 @@ class LoginView extends StatefulWidget {
 
 class LoginViewState extends State<LoginView> with TickerProviderStateMixin {
   final locationHelper = LocationHelper();
-  final TcpHelper tcp = TcpHelper();
   Color currentColor = Colors.white;
   Future<LottieComposition> composition;
   AnimationController loginAnimation;
@@ -33,7 +31,6 @@ class LoginViewState extends State<LoginView> with TickerProviderStateMixin {
     processing = false;
     composition = fetchAnimation();
     form = new LoginForm(
-      tcp: tcp,
       play: playAnimation,
       goToUserPage: goToUserPage,
     );

@@ -1,5 +1,4 @@
 import 'package:application/CustomWidgets/SideDrawer.dart';
-import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/Payload.dart';
 import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,6 @@ class SettingsView extends StatefulWidget {
 }
 
 class SettingsViewState extends State<SettingsView> {
-  final TcpHelper tcpHelper = TcpHelper();
   GetIt getIt = GetIt.instance;
   @override
   Widget build(BuildContext context) {
@@ -46,8 +44,6 @@ class SettingsViewState extends State<SettingsView> {
                 child: Text('Delete Account'),
                 onPressed: () {
                   //Delete account of current user
-                  tcpHelper.sendPayload(
-                      new Payload(getIt<User>().toJson(), 'remove'));
 
                   Navigator.popUntil(
                       context, ModalRoute.withName('/LoginView'));
