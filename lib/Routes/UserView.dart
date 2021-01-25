@@ -26,17 +26,6 @@ class UserViewState extends State<UserView> {
     super.initState();
   }
 
-  Future<List<String>> getWaiting() async {
-    HttpHelper helper = getIt<HttpHelper>();
-    List<String> waitingList = List();
-    Response res = await helper.getRequest(
-        getIt<String>() + "user/challenges?name=" + getIt<User>().userName,
-        true);
-    //waitingList = jsonDecode(res.data);
-    waitingList = res.data != null ? List.from(res.data) : null;
-    return waitingList;
-  }
-
   @override
   Widget build(BuildContext context) {
     challengers = getWaiting();
@@ -129,6 +118,17 @@ class UserViewState extends State<UserView> {
     HttpHelper helper = GetIt.instance<HttpHelper>();
     final response = await helper.postRequest(
         getIt<String>() + 'user/not_ready', user.toJson());
+  }
+
+  Future<List<String>> getWaiting() async {
+    HttpHelper helper = getIt<HttpHelper>();
+    List<String> waitingList = List();
+    Response res = await helper.getRequest(
+        getIt<String>() + "user/challenges?name=" + getIt<User>().userName,
+        true);
+    //waitingList = jsonDecode(res.data);
+    waitingList = res.data != null ? List.from(res.data) : null;
+    return waitingList;
   }
 
   void updatePage() {
