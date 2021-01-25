@@ -1,7 +1,6 @@
 import 'package:application/CustomWidgets/SideDrawer.dart';
 import 'package:application/CustomWidgets/Slideable.dart';
 import 'package:application/Helpers/HttpHelper.dart';
-import 'package:application/Helpers/TcpHelper.dart';
 import 'package:application/Models/Pair.dart';
 import 'package:application/Models/User.dart';
 import 'package:application/Routes/SettingsView.dart';
@@ -9,7 +8,6 @@ import 'package:application/Routes/WaitingView.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserView extends StatefulWidget {
   UserView({Key key}) : super(key: key);
@@ -20,14 +18,12 @@ class UserView extends StatefulWidget {
 }
 
 class UserViewState extends State<UserView> {
-  TcpHelper tcpHelper;
   Future<List<String>> challengers;
   GetIt getIt = GetIt.I;
 
   @override
   void initState() {
     super.initState();
-    tcpHelper = TcpHelper();
   }
 
   Future<List<String>> getWaiting() async {
@@ -39,11 +35,6 @@ class UserViewState extends State<UserView> {
     //waitingList = jsonDecode(res.data);
     waitingList = res.data != null ? List.from(res.data) : null;
     return waitingList;
-  }
-
-  Future<String> getServer() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString("server");
   }
 
   @override
