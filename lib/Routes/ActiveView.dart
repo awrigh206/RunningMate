@@ -13,7 +13,7 @@ class ActiveView extends StatefulWidget {
 
 class _ActiveViewState extends State<ActiveView> {
   Timer timer;
-  GetIt getIt = GetIt.instance;
+  GetIt getIt = GetIt.I;
   Future<bool> otherUserReady;
   ActiveLogic logic;
 
@@ -26,13 +26,14 @@ class _ActiveViewState extends State<ActiveView> {
 
   Future<void> start() async {
     await logic.beginRun();
-    otherUserReady = logic.isOpponentReady();
     const duration = const Duration(seconds: 2);
     timer = Timer.periodic(duration, (timer) async {
+      otherUserReady = logic.isOpponentReady();
       bool ready = await otherUserReady;
       if (ready) {
         await logic.sendData();
       }
+      setState(() {});
     });
   }
 

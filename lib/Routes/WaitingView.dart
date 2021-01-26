@@ -74,14 +74,14 @@ class _WaitingViewState extends State<WaitingView> {
   Future<void> setReady() async {
     HttpHelper helper = HttpHelper(user);
     final response = await helper.postRequest(
-        getIt<String>() + 'user/make_ready', user.toJson());
+        getIt<String>() + 'user/make_waiting', user.toJson());
   }
 
   Future<List<String>> getWaitingUsers() async {
     HttpHelper helper = HttpHelper(user);
     List<String> waitingList = List();
     Response res =
-        await helper.getRequest(getIt<String>() + "user/ready", true);
+        await helper.getRequest(getIt<String>() + "user/waiting", true);
     waitingList = res.data != null ? List.from(res.data) : null;
     return waitingList;
   }
