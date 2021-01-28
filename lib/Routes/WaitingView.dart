@@ -16,6 +16,7 @@ class WaitingView extends StatefulWidget {
 class _WaitingViewState extends State<WaitingView> {
   GetIt getIt = GetIt.I;
   User user = GetIt.I<User>();
+
   @override
   Widget build(BuildContext context) {
     setReady();

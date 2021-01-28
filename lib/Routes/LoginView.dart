@@ -18,7 +18,6 @@ class LoginView extends StatefulWidget {
 
 class LoginViewState extends State<LoginView> with TickerProviderStateMixin {
   final locationHelper = LocationHelper();
-  Color currentColor = Colors.white;
   Future<LottieComposition> composition;
   AnimationController loginAnimation;
   Lottie animation;
@@ -66,7 +65,6 @@ class LoginViewState extends State<LoginView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: currentColor,
       appBar: AppBar(
         title: Text(widget.title),
       ),
