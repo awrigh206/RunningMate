@@ -79,7 +79,7 @@ class _MessageViewState extends State<MessageView> {
     messages = getMessages(this.widget.pair);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.pair.challengedUser),
+        title: Text(widget.pair.involvedUsers.last),
         actions: [
           IconButton(
               icon: Icon(Icons.image_rounded),
@@ -166,8 +166,7 @@ class _MessageViewState extends State<MessageView> {
                       Message msg = Message(
                           messageController.text,
                           DateTime.now().toIso8601String(),
-                          GetIt.I<User>().userName,
-                          widget.pair.challengedUser);
+                          new Pair(widget.pair.involvedUsers));
                       sendMessage(msg);
                     }),
               ],
@@ -186,8 +185,8 @@ class _MessageViewState extends State<MessageView> {
 
     GetIt getIt = GetIt.I;
     HttpHelper httpHelper = getIt<HttpHelper>();
-    ImageMessage msg = ImageMessage(
-        base64, name, getIt<User>().userName, widget.pair.challengedUser);
+    ImageMessage msg =
+        ImageMessage(base64, name, new Pair(widget.pair.involvedUsers));
     httpHelper.postRequest(getIt<String>() + 'message/image', msg.toJson());
   }
 

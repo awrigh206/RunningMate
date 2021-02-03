@@ -1,39 +1,33 @@
 import 'package:application/Helpers/Encryption.dart';
 import 'package:encrypt/encrypt.dart';
-
 import 'Pair.dart';
 
 class Message {
   String messageBody;
   String timeStamp;
-  String sender;
-  String recipient;
+  Pair pair;
 
-  Message(String body, String timeStamp, String sender, String recipient) {
+  Message(String body, String timeStamp, Pair pair) {
     this.messageBody = body;
     this.timeStamp = timeStamp;
-    this.sender = sender;
-    this.recipient = recipient;
+    this.pair = pair;
   }
 
   Message.empty() {
-    this.recipient = "";
     this.messageBody = " ";
-    this.sender = " ";
     this.timeStamp = " ";
+    this.pair = Pair(new List.empty());
   }
 
   Message.fromJson(Map<String, dynamic> json)
       : messageBody = json['messageBody'],
         timeStamp = json['timeStamp'],
-        sender = json['sender'],
-        recipient = json['recipient'];
+        pair = json['pair'];
 
   Map<String, dynamic> toJson() => {
         'messageBody': messageBody,
         'timeStamp': timeStamp,
-        'sender': sender,
-        'recipient': recipient
+        'pair': pair.toJson(),
       };
 
   encryptDetails() async {
@@ -44,12 +38,12 @@ class Message {
     Encrypted encryptedTime = await crypt.encrypt(this.timeStamp);
     this.timeStamp = encryptedTime.base64;
 
-    Encrypted encryptedSender = await crypt.encrypt(this.sender);
-    this.sender = encryptedSender.base64;
+    // Encrypted encryptedSender = await crypt.encrypt(this.sender);
+    // this.sender = encryptedSender.base64;
   }
 
   @override
   String toString() {
-    return "Body: " + messageBody + " , Sender: " + sender;
+    return "Body: " + messageBody;
   }
 }

@@ -68,7 +68,8 @@ class UserViewState extends State<UserView> {
                       itemBuilder: (context, index) {
                         String current = challengers[index];
                         //Pair pair = new Pair(this.widget.currentUser, current);
-                        Pair pair = new Pair(user.userName, current);
+                        List<String> involvedUsers = [user.userName, current];
+                        Pair pair = new Pair(involvedUsers);
                         return new Slideable(
                             pair: pair, updatePage: updatePage);
                       });

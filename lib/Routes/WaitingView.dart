@@ -45,7 +45,7 @@ class _WaitingViewState extends State<WaitingView> {
                         leading: Text(currentUser),
                         trailing: RaisedButton(
                           onPressed: () {
-                            Pair pair = Pair(user.userName, currentUser);
+                            Pair pair = Pair([user.userName, currentUser]);
                             sendChallenge(pair);
                           },
                           child: Text("Challenge"),

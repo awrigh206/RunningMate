@@ -27,7 +27,6 @@ class ActiveLogic {
 
   Future<void> sendData() async {
     HttpHelper httpHelper = getIt<HttpHelper>();
-    String id = pair.issuingUser + pair.challengedUser;
     //Code in this function body is run every two seconds
     lastPosition = currentPosition;
     currentPosition = locationHelper.getLocationBasic();
@@ -59,7 +58,8 @@ class ActiveLogic {
   Future<bool> isOpponentReady() async {
     HttpHelper httpHelper = getIt<HttpHelper>();
     final res = await httpHelper.getRequest(
-        getIt<String>() + 'run/challenger?name=' + pair.challengedUser, true);
+        getIt<String>() + 'run/challenger?name=' + pair.involvedUsers.last,
+        true);
     return res.data;
   }
 

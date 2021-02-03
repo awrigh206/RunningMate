@@ -1,18 +1,14 @@
 class Pair {
-  String issuingUser;
-  String challengedUser;
+  List<String> involvedUsers;
 
-  Pair(String issuingUser, String challengedUser) {
-    this.issuingUser = issuingUser;
-    this.challengedUser = challengedUser;
+  Pair(List<String> involvedUsers) {
+    this.involvedUsers = involvedUsers;
   }
 
   Pair.fromJson(Map<String, dynamic> json)
-      : issuingUser = json['issuingUser'],
-        challengedUser = json['challengedUser'];
+      : involvedUsers = json['involvedUsers'];
 
   Map<String, dynamic> toJson() => {
-        'issuingUser': issuingUser,
-        'challengedUser': challengedUser,
+        'involvedUsers': involvedUsers,
       };
 }

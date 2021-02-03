@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:application/Logic/ActiveLogic.dart';
 import 'package:application/Models/Pair.dart';
+import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -75,11 +76,12 @@ class _ActiveViewState extends State<ActiveView> {
                 children: [
                   ListTile(
                     title: Text('Player One: '),
-                    trailing: Text(this.widget.currentPair.issuingUser),
+                    trailing: Text(getIt<User>().userName),
                   ),
                   ListTile(
                     title: Text('Player Two: '),
-                    trailing: Text(this.widget.currentPair.challengedUser),
+                    trailing: Text(
+                        this.widget.currentPair.involvedUsers.elementAt(0)),
                   )
                 ],
               ));
