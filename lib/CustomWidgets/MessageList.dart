@@ -1,7 +1,9 @@
 import 'package:application/CustomWidgets/MessageTile.dart';
 import 'package:application/Models/Message.dart';
 import 'package:application/Models/Pair.dart';
+import 'package:application/Models/User.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class MessageList extends StatefulWidget {
   MessageList({Key key, @required this.pair, @required this.messages})
@@ -24,6 +26,7 @@ class _MessageListState extends State<MessageList> {
   @override
   Widget build(BuildContext context) {
     List<Message> messages = widget.messages;
+    GetIt getIt = GetIt.I;
     return Builder(builder: (context) {
       if (messages.isEmpty) {
         return ListTile(
@@ -44,7 +47,8 @@ class _MessageListState extends State<MessageList> {
             Message message = messages[index];
             return MessageTile(
                 message: message,
-                fromOtherUser: message.sender != widget.pair.issuingUser);
+                fromOtherUser:
+                    message.pair.involvedUsers.last != getIt<User>().userName);
           });
     });
   }

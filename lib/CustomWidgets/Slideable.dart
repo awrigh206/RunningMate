@@ -18,7 +18,7 @@ class Slideable extends StatelessWidget {
       child: Container(
         color: Colors.white,
         child: ListTile(
-          title: Text("Challenged by: " + pair.challengedUser),
+          title: Text("Challenged by: " + pair.involvedUsers.last),
           leading: CircleAvatar(
             backgroundColor: Colors.purpleAccent,
           ),
