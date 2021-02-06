@@ -33,13 +33,8 @@ class _MessageViewState extends State<MessageView> {
   void initState() {
     imageMessages = getImages();
     super.initState();
-    // chat = getChatRoom();
     updateTimer = Timer.periodic(Duration(seconds: 2), (timer) async {
       setState(() {});
-      // // newMessage = await getNew(await chat);
-      // if (newMessage.messageBody != chatRoom.messages.last.messageBody) {
-      //   setState(() {});
-      // }
     });
   }
 
@@ -48,30 +43,6 @@ class _MessageViewState extends State<MessageView> {
     updateTimer?.cancel();
     messageController.dispose();
     super.dispose();
-  }
-
-  Future<List<Message>> getMessages(Pair pair) async {
-    GetIt getIt = GetIt.I;
-    HttpHelper helper = getIt<HttpHelper>();
-    final res =
-        await helper.putRequest(getIt<String>() + 'message', pair.toJson());
-    if (res.data == null) {
-      //then there are no messages
-      return List();
-    } else {
-      var list = res.data as List;
-      List<Message> messages = list.map((i) => Message.fromJson(i)).toList();
-      // messages = res.data != null ? List.from(res.data) : null;
-      return messages;
-    }
-  }
-
-  Future<void> sendMessage(Message message) async {
-    GetIt getIt = GetIt.I;
-    HttpHelper helper = getIt<HttpHelper>();
-    final res =
-        await helper.postRequest(getIt<String>() + 'message', message.toJson());
-    messageController.text = "";
   }
 
   @override
@@ -166,7 +137,7 @@ class _MessageViewState extends State<MessageView> {
                       Message msg = Message(
                           messageController.text,
                           DateTime.now().toIso8601String(),
-                          new Pair(widget.pair.involvedUsers));
+                          widget.pair.involvedUsers);
                       sendMessage(msg);
                     }),
               ],
@@ -185,8 +156,7 @@ class _MessageViewState extends State<MessageView> {
 
     GetIt getIt = GetIt.I;
     HttpHelper httpHelper = getIt<HttpHelper>();
-    ImageMessage msg =
-        ImageMessage(base64, name, new Pair(widget.pair.involvedUsers));
+    ImageMessage msg = ImageMessage(base64, name, widget.pair.involvedUsers);
     httpHelper.postRequest(getIt<String>() + 'message/image', msg.toJson());
   }
 
@@ -202,8 +172,31 @@ class _MessageViewState extends State<MessageView> {
       var list = res.data as List;
       List<ImageMessage> messages =
           list.map((i) => ImageMessage.fromJson(i)).toList();
+      return messages;
+    }
+  }
+
+  Future<List<Message>> getMessages(Pair pair) async {
+    GetIt getIt = GetIt.I;
+    HttpHelper helper = getIt<HttpHelper>();
+    final res =
+        await helper.putRequest(getIt<String>() + 'message', pair.toJson());
+    if (res.data == null) {
+      //then there are no messages
+      return List();
+    } else {
+      var list = res.data as List;
+      List<Message> messages = list.map((i) => Message.fromJson(i)).toList();
       // messages = res.data != null ? List.from(res.data) : null;
       return messages;
     }
+  }
+
+  Future<void> sendMessage(Message message) async {
+    GetIt getIt = GetIt.I;
+    HttpHelper helper = getIt<HttpHelper>();
+    final res =
+        await helper.postRequest(getIt<String>() + 'message', message.toJson());
+    messageController.text = "";
   }
 }

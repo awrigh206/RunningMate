@@ -48,7 +48,7 @@ class _MessageListState extends State<MessageList> {
             return MessageTile(
                 message: message,
                 fromOtherUser:
-                    message.pair.involvedUsers.last != getIt<User>().userName);
+                    message.usersInvolved.last != getIt<User>().userName);
           });
     });
   }

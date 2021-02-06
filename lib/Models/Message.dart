@@ -5,29 +5,36 @@ import 'Pair.dart';
 class Message {
   String messageBody;
   String timeStamp;
-  Pair pair;
+  List<String> usersInvolved;
 
-  Message(String body, String timeStamp, Pair pair) {
+  Message(String body, String timeStamp, List<String> usersInvolved) {
     this.messageBody = body;
     this.timeStamp = timeStamp;
-    this.pair = pair;
+    this.usersInvolved = usersInvolved;
   }
 
   Message.empty() {
     this.messageBody = " ";
     this.timeStamp = " ";
-    this.pair = Pair(new List.empty());
+    this.usersInvolved = List.empty(growable: true);
   }
 
-  Message.fromJson(Map<String, dynamic> json)
-      : messageBody = json['messageBody'],
-        timeStamp = json['timeStamp'],
-        pair = json['pair'];
+  // Message.fromJson(Map<String, dynamic> json)
+  //     : messageBody = json['messageBody'],
+  //       timeStamp = json['timeStamp'],
+  //       usersInvolved = json['usersInvolved'];
+  factory Message.fromJson(Map<String, dynamic> parsedJson) {
+    var sender = parsedJson['sender'];
+    var recipient = parsedJson['recipient'];
+    List<String> usersList = new List<String>.from([sender, recipient]);
+    return Message(
+        parsedJson['messageBody'], parsedJson['timeStamp'], usersList);
+  }
 
   Map<String, dynamic> toJson() => {
         'messageBody': messageBody,
         'timeStamp': timeStamp,
-        'pair': pair.toJson(),
+        'usersInvolved': usersInvolved,
       };
 
   encryptDetails() async {
