@@ -81,7 +81,7 @@ class _ActiveViewState extends State<ActiveView> {
                   ListTile(
                     title: Text('Player Two: '),
                     trailing: Text(
-                        this.widget.currentPair.involvedUsers.elementAt(0)),
+                        this.widget.currentPair.involvedUsers.elementAt(1)),
                   )
                 ],
               ));
