@@ -67,11 +67,12 @@ class UserViewState extends State<UserView> {
                       primary: false,
                       itemBuilder: (context, index) {
                         String current = challengers[index];
-                        //Pair pair = new Pair(this.widget.currentUser, current);
-                        List<String> involvedUsers = [user.userName, current];
-                        Pair pair = new Pair(involvedUsers);
-                        return new Slideable(
-                            pair: pair, updatePage: updatePage);
+                        if (current != user.userName) {
+                          List<String> involvedUsers = [user.userName, current];
+                          Pair pair = new Pair(involvedUsers);
+                          return new Slideable(
+                              pair: pair, updatePage: updatePage);
+                        }
                       });
                 }),
             ListTile(
