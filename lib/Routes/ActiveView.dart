@@ -92,6 +92,7 @@ class _ActiveViewState extends State<ActiveView> {
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         OpponentUpdateDto update = snapshot.data;
+                        logic.buzzWhenClose(update.distance);
                         return ListTile(
                             title: Text('Opponent has covered: ' +
                                 update.distance.roundToDouble().toString() +

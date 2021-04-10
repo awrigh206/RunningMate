@@ -7,6 +7,7 @@ import 'package:application/Models/Pair.dart';
 import 'package:application/Models/User.dart';
 import 'package:get_it/get_it.dart';
 import 'package:location/location.dart';
+import 'package:vibration/vibration.dart';
 
 class ActiveLogic {
   GetIt getIt = GetIt.I;
@@ -15,8 +16,29 @@ class ActiveLogic {
   Future<LocationData> currentPosition;
   Future<LocationData> lastPosition;
   final Pair pair;
-
   ActiveLogic(this.pair);
+
+  void buzzWhenClose(double opponentDistance) async {
+    double difference = totalDistanceTravelled - opponentDistance;
+    if (difference.isNegative) {
+      //You are behind the opponent
+      if (difference > -0.1) {
+        vibrate();
+      }
+    } else {
+      if (difference < 0.1) {
+        vibrate();
+      }
+    }
+  }
+
+  void vibrate() async {
+    if (await Vibration.hasCustomVibrationsSupport()) {
+      Vibration.vibrate(duration: 1000);
+    } else {
+      Vibration.vibrate();
+    }
+  }
 
   Future<void> beginRun() async {
     currentPosition = locationHelper.getLocationBasic();
