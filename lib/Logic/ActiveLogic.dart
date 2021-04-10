@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:application/DTO/OpponentUpdateDto.dart';
 import 'package:application/DTO/UpdateDto.dart';
 import 'package:application/Helpers/HttpHelper.dart';
 import 'package:application/Helpers/LocationHelper.dart';
@@ -10,6 +11,7 @@ import 'package:location/location.dart';
 class ActiveLogic {
   GetIt getIt = GetIt.I;
   LocationHelper locationHelper = new LocationHelper();
+  double totalDistanceTravelled = 0.0;
   Future<LocationData> currentPosition;
   Future<LocationData> lastPosition;
   final Pair pair;
@@ -30,9 +32,19 @@ class ActiveLogic {
     //Code in this function body is run every two seconds
     lastPosition = currentPosition;
     currentPosition = locationHelper.getLocationBasic();
-    UpdateDto updateDto = UpdateDto(pair,
-        calculateDistance(await lastPosition, await currentPosition), 0.0, 2.0);
+    double distanceTravelled =
+        calculateDistance(await lastPosition, await currentPosition);
+    UpdateDto updateDto = UpdateDto(pair, distanceTravelled, 0.0, 2.0);
+    totalDistanceTravelled = totalDistanceTravelled + distanceTravelled;
     httpHelper.putRequest(getIt<String>() + 'run/update', updateDto.toJson());
+  }
+
+  Future<OpponentUpdateDto> getOppponentData(Pair pair) async {
+    HttpHelper httpHelper = getIt<HttpHelper>();
+    final res = await httpHelper.putRequest(
+        getIt<String>() + 'run/opponent', pair.toJson());
+    OpponentUpdateDto update = OpponentUpdateDto.fromJson(res.data);
+    return update;
   }
 
   //calculate difference between two points using the haversine formula

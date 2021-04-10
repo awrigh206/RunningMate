@@ -47,6 +47,7 @@ dependencies:
   dio: ^3.0.0
   shared_preferences: any
   workmanager: ^0.2.0
+  vibration: ^1.7.3
   get_it: ^5.0.4
   image_picker: ^0.6.7+21
 

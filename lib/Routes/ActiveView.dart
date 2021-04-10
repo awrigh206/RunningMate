@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:application/DTO/OpponentUpdateDto.dart';
+import 'package:application/DTO/UpdateDto.dart';
 import 'package:application/Logic/ActiveLogic.dart';
 import 'package:application/Models/Pair.dart';
 import 'package:application/Models/User.dart';
@@ -18,6 +20,7 @@ class _ActiveViewState extends State<ActiveView> {
   Timer timer;
   GetIt getIt = GetIt.I;
   Future<bool> otherUserReady;
+  Future<OpponentUpdateDto> opponentProgress;
   ActiveLogic logic;
   Future<LottieComposition> composition;
   AnimationController loginAnimation;
@@ -38,6 +41,7 @@ class _ActiveViewState extends State<ActiveView> {
       otherUserReady = logic.isOpponentReady();
       bool ready = await otherUserReady;
       if (ready) {
+        opponentProgress = logic.getOppponentData(widget.currentPair);
         await logic.sendData();
       }
       setState(() {});
@@ -82,6 +86,33 @@ class _ActiveViewState extends State<ActiveView> {
                     title: Text('Player Two: '),
                     trailing: Text(
                         this.widget.currentPair.involvedUsers.elementAt(1)),
+                  ),
+                  FutureBuilder(
+                    future: opponentProgress,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        OpponentUpdateDto update = snapshot.data;
+                        return ListTile(
+                            title: Text('Opponent has covered: ' +
+                                update.distance.roundToDouble().toString() +
+                                'KM'));
+                      }
+                      if (snapshot.hasError) {
+                        return ListTile(
+                          title: Text(
+                              'There has been an issue in getting updated data from your opponent'),
+                        );
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    },
+                  ),
+                  ListTile(
+                    title: Text('You have gone for: ' +
+                        logic.totalDistanceTravelled
+                            .roundToDouble()
+                            .toString() +
+                        'KM'),
                   )
                 ],
               ));
