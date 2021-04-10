@@ -61,6 +61,8 @@ class _ActiveViewState extends State<ActiveView> {
     super.dispose();
   }
 
+  bool vibrationOn = true;
+  bool soundOn = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,7 +94,14 @@ class _ActiveViewState extends State<ActiveView> {
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         OpponentUpdateDto update = snapshot.data;
-                        logic.buzzWhenClose(update.distance);
+                        if (vibrationOn) {
+                          //vibrate if you are close to the opponent
+                          logic.buzzWhenClose(update.distance);
+                        }
+                        if (soundOn) {
+                          //play sound if you are close to opponent
+                        }
+
                         return ListTile(
                             title: Text('Opponent has covered: ' +
                                 update.distance.roundToDouble().toString() +
@@ -114,6 +123,37 @@ class _ActiveViewState extends State<ActiveView> {
                             .roundToDouble()
                             .toString() +
                         'KM'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      children: [
+                        Column(
+                          children: [
+                            Text('Vibration:'),
+                            Switch(
+                                value: vibrationOn,
+                                onChanged: (value) {
+                                  setState(() {
+                                    vibrationOn = value;
+                                  });
+                                }),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text('Sound:'),
+                            Switch(
+                                value: soundOn,
+                                onChanged: (value) {
+                                  setState(() {
+                                    soundOn = value;
+                                  });
+                                }),
+                          ],
+                        )
+                      ],
+                    ),
                   )
                 ],
               ));

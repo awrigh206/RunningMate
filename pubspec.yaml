@@ -38,7 +38,7 @@ dependencies:
   email_validator: '^1.0.0'
   encrypt: ^4.0.3
   pointycastle: ^1.0.2
-  path_provider: ^1.6.16
+  path_provider: ^2.0.0
   flutter_slidable:
   lottie: ^0.6.0
   footer:
@@ -50,6 +50,7 @@ dependencies:
   vibration: ^1.7.3
   get_it: ^5.0.4
   image_picker: ^0.6.7+21
+  audio_service: ^0.16.2+1
 
 dev_dependencies:
   flutter_test:
