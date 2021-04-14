@@ -1,13 +1,16 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
+import 'package:geolocator/geolocator.dart' as geo;
+import 'package:workmanager/workmanager.dart';
 
 class LocationHelper {
   Location location = new Location();
-
   bool serviceEnabled;
   PermissionStatus permissionGranted;
   LocationData locationData;
 
-  Future<LocationData> getLocation() async {
+  //Use the location plugin to find the current  location of the device
+  Future<LocationData> getLocationBasic() async {
     serviceEnabled = await location.serviceEnabled();
     if (!serviceEnabled) {
       serviceEnabled = await location.requestService();
@@ -29,4 +32,50 @@ class LocationHelper {
     locationData = await location.getLocation();
     return locationData;
   }
+
+  //Use the geolocator plugin to find the location of the device
+  Future<geo.Position> getPosition() async {
+    final geo.Geolocator geolocator = geo.Geolocator()
+      ..forceAndroidLocationManager;
+    geo.Position futurePosition;
+
+    await geolocator
+        .getCurrentPosition(desiredAccuracy: geo.LocationAccuracy.best)
+        .then((geo.Position position) {
+      futurePosition = position;
+    }).catchError((e) {
+      print(e);
+      return futurePosition;
+    });
+    return futurePosition;
+  }
+
+  Future<geo.Placemark> getCurrentAddress() async {
+    final geo.Geolocator geolocator = geo.Geolocator()
+      ..forceAndroidLocationManager;
+    geo.Position position = await getPosition();
+    try {
+      List<geo.Placemark> p = await geolocator.placemarkFromCoordinates(
+          position.latitude, position.longitude);
+      geo.Placemark place = p[0];
+      return place;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+}
+
+const fetchBackground = "fetchBackground";
+
+void callbackDispatcher() {
+  Workmanager.executeTask((task, inputData) async {
+    switch (task) {
+      case fetchBackground:
+        Position userLocation = await Geolocator()
+            .getCurrentPosition(desiredAccuracy: geo.LocationAccuracy.high);
+        break;
+    }
+    return Future.value(true);
+  });
 }

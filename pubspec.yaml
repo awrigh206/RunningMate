@@ -1,5 +1,5 @@
 name: application
-description: A new Flutter project.
+description: An application to assist in your locked down workouts
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -29,6 +29,28 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.3
   location: ^3.0.0
+  geolocator: ^5.3.2+2
+  google_maps_flutter:
+  local_auth: ^0.6.3+1
+  password: ^1.0.0
+  password_strength: ^0.1.2
+  flutter_string_encryption: ^0.3.1
+  email_validator: '^1.0.0'
+  encrypt: ^4.0.3
+  pointycastle: ^1.0.2
+  path_provider: ^2.0.0
+  flutter_slidable:
+  lottie: ^0.6.0
+  footer:
+  http: 
+  string_validator: ^0.1.4
+  dio: ^3.0.0
+  shared_preferences: any
+  workmanager: ^0.2.0
+  vibration: ^1.7.3
+  get_it: ^5.0.4
+  image_picker: ^0.6.7+21
+  flutter_sound: ^2.0.3
 
 dev_dependencies:
   flutter_test:
@@ -46,7 +68,10 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+    - Assets/Animations/
+    - Assets/Sounds/totalitarian.ogg
+    - Assets/Sounds/steps.mp3
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
