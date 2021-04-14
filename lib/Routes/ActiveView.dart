@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:application/DTO/OpponentUpdateDto.dart';
-import 'package:application/DTO/UpdateDto.dart';
 import 'package:application/Logic/ActiveLogic.dart';
 import 'package:application/Models/Pair.dart';
 import 'package:application/Models/User.dart';
@@ -100,6 +99,7 @@ class _ActiveViewState extends State<ActiveView> {
                         }
                         if (soundOn) {
                           //play sound if you are close to opponent
+                          logic.soundWhenClose(update.distance);
                         }
 
                         return ListTile(

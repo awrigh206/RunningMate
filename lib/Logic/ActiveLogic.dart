@@ -8,6 +8,7 @@ import 'package:application/Models/User.dart';
 import 'package:get_it/get_it.dart';
 import 'package:location/location.dart';
 import 'package:vibration/vibration.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 
 class ActiveLogic {
   GetIt getIt = GetIt.I;
@@ -15,8 +16,33 @@ class ActiveLogic {
   double totalDistanceTravelled = 0.0;
   Future<LocationData> currentPosition;
   Future<LocationData> lastPosition;
+  FlutterSound sound = FlutterSound();
+  bool isPlaying = false;
   final Pair pair;
   ActiveLogic(this.pair);
+
+  void soundWhenClose(double opponentDistance) async {
+    double difference = totalDistanceTravelled - opponentDistance;
+    if (difference.isNegative) {
+      //You are behind the opponent
+      if (difference > -0.1) {
+        await playSound();
+      }
+    } else {
+      if (difference < 0.1) {
+        await playSound();
+      }
+    }
+  }
+
+  Future<void> playSound() async {
+    final fileName = 'Assets/Sounds/steps.mp3';
+    if (!isPlaying) {
+      await sound.startPlayer(fileName);
+    } else {
+      return;
+    }
+  }
 
   void buzzWhenClose(double opponentDistance) async {
     double difference = totalDistanceTravelled - opponentDistance;
