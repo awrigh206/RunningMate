@@ -67,7 +67,6 @@ class UserViewState extends State<UserView> {
                       primary: false,
                       itemBuilder: (context, index) {
                         String current = challengers[index];
-                        print("current: " + current);
                         if (current == user.userName) {
                           //The challenger cannot be the current user
                           return Divider();

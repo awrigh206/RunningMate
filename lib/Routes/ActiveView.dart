@@ -3,6 +3,7 @@ import 'package:application/DTO/OpponentUpdateDto.dart';
 import 'package:application/Logic/ActiveLogic.dart';
 import 'package:application/Models/Pair.dart';
 import 'package:application/Models/User.dart';
+import 'package:application/Routes/UserView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -151,10 +152,18 @@ class _ActiveViewState extends State<ActiveView> {
                                   });
                                 }),
                           ],
-                        )
+                        ),
                       ],
                     ),
-                  )
+                  ),
+                  FlatButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserView()));
+                      },
+                      child: Text("Finish")),
                 ],
               ));
             } else {
