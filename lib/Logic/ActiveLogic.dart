@@ -75,7 +75,9 @@ class ActiveLogic {
         getIt<String>() + 'run?name=' + getIt<User>().userName, true);
   }
 
-  countUserDistance() async {
+  Future<void> countUserDistance() async {
+    lastPosition = currentPosition;
+    currentPosition = locationHelper.getLocationBasic();
     double distanceTravelled =
         calculateDistance(await lastPosition, await currentPosition);
     totalDistanceTravelled = totalDistanceTravelled + distanceTravelled;
