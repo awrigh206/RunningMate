@@ -7,6 +7,7 @@ import 'package:application/Routes/UserView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:location/location.dart';
 import 'package:lottie/lottie.dart';
 
 class ActiveView extends StatefulWidget {
@@ -42,7 +43,6 @@ class _ActiveViewState extends State<ActiveView> {
       bool ready = await otherUserReady;
       if (ready) {
         opponentProgress = logic.getOppponentData(widget.currentPair);
-        await logic.countUserDistance();
         await logic.sendData();
       }
       setState(() {});
