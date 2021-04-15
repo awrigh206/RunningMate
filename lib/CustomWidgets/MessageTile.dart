@@ -18,8 +18,11 @@ class MessageTile extends StatelessWidget {
             message.messageBody,
             style: TextStyle(color: Colors.white),
           ),
-          subtitle: Text("Sent: " + message.timeStamp),
-          tileColor: Colors.blue[100],
+          subtitle: Text(
+            "Sent: " + message.timeStamp,
+            style: TextStyle(color: Colors.white),
+          ),
+          tileColor: Colors.blue[600],
         );
       } else {
         return ListTile(

@@ -75,6 +75,12 @@ class ActiveLogic {
         getIt<String>() + 'run?name=' + getIt<User>().userName, true);
   }
 
+  countUserDistance() async {
+    double distanceTravelled =
+        calculateDistance(await lastPosition, await currentPosition);
+    totalDistanceTravelled = totalDistanceTravelled + distanceTravelled;
+  }
+
   Future<void> sendData() async {
     HttpHelper httpHelper = getIt<HttpHelper>();
     //Code in this function body is run every two seconds
@@ -83,7 +89,7 @@ class ActiveLogic {
     double distanceTravelled =
         calculateDistance(await lastPosition, await currentPosition);
     UpdateDto updateDto = UpdateDto(pair, distanceTravelled, 0.0, 2.0);
-    totalDistanceTravelled = totalDistanceTravelled + distanceTravelled;
+
     httpHelper.putRequest(getIt<String>() + 'run/update', updateDto.toJson());
   }
 

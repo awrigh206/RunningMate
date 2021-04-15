@@ -42,6 +42,7 @@ class _ActiveViewState extends State<ActiveView> {
       bool ready = await otherUserReady;
       if (ready) {
         opponentProgress = logic.getOppponentData(widget.currentPair);
+        await logic.countUserDistance();
         await logic.sendData();
       }
       setState(() {});
