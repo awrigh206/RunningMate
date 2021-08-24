@@ -7,6 +7,8 @@ report of this project.
 
 The Spring REST API can be found here: https://github.com/awrigh206/RunningMateRest
 
+The full code for this, Flutter mobile application is publicly available here: https://github.com/awrigh206/RunningMate
+
 ## Documentation
 ### Overview 
 This is a mobile application built using cross-platform technologies, which means that the same code can be compiled for both Andoid and IOS devices. The application makes use of multiple features of modern smartphones namely: internet connectivity, Global Positioning System (GPS), vibration, and audio playback. It uses internet connectivity and GPS to keep track of how far the user has run and sends this information to the aforementioned server. The other player does this also, these values are then compared and both runners will then receive feedback on how they are performing in real-time via the screen of the device but also via audio and/or vibration (depending upon user settings).
